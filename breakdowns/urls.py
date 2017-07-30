@@ -8,25 +8,25 @@ urlpatterns = [
     url(r'^$', views.index, name='index'),
 
     # Cost Breakdown List URL
-    url(r'^costbreakdowns/$', views.cost_breakdown_list, name='cost_breakdown_list'),
+    url(r'^cost-breakdowns/$', views.cost_breakdown_list, name='cost_breakdown_list'),
 
     # Cost Breakdown Detail URL
-    url(r'^costbreakdown/(?P<pk>[0-9]+)/$', views.CostBreakdownDetail.as_view(), name='cost_breakdown_detail'),
+    url(r'^cost-breakdown/(?P<pk>[0-9]+)/$', views.CostBreakdownDetail.as_view(), name='cost_breakdown_detail'),
 
     # User Cost Breakdown List URL
-    url(r'^mybreakdowns/$', views.my_breakdown_list, name='my_breakdown_list'),
+    url(r'^my-breakdowns/$', views.my_breakdown_list, name='my_breakdown_list'),
 
     # User Cost Breakdown Detail URL
-    url(r'^mybreakdown/(?P<pk>[0-9]+)/$', views.MyBreakdownDetail.as_view(), name='my_breakdown_detail'),
+    url(r'^my-breakdown/(?P<pk>[0-9]+)/$', views.MyBreakdownDetail.as_view(), name='my_breakdown_detail'),
 
     # User Cost Breakdown Create URL
-    url(r'^mybreakdown/create/$', views.BreakdownCreate.as_view(), name='breakdown_create'),
+    url(r'^cost-breakdown/create/$', views.BreakdownCreate.as_view(), name='breakdown_create'),
 
     # Create a MaterialBreakdown for Breakdown URL
-    url(r'^mybreakdown/(?P<pk>[0-9]+)/material/add/$', views.MaterialBreakdownCreate.as_view(), name='material_breakdown_create'),
+    url(r'^my-breakdown/(?P<pk>[0-9]+)/material/add/$', views.MaterialBreakdownCreate.as_view(), name='material_breakdown_create'),
 
     # Update a MaterialBreakdown for a Particular Breakdown URL
-    url(r'^mybreakdown/(?P<breakdown_pk>[0-9]+)/material/update/(?P<pk>[0-9]+)/$', views.MaterialBreakdownUpdate.as_view(), name='material_breakdown_update'),
+    url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/material/update/(?P<pk>[0-9]+)/$', views.MaterialBreakdownUpdate.as_view(), name='material_breakdown_update'),
 
 
     # Material List URL

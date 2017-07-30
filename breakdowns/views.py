@@ -4,9 +4,9 @@ from django.views import generic
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.models import User, Group
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from .forms import SignupForm
 from .models import Project, Unit, MaterialCatagory, Material, LabourCatagory, Labour, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
@@ -40,6 +40,8 @@ def signup(request):
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             user.first_name = first_name
             user.last_name = last_name
+            member_group = Group.objects.get(name='member')
+            user.groups.add(member_group,)
             user.save()
             login(request, user)
             return redirect('breakdowns:index')
@@ -210,8 +212,14 @@ class ProjectList(LoginRequiredMixin, generic.ListView):
         return context
 
 # Project Detail View
-class ProjectDetail(LoginRequiredMixin, generic.DetailView):
+class ProjectDetail(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
     model = Project
+    login_url = 'breakdowns:project_list'
+    redirect_field_name = None
+
+    def test_func(self):
+        project = Project.objects.get(pk=self.kwargs['pk'])
+        return project.created_by.id == self.request.user.id
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProjectDetail, self).get_context_data(*args, **kwargs)
@@ -234,9 +242,15 @@ class ProjectCreate(LoginRequiredMixin, CreateView):
         return context
 
 # Project Update View
-class ProjectUpdate(LoginRequiredMixin, UpdateView):
+class ProjectUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Project
     fields = ['full_title', 'short_title', 'city', 'client', 'consultant', 'contractor',]
+    login_url = 'breakdowns:project_list'
+    redirect_field_name = None
+
+    def test_func(self):
+        project = Project.objects.get(pk=self.kwargs['pk'])
+        return project.created_by.id == self.request.user.id
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProjectUpdate, self).get_context_data(*args, **kwargs)
@@ -257,7 +271,7 @@ class ProjectDelete(LoginRequiredMixin, DeleteView):
 @login_required
 def cost_breakdown_list(request):
     """
-    Returns cost breakdown list 
+    Returns cost breakdown list from the main library
     """
     try:
         cost_breakdown_catagory = int(request.GET.get('cost_breakdown_catagory'))
@@ -296,7 +310,7 @@ def cost_breakdown_list(request):
         })
 
 # My Breakdown List View
-@login_required
+@permission_required(('breakdowns.manage_cost_breakdown'))
 def my_breakdown_list(request):
     """
     Returns user cost breakdown list 
@@ -335,10 +349,17 @@ def my_breakdown_list(request):
         })
 
 # My Cost Breakdowns Detail
-class MyBreakdownDetail(LoginRequiredMixin, generic.DetailView):
+class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.DetailView):
+    permission_required = ('breakdowns.manage_cost_breakdown',)
     model = CostBreakdown
-    template_name = 'breakdowns/my_breakdown_detail.html'
+    template_name = 'breakdowns/breakdown_detail.html'
     context_object_name = 'cost_breakdown'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        return cost_breakdown.created_by.id == self.request.user.id
 
     def get_context_data(self, *args, **kwargs):
         context = super(MyBreakdownDetail, self).get_context_data(*args, **kwargs)
@@ -385,13 +406,20 @@ class MyBreakdownDetail(LoginRequiredMixin, generic.DetailView):
         context['direct_cost'] = direct_cost
         context['total_cost'] = total_cost
         context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'library'
+        context['subpage_name'] = 'mybreakdowns'
         return context
 
 # CostBreakdown Detail View
-class CostBreakdownDetail(LoginRequiredMixin, generic.DetailView):
+class CostBreakdownDetail(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
     model = CostBreakdown
     context_object_name = 'cost_breakdown'
+    template_name = 'breakdowns/breakdown_detail.html'
+    login_url = 'breakdowns:cost_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        return cost_breakdown.created_by.has_perm('breakdowns.admin_cost_breakdown')
 
     def get_context_data(self, *args, **kwargs):
         context = super(CostBreakdownDetail, self).get_context_data(*args, **kwargs)
@@ -444,12 +472,10 @@ class CostBreakdownDetail(LoginRequiredMixin, generic.DetailView):
 # Create a new cost breakdown view
 class BreakdownCreate(LoginRequiredMixin, CreateView):
     """
-    Create a new cost breakdown with the current user as it's
-    owner
+    Create a new cost breakdown with the current user as it's owner
     """
     model = CostBreakdown
-    template_name = 'breakdowns/my_breakdown_form.html'
-    success_url = '/breakdowns/mybreakdown/{id}'
+    template_name = 'breakdowns/breakdown_form.html'
     fields = ['cost_breakdown_catagory', 'project', 'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
 
     def form_valid(self, form, *args, **kwargs):
@@ -466,10 +492,16 @@ class BreakdownCreate(LoginRequiredMixin, CreateView):
         return context
 
 # Create A Material Breakdown View
-class MaterialBreakdownCreate(LoginRequiredMixin, CreateView):
+class MaterialBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
     model = MaterialBreakdown
     fields = ['material', 'unit', 'quantity', 'rate', ]
     template_name = 'breakdowns/material_breakdown_form.html'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        return cost_breakdown.created_by.id == self.request.user.id
 
     def get_success_url(self):
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
@@ -488,11 +520,17 @@ class MaterialBreakdownCreate(LoginRequiredMixin, CreateView):
         return context
 
 # Update A Material Breakdown 
-class MaterialBreakdownUpdate(LoginRequiredMixin, UpdateView):
+class MaterialBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = MaterialBreakdown
     fields = ['material', 'unit', 'quantity', 'rate', ]
     template_name = 'breakdowns/material_breakdown_form.html'
-    context_object_name = 'material'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        material_breakdown = MaterialBreakdown.objects.get(pk=self.kwargs['pk'])
+        return material_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self):
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})

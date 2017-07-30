@@ -226,12 +226,16 @@ class CostBreakdown(models.Model):
         verbose_name = 'cost breakdown'
         verbose_name_plural = 'cost breakdowns'
         ordering = ['project', 'full_title']
+        permissions = (
+                ('download_cost_breakdown', 'Can download cost breakdown in excel and pdf'),
+                ('manage_cost_breakdown', 'Can manage own cost breakdown'),
+            )
 
     def get_absolute_url(self):
         """
         Returns a particular instance of costbreakdown
         """
-        return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': str(self.pk)})
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': str(self.pk)})
 
     def __str__(self):
         """

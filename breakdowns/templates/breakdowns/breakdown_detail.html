@@ -12,10 +12,12 @@
             <div class="col-sm-8">
                 Cost Breakdown Summary
             </div><!-- /.col-sm-8 -->
-
+            
+            {% if cost_breakdown.created_by.id == user.id %}
             <div class="col-sm-4 text-right">
                 <a href="#"><span class="fa fa-edit"></span>&nbsp; Edit</a>
             </div><!-- /.col-sm-4 -->
+            {% endif %}
         </div><!-- /END .row -->
     </div><!-- /END .panel-heading -->
 
@@ -23,10 +25,12 @@
         <div class="row">
             <div class="col-sm-5 col-sm-offset-1">
                 <dl>
+                   {% if cost_breakdown.project %}
                     <div class="dl-group">
                         <dt>Project</dt>
                         <dd>{{ cost_breakdown.project.full_title }}</dd>
                     </div><!-- /.dl-group -->
+                    {% endif %}
 
                     <div class="dl-group">
                         <dt>Work Item</dt>
@@ -89,9 +93,11 @@
                 Material Direct Cost (A)
             </div><!-- /.col-sm-8 -->
 
+            {% if cost_breakdown.created_by.id == user.id %}
             <div class="col-sm-4 text-right">
                 <a href="{% url 'breakdowns:material_breakdown_create' cost_breakdown.id %}"><span class="fa fa-plus"></span>&nbsp; Add Material</a>
             </div><!-- /.col-sm-4 -->
+            {% endif %}
         </div><!-- /END .row -->
     </div><!-- /.panel-heading -->
 
@@ -107,7 +113,9 @@
                         <th class="text-right">Quantity</th>
                         <th class="text-right">Rate (ETB)</th>
                         <th class="text-right">Sub-Total (ETB)</th>
+                        {% if cost_breakdown.created_by.id == user.id %}
                         <th class="text-right"></th>
+                        {% endif %}
                     </tr>
                 </thead>
 
@@ -126,9 +134,12 @@
                         {% endif %}
                         
                         <td class="text-right bold">{{ material.subtotal|intcomma }}</td>
+
+                        {% if cost_breakdown.created_by.id == user.id %}
                         <td class="text-right bold">
                             <a href="{% url 'breakdowns:material_breakdown_update' cost_breakdown.id material.id %}"><span class="fa fa-edit small"></span> Edit</a>
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
 
@@ -153,10 +164,12 @@
             <div class="col-sm-8">
                 Labour Direct Cost (B)
             </div><!-- /.col-sm-8 -->
-
+            
+            {% if cost_breakdown.created_by.id == user.id %}
             <div class="col-sm-4 text-right">
                 <a href="#"><span class="fa fa-plus"></span>&nbsp; Add Labour</a>
             </div><!-- /.col-sm-4 -->
+            {% endif %}
         </div><!-- /END .row -->
     </div><!-- /.panel-heading -->
 
@@ -173,7 +186,9 @@
                         <th class="text-right">Hourly Rate (ETB)</th>
                         <th class="text-center">Labour Output</th>
                         <th class="text-right">Sub-Total (ETB)</th>
+                        {% if cost_breakdown.created_by.id == user.id %}
                         <th class="text-right"></th>
+                        {% endif %}
                     </tr>
                 </thead>
 
@@ -187,9 +202,12 @@
                         <td class="text-right">{{ labour.hourly_rate }}</td>
                         <td class="text-center">{{ cost_breakdown.output }}</td>
                         <td class="text-right bold">{{ labour.subtotal|intcomma }}</td>
+
+                        {% if cost_breakdown.created_by.id == user.id %}
                         <td class="text-right bold">
                             <a href="#"><span class="fa fa-edit small"></span> Edit</a>
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
 
@@ -215,9 +233,11 @@
                 Equipment Direct Cost (C)
             </div><!-- /.col-sm-8 -->
 
+            {% if cost_breakdown.created_by.id == user.id %}
             <div class="col-sm-4 text-right">
                 <a href="#"><span class="fa fa-plus"></span>&nbsp; Add Equipment</a>
             </div><!-- /.col-sm-4 -->
+            {% endif %}
         </div><!-- /END .row -->       
     </div><!-- /.panel-heading -->
 
@@ -234,7 +254,9 @@
                         <th class="text-right">Rental Rate (ETB)</th>
                         <th class="text-center">Equipment Output</th>
                         <th class="text-right">Sub-Total (ETB)</th>
+                        {% if cost_breakdown.created_by.id == user.id %}
                         <th class="text-right"></th>
+                        {% endif %}
                     </tr>
                 </thead>
 
@@ -248,9 +270,12 @@
                         <td class="text-right">{{ equipment.rental_rate }}</td>
                         <td class="text-center">{{ cost_breakdown.output }}</td>
                         <td class="text-right bold">{{ equipment.subtotal|intcomma }}</td>
+
+                        {% if cost_breakdown.created_by.id == user.id %}
                         <td class="text-right bold">
                             <a href="#"><span class="fa fa-edit small"></span> Edit</a>
                         </td>
+                        {% endif %}
                     </tr>
                     {% endfor %}
 
