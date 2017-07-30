@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{% if project %}{{ project.full_title }}{% else %}Add Project{% endif %} | Orit</title>
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default panel-detail" id="material-detail-panel">
+    <div class="panel-heading">
+        {% if project %}Update Project{% else %}Add New Project{% endif %}
+    </div><!-- /END .panel-heading -->
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-1 breath-up-md">
+                <form name="project_form" id="create-project-form" class="form-horizontal" method="POST">
+                {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <div class="form-group">
+                        <label for="full-title" class="control-label col-sm-4">Project Title</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="full_title" id="full-title" class="form-control" value="{{ form.full_title.value|default_if_none:'' }}">
+                            {{ form.full_title.errors }}
+                        </div>                       
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="short-title" class="control-label col-sm-4">Short Title</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="short_title" id="short-title" class="form-control" value="{{ form.short_title.value|default_if_none:'' }}">
+                            {{ form.short_title.errors }}
+                        </div>                     
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="location" class="control-label col-sm-4">City</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="city" id="city" class="form-control" value="{{ form.city.value|default_if_none:'' }}">
+                            {{ form.city.errors }}
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="client" class="control-label col-sm-4">Client</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="client" id="client" class="form-control" value="{{ form.client.value|default_if_none:'' }}">
+                            {{ form.client.errors }}
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="consultant" class="control-label col-sm-4">Consultant</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="consultant" id="consultant" class="form-control" value="{{ form.consultant.value|default_if_none:'' }}">
+                            {{ form.consultant.errors }}
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="contractor" class="control-label col-sm-4">Contractor</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="contractor" id="contractor" class="form-control" value="{{ form.contractor.value|default_if_none:'' }}">
+                            {{ form.contractor.errors }}
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group text-right pad-right-sm pad-up-sm">
+                    {% if project %}
+                        <a href="{% url 'breakdowns:project_detail' project.id %}" class="btn btn-default">Cancel</a>&nbsp;
+                    {% else %}
+                        <a href="{% url 'breakdowns:project_list' %}" class="btn btn-default">Cancel</a>&nbsp;
+                    {% endif %}
+                        <input type="submit" class="btn btn-primary" value="Submit">&nbsp;
+                    {% if project %}
+                        <a href="{% url 'breakdowns:project_delete' project.id %}" class="btn btn-danger"><span class="fa fa-trash"></span> Delete</a>
+                    {% endif %}
+                    </div><!-- /.form-group -->
+                </form>
+            </div><!-- /.col-sm-6 -->
+        </div><!-- /.row -->
+    </div><!-- /.panel-body -->
+</div><!-- /END .material-detail-panel -->
+{% endblock content %}

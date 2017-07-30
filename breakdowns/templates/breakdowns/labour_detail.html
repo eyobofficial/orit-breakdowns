@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ labour.full_title|title }} | Orit</title>
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default panel-detail" id="labour-detail-panel">
+    <div class="panel-heading">
+        Labour Detail
+    </div><!-- /END .panel-heading -->
+
+    <div class="panel-body">
+    <div class="row">
+        <div class="col-sm-6 col-sm-offset-1">
+            <dl>
+                <dt>Labour Title</dt>
+                <dd>{{ labour.full_title|title }}</dd>
+
+                <dt>Index Hourly Rate</dt>
+                <dd>{{ labour.hourly_rate }} ETB per Hour</dd>
+
+                <dt>Price Last Updated</dt>
+                <dd>{{ labour.updated_at|date:'M d, Y' }}</dd>
+
+                <dt>Description</dt>
+                <dd>
+                    {% if labour.description %}
+                        {{ labour.description }}
+                    {% else %}
+                        <p class="text-fade"><span class="fa fa-exclamation-circle"></span> No labour description</p>
+                    {% endif %}
+                </dd>
+            </dl>
+        </div>
+    </div><!-- /.row -->
+    </div><!-- /.panel-body -->
+</div><!-- /END .labour-detail-panel -->
+{% endblock content %}

@@ -1,0 +1,761 @@
+@import url("//fonts.googleapis.com/css?family=Open+Sans:300,400,600,700&amp;lang=en");
+/********************************************************************************************************************
+* Portfolio Website For EyobOfficial on Github
+*
+* Title:              Base codeIgniter app for music sites
+* URL:                http://eyobofficial.github.io
+* Owner:              Eyob Tariku
+* Designer/Developer: Eyob Tariku
+* Email:              eyobtariku@gmail.com / eyobofficial@gmail.com
+* Github:             https://github.com/eyobofficial
+* Phone No.:          +251 911 427805
+* Description:
+*
+*********************************************************************************************************************/
+
+/**************** Color Menu ***********************
+	#E7EAEC : Gray ( A bit darker - Used for borders)
+	#efefef : Grey (Slightly lighter - used for backgrounds);
+	#1ab394 : Green (For buttons, labels etc);
+	#F0AD4E : Oragne/Golden (For hover, visited links, labels and btn-warning);
+	#23c6c8 : Bluish (For links, graphs and some labels)
+	#d9534f : Red (For buttons, warnings and labels)
+******************************************************/
+
+/***************************** Helper Classes ****************************/
+.border-green {
+	border: 1px solid green;
+}
+
+
+.border-yellow {
+	border: 1px solid yellow;
+}
+
+
+.border-red {
+	border: 1px solid red;
+}
+
+.border-blue {
+	border: 1px solid blue;
+}
+
+.border-dotted {
+	border: 1px solid #efefef;
+}
+
+.height-xs {
+	min-height: 120px;
+}
+
+
+.height-sm {
+	min-height: 240px;
+}
+
+
+.height-md {
+	min-height: 480px;
+}
+
+
+.height-lg {
+	min-height: 640px;
+}
+
+
+.height-xlg {
+	min-height: 900px;
+}
+
+.text-fade {
+	color: #888;
+}
+
+
+.bold {
+	font-weight: bold !important;
+}
+
+.italic {
+	font-style: italic !important;
+}
+
+.badge-primary {
+	background-color: #1ab394 !important;
+}
+
+.badge-info {
+	background-color: #23c6c8 !important;
+}
+
+.badge-warning {
+	background-color: #F0AD4E !important;
+}
+
+
+.badge-danger {
+	background-color: #d9534f !important;
+}
+
+
+body {
+	font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+	font-size: 13px;
+	line-height: 1.2em;
+	background: #efefef;
+	color: #676a6c;
+}
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 100;
+}
+h1 {
+  font-size: 30px;
+}
+h2 {
+  font-size: 24px;
+}
+h3 {
+  font-size: 16px;
+}
+h4 {
+  font-size: 14px;
+}
+h5 {
+  font-size: 12px;
+}
+h6 {
+  font-size: 10px;
+}
+h3,
+h4,
+h5 {
+  margin-top: 5px;
+  font-weight: 600;
+}
+
+
+table, .table, th, td {
+	font: inherit !important;
+	font-size: 13px !important;
+}
+
+small, .small {
+    font-size: 85%;
+}
+
+
+a, a:visited {
+	text-decoration: none !important;
+	color: #23c6c8 !important;
+}
+
+
+a:hover {
+	color: #F0AD4E!important;
+	transition: all 0.2s;
+}
+
+/************** Default Buttons ********************************/
+
+.btn {
+	font-size: 12px !important;
+}
+
+.btn-success {
+	border-radius: 0 !important;
+	font-weight: bold;
+	background-color: #1ab394;
+	color: #fff;
+}
+
+
+a.btn-primary,
+.btn-primary {
+	border-radius: 2px !important;
+	font-weight: bold;
+	background-color: #1ab394 !important;
+	border: 1px solid #1ab394 !important;
+	color: #fff;
+}
+
+a.btn-primary-o
+.btn-primary-o {
+	border-radius: 2px !important;
+	font-weight: bold;
+	background-color: #1ab394 !important;
+	border: 1px solid #1ab394 !important;
+	color: #fff;
+}
+
+
+.btn-primary:hover {
+	background-color: #fff !important;
+	border: 1px solid #1ab394 !important;
+	color: #1ab394;
+	transition: all 0.4s;
+}
+
+
+.btn-primary-o:hover {
+	background-color: #fff !important;
+	border: 1px solid #1ab394 !important;
+	color: #1ab394;
+	transition: all 0.4s;
+}
+
+
+
+a.btn-warning,
+.btn-warning {
+	border-radius: 2px !important;
+	font-weight: bold;
+	background-color: #F0AD4E !important;
+	border: 1px solid #F0AD4E !important;
+	color: #fff;
+}
+
+
+.btn-warning:hover {
+	background-color: #fff !important;
+	border: 1px solid #F0AD4E !important;
+	color: #F0AD4E;
+	transition: all 0.4s;
+}
+
+
+
+a.btn-info,
+.btn-info {
+	border-radius: 2px !important;
+	font-weight: bold;
+	background-color:  #23c6c8 !important;
+	border: 1px solid  #23c6c8 !important;
+	color: #fff;
+}
+
+
+.btn-info:hover {
+	background-color: #fff !important;
+	border: 1px solid  #23c6c8 !important;
+	color:  #23c6c8;
+	transition: all 0.4s;
+}
+
+
+a.btn-danger, 
+.btn-danger {
+	border-radius: 2px !important;
+	font-weight: bold;
+	background-color:  #d9534f !important;
+	border: 1px solid  #d9534f !important;
+	color: #fff !important;
+}
+
+
+.btn-danger:hover {
+	background-color: #fff !important;
+	border: 1px solid  #d9534f !important;
+	color:  #d9534f !important;
+	transition: all 0.4s;
+}
+
+/*********** Checkbox and Radio Styles *********************/
+
+.square-checkbox {
+	display: inline-block;
+	position: relative;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    width: 22px;
+    height: 22px;
+    border: none;
+    cursor: pointer;
+    padding-left: 0 !important;
+}
+
+
+.square-checkbox input {
+	position: absolute;
+	opacity: 0;
+	z-index: -800;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 4px 0 0;
+}
+
+.square-checkbox ins {
+	position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0px;
+    border: 0px;
+    background: url('../patterns/green.png') no-repeat;
+
+}
+
+
+.square-checkbox-container label {
+	display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    padding-left: 0 !important;
+    font-weight: normal !important;
+}
+
+.square-checkbox-container.disabled label {
+	color: silver;
+}
+
+.square-checkbox-container label:hover ins {
+	background-position: -24px 0;
+}
+
+.square-checkbox input:checked + ins {
+	background-position: -48px 0;
+}
+
+
+/********************** Default Margin & Padding Classes **************************/
+.breath-right-sm {
+	margin-right: 1.2em;
+}
+
+
+.breath-right-md {
+	margin-right: 2em;
+}
+
+.breath-right-lg {
+	margin-right: 2.6em;
+}
+
+
+.breath-left-sm {
+	margin-left: 1.2em;
+}
+
+
+.breath-left-md {
+	margin-left: 2em;
+}
+
+.breath-left-lg {
+	margin-left: 2.6em;
+}
+
+
+
+.breath-down-sm {
+	margin-bottom: 1.2em;
+}
+
+
+.breath-down-md {
+	margin-bottom: 2em;
+}
+
+.breath-down-lg {
+	margin-bottom: 2.6em;
+}
+
+.breath-up-sm {
+	margin-top: 1.2em;
+}
+
+
+.breath-up-md {
+	margin-top: 2em;
+}
+
+
+.breath-up-md {
+	margin-top: 2.6em;
+}
+
+.breath-both-sm {
+	margin-top: 1.2em;
+	margin-bottom: 1.2em;
+}
+
+
+.breath-up-xs {
+	margin-top: 0.6em;
+}
+
+
+.breath-down-xs {
+	margin-bottom: 0.6em;
+}
+
+
+.breath-both-md {
+	margin-top: 2em !important;
+	margin-bottom: 2em;
+}
+
+
+.breath-both-lg {
+	margin-top: 2.6em;
+	margin-bottom: 2.6em;
+}
+
+
+
+.pad-down-sm {
+	padding-bottom: 1.2em;
+}
+
+
+
+.pad-down-md {
+	padding-bottom: 2em;
+}
+
+
+.pad-down-lg {
+	padding-bottom: 2.8em;
+}
+
+
+.pad-up-sm {
+	padding-top: 1.2em;
+}
+
+
+
+.pad-up-md {
+	padding-top: 2em !important;
+}
+
+
+.pad-up-lg {
+	padding-top: 2.8em;
+}
+
+.pad-left-sm {
+	padding-left: 1.2em;
+}
+
+.pad-left-md {
+	padding-left: 2.8em;
+}
+
+.pad-left-lg {
+	padding-left: 4em;
+}
+
+
+.pad-right-sm {
+	padding-right: 1.2em;
+}
+
+.pad-right-md {
+	padding-right: 2.8em;
+}
+
+.pad-right-lg {
+	padding-right: 4em;
+}
+
+
+
+/******************************** Layouts ******************************************/
+#account-wrapper {
+	margin-top: 1.4em;
+}
+
+
+/******************************** General Style ***************************************/
+#menu-col .panel-default {
+	border-radius: 0;
+	border: 0.5px solid #ccc;
+}
+
+
+#content-col {
+	background: #fff;
+	border: 0.5px solid #ccc;
+}
+
+.main-menu, .menu-item {
+	background: #26292E;
+}
+
+
+.menu-item {
+	padding: 0.6em 0.8em;
+	color: #999;
+	font-size: 18px;
+	font-weight: bold;
+	border-bottom: 1px solid #000;
+}
+
+.menu-item:last-of-type {
+	border-bottom: none;
+}
+
+#menu-footer > ul{
+	padding-top: 1.8em;
+	padding-bottom: 1.8em;
+}
+
+#menu-footer li {
+	font-size: 14px;
+}
+
+/**************************** Page Header ****************************/
+#account-header {
+	margin-bottom: 1.8em;
+}
+
+
+#account-brand {
+	color: #676a6c !important;
+}
+
+#account-brand:hover {
+	color: #23c6c8 !important;
+}
+
+/******************************* Navbar Style ***************************/
+.navbar, .navbar-default {
+	background: transparent;
+	border: none;
+	margin-bottom: 0;
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+
+.navbar #menu {
+	padding-left: 0 !important;
+	padding-right: 0 !important;
+}
+
+/****************************** Side Nav Style *************************/
+#side-nav {
+	margin-top: 4em;
+}
+#side-nav li {
+	font-size: 13px;
+	font-weight: bold;
+	margin-bottom: 1.5em;
+}
+
+#side-nav li.active > a {
+	color: #F0AD4E !important;
+}
+
+
+#side-nav ul.secondary-menu {
+	margin-top: 0.6em;
+	padding-left: 1.4em;
+}
+
+#side-nav ul.secondary-menu li {
+	margin-bottom: 0.8em;
+}
+
+#side-nav ul.secondary-menu > li > a {
+	color: #999 !important;
+}
+
+#side-nav ul.secondary-menu li.active > a,
+#side-nav ul.secondary-menu li > a:hover {
+	color: #F0AD4E !important;
+}
+
+
+/********************* Panel-default *********************************/
+.panel-default {
+	border-radius: 5px;
+	border-top: 4px solid #e7eaec;
+}
+
+.panel-default .panel-heading {
+	background: #fff;
+	padding-top: 1.2em;
+	padding-bottom: 1.2em;
+}
+
+.panel {
+	margin-bottom: 2em;
+}
+
+.panel .table-striped th, .panel .table-striped td {
+	text-indent: 8px;
+}
+
+
+/********************* Panel table *****************************************/
+
+.panel-table thead th {
+	border-bottom: 1.4px solid #ccc !important;
+	font-weight: bold !important;
+}
+
+.panel-table tbody td {
+	border-bottom: 1px solid #efefef;
+	padding-top: 1em !important;
+	padding-bottom: 0.8em !important;
+}
+
+.panel-table tbody tr:last-child td {
+	border-bottom: none !important;
+}
+
+.panel-table tr.active td {
+	font-size: 16px !important;
+	font-weight: bold !important;
+	vertical-align: baseline;
+}
+
+.panel-heading {
+	font-weight: bold !important;
+	text-transform: uppercase;
+}
+
+
+.panel-heading a {
+	font-size: 11px !important;
+}
+
+
+
+
+
+/************* search input-group ************************/
+.navbar-form .input-group {
+	width: 400px;
+}
+
+
+.navbar-form {
+	padding-left: 0 !important;
+}
+
+
+.input-group input[type='search']{
+	background-color: #f5f5f5;
+	border: 1px solid silver;
+	color: #333;
+	font-weight: normal;
+}
+
+.input-group .btn {
+	border: 1px solid #1ab394 !important;
+}
+
+
+.input-group button.btn-default{
+	background: #1ab394;
+	color: #fff;
+}
+
+
+/************ panel-heading with search input-group ********/
+.panel-heading-with-search {
+	padding-bottom: 0 !important;
+}
+
+
+/************** FORM STYLES ********************/
+input.form-control, select.form-control {
+	color: inherit;
+	border-radius: 2px !important;
+	border: 1px solid #e5e6e7;
+	font-size: 13px;
+	box-shadow: none !important;
+}
+
+
+input.form-control:focus, select.form-control:focus {
+	border: 1px solid #1ab394 !important;
+}
+
+.form-group label {
+	color: inherit;
+	margin-bottom: 0.6em;
+}
+
+
+input[type='checkbox'] {
+	background-color: #1ab394;
+	color: blue !important;
+	border: 1px solid red !important;
+	padding: 1em;
+	width: 2em;
+}
+
+
+/*********** Checkbox and Radio Styles *********************/
+.square-checkbox {
+	display: inline-block;
+	position: relative;
+    vertical-align: middle;
+    margin: 0;
+    padding: 0;
+    width: 22px;
+    height: 22px;
+    border: none;
+    cursor: pointer;
+}
+
+
+.square-checkbox input {
+	position: absolute;
+	opacity: 0;
+	z-index: -800;
+	box-sizing: border-box;
+	padding: 0;
+	margin: 4px 0 0;
+}
+
+.square-checkbox ins {
+	position: absolute;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0px;
+    border: 0px;
+    background: url('../patterns/green.png') no-repeat;
+
+}
+
+
+.square-checkbox-container label {
+	display: inline-block;
+    max-width: 100%;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.square-checkbox-container.disabled label {
+	color: silver;
+}
+
+.square-checkbox-container label:hover ins {
+	background-position: -24px 0;
+}
+
+.square-checkbox input:checked + ins {
+	background-position: -48px 0;
+}
+
+
+
+
+
+

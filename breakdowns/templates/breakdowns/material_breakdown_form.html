@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title> | Orit</title>
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default panel-detail" id="material-create-panel">
+    <div class="panel-heading">
+       {% if material %}
+       Update {{ material.material.full_title|title }} Material
+       {% else %}
+       Add Material
+       {% endif %}
+    </div><!-- /END .panel-heading -->
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-1">
+                <form method="POST" id="material-form" class="form-horizontal">
+                {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="breakdown" class="col-sm-4 control-label">Cost Breakdown</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="cost_breakdown" id="breakdown" class="form-control" value="{{ cost_breakdown|title|default_if_none:'' }}" readonly>
+                            <div class="errorlist-container">
+                                {{ form.cost_breakdown.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="material" class="col-sm-4 control-label">Material</label>
+                        <div class="col-sm-8">
+                            <select name="material" class="form-control">
+                                {% for material in material_list %}
+                                <option value="{{ material.id }}">{{ material }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <div class="errorlist-container">
+                                {{ form.material.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="unit" class="col-sm-4 control-label">Unit</label>
+                        <div class="col-sm-8">
+                            <select name="unit" class="form-control">
+                                {% for unit in unit_list %}
+                                <option value="{{ unit.id }}">{{ unit.full_title|title}}({% autoescape off %}{{ unit.short_title }}){% endautoescape %}</option>
+                                {% endfor %}
+                            </select>
+
+                            <div class="errorlist-container">
+                                {{ form.unit.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="quantity" class="col-sm-4 control-label">Quantity</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="quantity" id="quantity" class="form-control" value="{{ form.quantity.value|default_if_none:'' }}">
+                            <div class="errorlist-container">
+                                {{ form.quantity.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="rate" class="col-sm-4 control-label">Price</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="rate" id="rate" class="form-control" value="{{ form.rate.value|default_if_none:'' }}">
+                            <div class="errorlist-container">
+                                {{ form.rate.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group breath-up-md text-right pad-right-md">
+                        {% if material %}
+                        <a href="" class="btn btn-danger"><span class="fa fa-trash"></span> DELETE</a>&nbsp;&nbsp;
+                        {% endif %}
+                        <input type="submit" value="SUBMIT" class="btn btn-primary"> 
+                    </div>
+                </form> 
+            </div><!-- /.col-sm-8 -->       
+        </div><!-- /.row -->
+    </div><!-- /.panel-body -->
+</div><!-- /END .material-detail-panel -->
+{% endblock content %}

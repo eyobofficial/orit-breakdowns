@@ -1,0 +1,66 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Projects | Orit</title>
+{% endblock title %}
+
+{% block content %}
+<div class="panel panel-default panel-list" id="project-list-panel">
+    <div class="panel-heading panel-heading-with-search">
+        <div class="row">
+            <div class="col-sm-7 breath-up-xs">
+                Construction Projects
+            </div><!-- /.col-sm-7 -->
+
+            <div class="col-sm-5">
+               <form name="cost_breakdown_search_form" method="GET" id="cost-breakdown-form" class="cost-form">
+                   <div class="form-group">
+                       <div class="input-group input-group-sm inner-search-input-group">
+                           <input type="search" class="form-control" id="cost-breakdown-search-input" name="cost_breakdown_search" placeholder="Search for Project" value="{{ cost_breakdown_search|default_if_none:'' }}">
+                           <span class="input-group-btn">
+                               <button type="submit" class="btn btn-default">
+                                   <span class="fa fa-search"></span>
+                               </button>
+                           </span>
+                       </div><!-- /.input-group -->                                    
+                   </div><!-- /.form-group -->
+            </div><!-- /.col-sm-5 -->
+        </div><!-- /.row -->
+    </div><!-- /.panel-heading -->
+
+    <div class="panel-body">        
+        {% if project_list.count %}
+        <div class="table-responsive">
+            <table class="material-table table panel-table table-hover table-stripped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Project</th>
+                        <th>Client</th>
+                        <th>Consultant</th>
+                        <th>Contractor</th>
+                        <th></th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for project in project_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url 'breakdowns:project_detail' project.id %}">{{ project.full_title }}</a></td>
+                        <td>{{ project.client }}</td>
+                        <td>{{ project.consultant }}</td>
+                        <td>{{ project.contractor }}</td>
+                        <td class="text-right bold"><a href="{% url 'breakdowns:project_update' project.id %}"><span class="fa fa-edit"></span> Edit</a></td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div><!-- /END .table-responsive -->
+        {% else %}
+        <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> You currently have no project</strong></p>
+        {% endif %}
+    </div><!--/.panel-body -->
+</div><!-- /#product-list-panel -->
+{% endblock content %}

@@ -1,0 +1,140 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{% if project %}{{ project.full_title }}{% else %}Add Project{% endif %} | Orit</title>
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default panel-detail" id="material-detail-panel">
+    <div class="panel-heading">
+        {% if project %}Update Project{% else %}Add New Project{% endif %}
+    </div><!-- /END .panel-heading -->
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-1 breath-up-sm">
+                <form name="project_form" id="create-project-form" class="form-horizontal" method="POST">
+                {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    <fieldset id="breakdown-meta">
+                        <legend>Descriptions</legend>
+
+                        <div class="form-group">
+                            <label for="project" class="col-sm-4 control-label">Project</label>
+                            <div class="col-sm-8">
+                                <select name="project" class="form-control">
+                                    {% for project in project_list %}
+                                    <option value="{{ project.id }}">{{ project }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <div class="errorlist-container">
+                                    {{ form.project.errors }}
+                                </div>
+                            </div>
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group">
+                            <label for="catagory" class="col-sm-4 control-label">Catagory</label>
+                            <div class="col-sm-8">
+                                <select name="cost_breakdown_catagory" class="form-control">
+                                    {% for catagory in catagory_list %}
+                                    <option value="{{ catagory.id }}">{{ catagory|title }}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <div class="errorlist-container">
+                                    {{ form.cost_breakdown_catagory.errors }}
+                                </div>
+                            </div>
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group">
+                            <label for="full-title" class="col-sm-4 control-label">Title</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="full_title" id="full-title" class="form-control" value="{{ form.full_title.value|default_if_none:'' }}">
+                                <div class="errorlist-container">
+                                    {{ form.full_title.errors }}
+                                </div>
+                            </div>
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group">
+                            <label for="description" class="col-sm-4 control-label">Summary</label>
+                            <div class="col-sm-8">
+                                <textarea name="description" id="description"class="form-control">{{ form.description.value|default_if_none:'' }}</textarea>
+                                <div class="errorlist-container">
+                                    {{ form.description.errors }}
+                                </div>
+                            </div>
+                        </div><!-- /.form-group -->
+                        
+                    </fieldset>
+
+                    <fieldset id="breakdown-meta">
+                        <legend>Data</legend>
+
+                        <div class="form-group">
+                            <label for="unit" class="col-sm-4 control-label">Unit</label>
+                            <div class="col-sm-8">
+                                <select name="unit" class="form-control">
+                                    {% for unit in unit_list %}
+                                    <option value="{{ unit.id }}">{{ unit.full_title|title}}({% autoescape off %}{{ unit.short_title }}){% endautoescape %}</option>
+                                    {% endfor %}
+                                </select>
+
+                                <div class="errorlist-container">
+                                    {{ form.unit.errors }}
+                                </div>
+                            </div>
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group">
+                            <label for="output" class="col-sm-4 control-label">Output</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="output" id="output" class="form-control" value="{{ form.output.value|default_if_none:'' }}">
+                                <div class="errorlist-container">
+                                    {{ form.output.errors }}
+                                </div>
+                            </div>
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group">
+                            <label for="overhead" class="col-sm-4 control-label">Overhead(%)</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="overhead" id="overhead" class="form-control" value="{{ form.overhead.value|default_if_none:'' }}">
+                                <div class="errorlist-container">
+                                    {{ form.overhead.errors }}
+                                </div>
+                            </div>
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group">
+                            <label for="profit" class="col-sm-4 control-label">Profit(%)</label>
+                            <div class="col-sm-8">
+                                <input type="text" name="profit" id="profit" class="form-control" value="{{ form.profit.value|default_if_none:'' }}">
+                                <div class="errorlist-container">
+                                    {{ form.profit.errors }}
+                                </div>
+                            </div>
+                        </div><!-- /.form-group -->
+                    </fieldset>
+                   
+
+                    <div class="form-group text-right pad-right-sm pad-up-sm">
+                    {% if project %}
+                        <a href="{% url 'breakdowns:project_detail' project.id %}" class="btn btn-default">Cancel</a>&nbsp;
+                    {% else %}
+                        <a href="{% url 'breakdowns:project_list' %}" class="btn btn-default">Cancel</a>&nbsp;
+                    {% endif %}
+                        <input type="submit" class="btn btn-primary" value="Submit">&nbsp;
+                    {% if project %}
+                        <a href="{% url 'breakdowns:project_delete' project.id %}" class="btn btn-danger"><span class="fa fa-trash"></span> Delete</a>
+                    {% endif %}
+                    </div><!-- /.form-group -->
+                </form>
+            </div><!-- /.col-sm-6 -->
+        </div><!-- /.row -->
+    </div><!-- /.panel-body -->
+</div><!-- /END .material-detail-panel -->
+{% endblock content %}

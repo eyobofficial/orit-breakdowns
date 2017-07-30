@@ -1,0 +1,222 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+<title>{{ cost_breakdown.full_title|title }} | Orit</title>
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default panel-detail" id="cost-breakdown-detail-panel">
+    <div class="panel-heading">
+        Cost Breakdown Summary
+    </div><!-- /END .panel-heading -->
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-5 col-sm-offset-1">
+                <dl>
+                    <div class="dl-group">
+                        <dt>Work Item</dt>
+                        <dd>{{ cost_breakdown.full_title }}</dd>
+                    </div><!-- /.dl-group -->
+
+                    <div class="dl-group">
+                        <dt>Quantity</dt>
+                        <dd>1{% autoescape off %}{{ cost_breakdown.unit.short_title }}{% endautoescape %}</dd>
+                    </div><!-- /.dl-group -->
+
+                    <div class="dl-group">
+                        <dt>Description</dt>
+                        {% if cost_breakdown.description %}
+                        <dd>{{ cost_breakdown.description }}</dd>
+                        {% else %}
+                        <dd class="text-fade">(No Description)</dd>
+                        {% endif %}
+                    </div><!-- /.dl-group -->
+                </dl>
+            </div><!-- /.col-sm-6 -->
+
+            <div class="col-sm-5 col-sm-offset-1">
+                <dl>
+                    <div class="dl-group">
+                        <dt>Output</dt>
+                        <dd>{{ cost_breakdown.output }}{% autoescape off %}{{ cost_breakdown.unit.short_title }}{% endautoescape %} per hour</dd>
+                    </div><!-- /.dl-group -->
+
+                    <div class="dl-group">
+                        <dt>Direct Cost (A+B+C)</dt>
+                        <dd>{{ direct_cost|intcomma }} ETB Per 1{% autoescape off %}{{ cost_breakdown.unit.short_title }}{% endautoescape %}</dd>
+                    </div><!-- /.dl-group -->
+
+                    <div class="dl-group">
+                        <dt>Overhead Cost</dt>
+                        <dd>{{ cost_breakdown.overhead }}%</dd>
+                    </div><!-- /.dl-group -->
+
+                    <div class="dl-group">
+                        <dt>Profit Cost</dt>
+                        <dd>{{ cost_breakdown.profit }}%</dd>
+                    </div><!-- /.dl-group -->
+
+                    <div class="dl-group">
+                        <dt class="text-success">Total Cost</dt>
+                        <dd class="text-success bold">{{ total_cost|intcomma }} ETB Per 1{% autoescape off %}{{ cost_breakdown.unit.short_title }}{% endautoescape %}</dd>
+                    </div><!-- /.dl-group -->                 
+                </dl>
+            </div><!-- /.col-sm-6 -->
+        </div>        
+    </div><!-- /.panel-body -->
+</div><!-- /END .cost-breakdown-detail-panel -->
+
+<!-- MATERIAL DIRECT COST LISTS  -->
+<div class="panel panel-default panel-list" id="material-list-panel">
+    <div class="panel-heading">
+        Material Direct Cost (A)
+    </div><!-- /.panel-heading -->
+
+    <div class="panel-body">
+        {% if material_list %}
+        <div class="table-responsive">
+            <table class="material-table table panel-table table-hover table-stripped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Material</th>
+                        <th class="text-center">Unit</th>
+                        <th class="text-right">Quantity</th>
+                        <th class="text-right">Rate (ETB)</th>
+                        <th class="text-right">Sub-Total (ETB)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for material in material_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url 'breakdowns:material_detail' material.id %}">{{ material.material.full_title|capfirst }}</a></td>
+                        <td class="text-center">{% autoescape off %}{{ material.material.unit.short_title }}{% endautoescape %}</td>
+                        <td class="text-right">{{ material.quantity }}</td>
+
+                        {% if material.rate is None %}
+                        <td class="text-right">{{ material.material.rate }}</td>
+                        {% else %}
+                        <td class="text-right">{{ material.rate }}</td>
+                        {% endif %}
+                        
+                        <td class="text-right bold">{{ material.subtotal|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    <tr>
+                        <td colspan="5" class="text-right bold">TOTAL</td>
+                        <td class="text-right bold">{{ material_direct_cost|intcomma }}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div><!-- /END .table-responsive -->
+        {% else %}
+        <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> No material is used for this work item cost breakdown</strong></p>
+        {% endif %}
+    </div><!--/.panel-body -->
+</div><!-- /#material-list-panel -->
+
+<!-- LABOUR DIRECT COST LISTS  -->
+<div class="panel panel-default panel-list" id="labour-list-panel">
+    <div class="panel-heading">
+        Labour Direct Cost (B)
+    </div><!-- /.panel-heading -->
+
+    <div class="panel-body">
+        {% if labour_list %}
+        <div class="table-responsive">
+            <table class="labour-table table panel-table table-hover table-stripped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Labour</th>
+                        <th class="text-center">No.</th>
+                        <th class="text-center">UF</th>
+                        <th class="text-right">Hourly Rate (ETB)</th>
+                        <th class="text-center">Labour Output</th>
+                        <th class="text-right">Sub-Total (ETB)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for labour in labour_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url 'breakdowns:labour_detail' labour.id %}">{{ labour.labour.full_title|capfirst }}</a></td>
+                        <td class="text-center">{{ labour.number }}</td>
+                        <td class="text-center">{{ labour.uf }}</td>
+                        <td class="text-right">{{ labour.hourly_rate }}</td>
+                        <td class="text-center">{{ cost_breakdown.output }}</td>
+                        <td class="text-right bold">{{ labour.subtotal|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    <tr>
+                        <td colspan="6" class="text-right bold">TOTAL</td>
+                        <td class="text-right bold">{{ labour_direct_cost|intcomma }}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div><!-- /END .table-responsive -->
+        {% else %}
+        <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> No labour is used for this work item cost breakdown</strong></p>
+        {% endif %}
+    </div><!--/.panel-body -->
+</div><!-- /#labour-list-panel -->
+
+<!-- LABOUR DIRECT COST LISTS  -->
+<div class="panel panel-default panel-list" id="labour-list-panel">
+    <div class="panel-heading">
+        Equipment Direct Cost (C)
+    </div><!-- /.panel-heading -->
+
+    <div class="panel-body">
+        {% if equipment_list %}
+        <div class="table-responsive">
+            <table class="equipment-table table panel-table table-hover table-stripped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Equipment</th>
+                        <th class="text-center">No.</th>
+                        <th class="text-center">UF</th>
+                        <th class="text-right">Rental Rate (ETB)</th>
+                        <th class="text-center">Equipment Output</th>
+                        <th class="text-right">Sub-Total (ETB)</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for equipment in equipment_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url 'breakdowns:equipment_detail' equipment.id %}">{{ equipment.equipment.full_title|capfirst }}</a></td>
+                        <td class="text-center">{{ equipment.number }}</td>
+                        <td class="text-center">{{ equipment.uf }}</td>
+                        <td class="text-right">{{ equipment.rental_rate }}</td>
+                        <td class="text-center">{{ cost_breakdown.output }}</td>
+                        <td class="text-right bold">{{ equipment.subtotal|intcomma }}</td>
+                    </tr>
+                    {% endfor %}
+
+                    <tr>
+                        <td colspan="6" class="text-right bold">TOTAL</td>
+                        <td class="text-right bold">{{ equipment_direct_cost|intcomma }}</td>
+                    </tr>
+
+                </tbody>
+            </table>
+        </div><!-- /END .table-responsive -->
+        {% else %}
+        <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> No equipment is used for this work item cost breakdown</strong></p>
+        {% endif %}
+    </div><!--/.panel-body -->
+</div><!-- /#labour-list-panel -->
+
+{% endblock content %}
