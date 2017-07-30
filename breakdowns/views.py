@@ -323,14 +323,14 @@ def my_breakdown_list(request):
     
     # Return all cost breakdown objects
     try:
-        cost_breakdown_list = CostBreakdown.objects.filter(created_by=request.user.id)
+        cost_breakdown_list = CostBreakdown.objects.filter(created_by=request.user.id).order_by('-updated_at')
     except CostBreakdown.DoesNotExist:
         raise Http404('page not found')
 
 
     if project is not None:
         project = int(project)
-        cost_breakdown_list = CostBreakdown.objects.filter(created_by=request.user.id).filter(project=project)
+        cost_breakdown_list = CostBreakdown.objects.filter(created_by=request.user.id).filter(project=project).order_by('-updated_at')
 
     if cost_breakdown_search is not None:
         cost_breakdown_list = cost_breakdown_list.filter(created_by=request.user.id).filter(full_title__icontains=cost_breakdown_search)      
@@ -488,7 +488,7 @@ class BreakdownCreate(LoginRequiredMixin, CreateView):
         context['catagory_list'] = CostBreakdownCatagory.objects.all()
         context['unit_list'] = Unit.objects.all()
         context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'Add'
+        context['subpage_name'] = 'add'
         return context
 
 # Create A Material Breakdown View

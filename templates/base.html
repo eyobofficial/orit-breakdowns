@@ -55,18 +55,20 @@
                             </li>
 
                             <li {% if page_name == 'CostBreakdowns' %} class="active" {% endif %}>
-                                <a href="{% url 'breakdowns:cost_breakdown_list' %}"><span class="fa fa-file-o"></span>&nbsp; Cost Breakdowns</a>
+                                <a href="{% url 'breakdowns:my_breakdown_list' %}"><span class="fa fa-file-o"></span>&nbsp; Cost Breakdowns</a>
                                 {% if page_name == 'CostBreakdowns' %}
                                 <ul class="list-unstyled secondary-menu">
-                                    <li {% if subpage_name == 'library' %} class="active" {% endif %}>
-                                        <a href="{% url 'breakdowns:cost_breakdown_list' %}"><span class="fa fa-angle-right"></span>&nbsp; Library</a>
-                                    </li>
-
                                     <li {% if subpage_name == 'mybreakdowns' %} class="active" {% endif %}>
                                         <a href="{% url 'breakdowns:my_breakdown_list' %}"><span class="fa fa-angle-right"></span>&nbsp; My Breakdowns</a>
                                     </li>
-                                  
-                                    <li><a href="{% url 'breakdowns:breakdown_create' %}"><span class="fa fa-angle-right"></span>&nbsp; New</a></li>
+                                    
+                                    <li {% if subpage_name == 'add' %} class="active" {% endif %}>
+                                        <a href="{% url 'breakdowns:breakdown_create' %}"><span class="fa fa-angle-right"></span>&nbsp; Add New</a>
+                                    </li>
+
+                                    <li {% if subpage_name == 'library' %} class="active" {% endif %}>
+                                        <a href="{% url 'breakdowns:cost_breakdown_list' %}"><span class="fa fa-angle-right"></span>&nbsp; Library</a>
+                                    </li>
                                 </ul>
                                 {% endif %}
                             </li>

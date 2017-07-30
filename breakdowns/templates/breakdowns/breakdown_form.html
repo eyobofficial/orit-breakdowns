@@ -1,13 +1,13 @@
 {% extends 'base.html' %}
 
 {% block title %}
-<title>{% if project %}{{ project.full_title }}{% else %}Add Project{% endif %} | Orit</title>
+<title>{% if cost_breakdown %} Update Cost Breakdown {% else %} Create New Cost Breakdown {% endif %} | Orit</title>
 {% endblock %}
 
 {% block content %}
 <div class="panel panel-default panel-detail" id="material-detail-panel">
     <div class="panel-heading">
-        {% if project %}Update Project{% else %}Add New Project{% endif %}
+        {% if cost_breakdown %}Update Breakdown - {{ cost_breakdown.full_title }}{% else %}Create New Breakdown{% endif %}
     </div><!-- /END .panel-heading -->
 
     <div class="panel-body">
