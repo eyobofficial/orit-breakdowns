@@ -167,7 +167,7 @@
             
             {% if cost_breakdown.created_by.id == user.id %}
             <div class="col-sm-4 text-right">
-                <a href="#"><span class="fa fa-plus"></span>&nbsp; Add Labour</a>
+                <a href="{% url 'breakdowns:labour_breakdown_create' cost_breakdown.id %}"><span class="fa fa-plus"></span>&nbsp; Add Labour</a>
             </div><!-- /.col-sm-4 -->
             {% endif %}
         </div><!-- /END .row -->
@@ -205,7 +205,7 @@
 
                         {% if cost_breakdown.created_by.id == user.id %}
                         <td class="text-right bold">
-                            <a href="#"><span class="fa fa-edit small"></span> Edit</a>
+                            <a href="{% url 'breakdowns:labour_breakdown_update' cost_breakdown.id labour.id %}"><span class="fa fa-edit small"></span> Edit</a>
                         </td>
                         {% endif %}
                     </tr>

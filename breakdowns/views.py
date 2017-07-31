@@ -538,8 +538,110 @@ class MaterialBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
     def get_context_data(self, *args, **kwargs):
         context = super(MaterialBreakdownUpdate, self).get_context_data(*args, **kwargs)
         context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        context['material_breakdown'] = MaterialBreakdown.objects.get(pk=self.kwargs['pk'])
         context['material_list'] = Material.objects.all()
         context['unit_list'] = Unit.objects.all()
+        context['page_name'] = 'CostBreakdowns'
+        context['subpage_name'] = 'mybreakdowns'
+        return context
+
+# Delete A Material Breakdown 
+class MaterialBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = MaterialBreakdown
+    template_name = 'breakdowns/material_breakdown_confirm_delete.html'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        material_breakdown = MaterialBreakdown.objects.get(pk=self.kwargs['pk'])
+        return material_breakdown.costbreakdown.id == cost_breakdown.id
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse_lazy('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MaterialBreakdownDelete, self).get_context_data(*args, **kwargs)
+        context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        context['material_breakdown'] = MaterialBreakdown.objects.get(pk=self.kwargs['pk'])
+        context['page_name'] = 'CostBreakdowns'
+        context['subpage_name'] = 'mybreakdowns'
+        return context
+
+# Create A Labour Breakdown View
+class LabourBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = LabourBreakdown
+    fields = ['labour', 'number', 'uf', 'hourly_rate', ]
+    template_name = 'breakdowns/labour_breakdown_form.html'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        return cost_breakdown.created_by.id == self.request.user.id
+
+    def get_success_url(self):
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
+
+    def form_valid(self, form, *args, **kwargs):
+        form.instance.costbreakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        return super(LabourBreakdownCreate, self).form_valid(form, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(LabourBreakdownCreate, self).get_context_data(*args, **kwargs)
+        context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        context['labour_list'] = Labour.objects.all()
+        context['unit_list'] = Unit.objects.all()
+        context['page_name'] = 'CostBreakdowns'
+        context['subpage_name'] = 'mybreakdowns'
+        return context
+
+
+# Update A Labour Breakdown 
+class LabourBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = LabourBreakdown
+    fields = ['labour', 'number', 'uf', 'hourly_rate', ]
+    template_name = 'breakdowns/labour_breakdown_form.html'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        labour_breakdown = LabourBreakdown.objects.get(pk=self.kwargs['pk'])
+        return labour_breakdown.costbreakdown.id == cost_breakdown.id
+
+    def get_success_url(self):
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(LabourBreakdownUpdate, self).get_context_data(*args, **kwargs)
+        context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        context['labour_breakdown'] = LabourBreakdown.objects.get(pk=self.kwargs['pk'])
+        context['labour_list'] = Labour.objects.all()
+        context['unit_list'] = Unit.objects.all()
+        context['page_name'] = 'CostBreakdowns'
+        context['subpage_name'] = 'mybreakdowns'
+        return context
+
+# Delete A Material Breakdown 
+class LabourBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = LabourBreakdown
+    template_name = 'breakdowns/labour_breakdown_confirm_delete.html'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        labour_breakdown = LabourBreakdown.objects.get(pk=self.kwargs['pk'])
+        return labour_breakdown.costbreakdown.id == cost_breakdown.id
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse_lazy('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(LabourBreakdownDelete, self).get_context_data(*args, **kwargs)
+        context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        context['labour_breakdown'] = LabourBreakdown.objects.get(pk=self.kwargs['pk'])
         context['page_name'] = 'CostBreakdowns'
         context['subpage_name'] = 'mybreakdowns'
         return context

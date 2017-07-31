@@ -1,0 +1,19 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ labour_breakdown.labour.full_title }} | Orit</title>
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default panel-detail" id="labour-delete-panel">
+
+    <div class="panel-body text-center breath-both-lg">
+    <p class="text-center">You are about to delete <strong>{{ labour_breakdown.labour.full_title }}</strong> from <strong>{{ cost_breakdown.full_title }} cost breakdown</strong> permanently. Are you sure you want to do that?</p>
+    <form method="POST" class="breath-up-md">
+    {% csrf_token %}
+        <a href="{% url 'breakdowns:labour_breakdown_update' cost_breakdown.id labour_breakdown.id %}" class="btn btn-primary">No, Take me Back</a> &nbsp;
+        <input type="submit" class="btn btn-danger" value="Yes, delete it!">
+    </form>
+    </div><!-- /.panel-body -->
+</div><!-- /END .equipment-detail-panel -->
+{% endblock content %}

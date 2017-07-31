@@ -28,6 +28,17 @@ urlpatterns = [
     # Update a MaterialBreakdown for a Particular Breakdown URL
     url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/material/update/(?P<pk>[0-9]+)/$', views.MaterialBreakdownUpdate.as_view(), name='material_breakdown_update'),
 
+    # Delete a MaterialBreakdown for a Particular Breakdown URL
+    url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/material/delete/(?P<pk>[0-9]+)/$', views.MaterialBreakdownDelete.as_view(), name='material_breakdown_delete'),
+
+    # Create a LabourBreakdown for Breakdown URL
+    url(r'^my-breakdown/(?P<pk>[0-9]+)/labour/add/$', views.LabourBreakdownCreate.as_view(), name='labour_breakdown_create'),
+
+    # Update a LabourBreakdown for a Particular Breakdown URL
+    url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/labour/update/(?P<pk>[0-9]+)/$', views.LabourBreakdownUpdate.as_view(), name='labour_breakdown_update'),
+
+    # Delete a LabourBreakdown for a Particular Breakdown URL
+    url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/labour/delete/(?P<pk>[0-9]+)/$', views.LabourBreakdownDelete.as_view(), name='labour_breakdown_delete'),
 
     # Material List URL
     url(r'^materials/$', views.material_list, name='material_list'),
