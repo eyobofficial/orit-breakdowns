@@ -1,0 +1,100 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>{{ cost_breakdown.full_title }} | Orit</title>
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default panel-detail" id="equipment-create-panel">
+    <div class="panel-heading">
+       {% if equipment_breakdown %}
+       Update {{ equipment_breakdown.equipment.full_title|title }}
+       {% else %}
+       Add Equipment
+       {% endif %}
+    </div><!-- /END .panel-heading -->
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-1">
+                <form method="POST" id="equipment-form" class="form-horizontal">
+                {% csrf_token %}
+
+                    <div class="form-group">
+                        <label for="breakdown" class="col-sm-4 control-label">Cost Breakdown</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="cost_breakdown" id="breakdown" class="form-control" value="{{ cost_breakdown|title|default_if_none:'' }}" readonly>
+                            <div class="errorlist-container">
+                                {{ form.cost_breakdown.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="output" class="col-sm-4 control-label">Output ({% autoescape off %}{{cost_breakdown.unit.short_title }}{% endautoescape %}/hr)</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="output" id="output" class="form-control" value="{{ cost_breakdown.output }}" readonly>
+                            <div class="errorlist-container">
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="equipment" class="col-sm-4 control-label">Equipment</label>
+                        <div class="col-sm-8">
+                            <select name="equipment" class="form-control">
+                                {% for equipment in equipment_list %}
+                                <option {% if equipment_breakdown.equipment.id == equipment.id %} selected="selected" {% endif %}value="{{ equipment.id }}">{{ equipment }}</option>
+                                {% endfor %}
+                            </select>
+
+                            <div class="errorlist-container">
+                                {{ form.equipment.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                
+                    <div class="form-group">
+                        <label for="number" class="col-sm-4 control-label">Number</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="number" id="number" class="form-control" value="{{ form.number.value|default_if_none:'' }}">
+                            <div class="errorlist-container">
+                                {{ form.number.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group">
+                        <label for="uf" class="col-sm-4 control-label">Utilization Factor</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="uf" id="uf" class="form-control" value="{{ form.uf.value|default_if_none:'' }}">
+                            <div class="errorlist-container">
+                                {{ form.uf.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+
+                    <div class="form-group">
+                        <label for="rental_rate" class="col-sm-4 control-label">Rental Rate (ETB)</label>
+                        <div class="col-sm-8">
+                            <input type="text" name="rental_rate" id="rental_rate" class="form-control" value="{{ form.rental_rate.value|default_if_none:'' }}">
+                            <div class="errorlist-container">
+                                {{ form.rental_rate.errors }}
+                            </div>
+                        </div>
+                    </div><!-- /.form-group -->
+
+                    <div class="form-group breath-up-md text-right pad-right-md">
+                        {% if equipment_breakdown %}
+                        <a href="{% url 'breakdowns:equipment_breakdown_delete' cost_breakdown.id equipment_breakdown.id %}" class="btn btn-danger"><span class="fa fa-trash"></span> DELETE</a>&nbsp;&nbsp;
+                        {% endif %}
+                        <input type="submit" value="SUBMIT" class="btn btn-primary"> 
+                    </div>
+                </form> 
+            </div><!-- /.col-sm-8 -->       
+        </div><!-- /.row -->
+    </div><!-- /.panel-body -->
+</div><!-- /END .material-detail-panel -->
+{% endblock content %}

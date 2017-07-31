@@ -40,6 +40,15 @@ urlpatterns = [
     # Delete a LabourBreakdown for a Particular Breakdown URL
     url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/labour/delete/(?P<pk>[0-9]+)/$', views.LabourBreakdownDelete.as_view(), name='labour_breakdown_delete'),
 
+    # Create a EquipmentBreakdown for Breakdown URL
+    url(r'^my-breakdown/(?P<pk>[0-9]+)/equipment/add/$', views.EquipmentBreakdownCreate.as_view(), name='equipment_breakdown_create'),
+
+    # Update a EquipmentBreakdown for a Particular Breakdown URL
+    url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/equipment/update/(?P<pk>[0-9]+)/$', views.EquipmentBreakdownUpdate.as_view(), name='equipment_breakdown_update'),
+
+    # Delete a EquipmentBreakdown for a Particular Breakdown URL
+    url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/equipment/delete/(?P<pk>[0-9]+)/$', views.EquipmentBreakdownDelete.as_view(), name='equipment_breakdown_delete'),
+
     # Material List URL
     url(r'^materials/$', views.material_list, name='material_list'),
 

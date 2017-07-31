@@ -645,3 +645,79 @@ class LabourBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
         context['page_name'] = 'CostBreakdowns'
         context['subpage_name'] = 'mybreakdowns'
         return context
+
+# Create A Equipment Breakdown View
+class EquipmentBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView):
+    model = EquipmentBreakdown
+    fields = ['equipment', 'number', 'uf', 'rental_rate', ]
+    template_name = 'breakdowns/equipment_breakdown_form.html'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        return cost_breakdown.created_by.id == self.request.user.id
+
+    def get_success_url(self):
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
+
+    def form_valid(self, form, *args, **kwargs):
+        form.instance.costbreakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        return super(EquipmentBreakdownCreate, self).form_valid(form, *args, **kwargs)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(EquipmentBreakdownCreate, self).get_context_data(*args, **kwargs)
+        context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        context['equipment_list'] = Equipment.objects.all()
+        context['unit_list'] = Unit.objects.all()
+        context['page_name'] = 'CostBreakdowns'
+        context['subpage_name'] = 'mybreakdowns'
+        return context
+
+# Update A Labour Breakdown 
+class EquipmentBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
+    model = EquipmentBreakdown
+    fields = ['equipment', 'number', 'uf', 'rental_rate', ]
+    template_name = 'breakdowns/equipment_breakdown_form.html'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        equipment_breakdown = EquipmentBreakdown.objects.get(pk=self.kwargs['pk'])
+        return equipment_breakdown.costbreakdown.id == cost_breakdown.id
+
+    def get_success_url(self):
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(EquipmentBreakdownUpdate, self).get_context_data(*args, **kwargs)
+        context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        context['equipment_breakdown'] = EquipmentBreakdown.objects.get(pk=self.kwargs['pk'])
+        context['equipment_list'] = Equipment.objects.all()
+        context['unit_list'] = Unit.objects.all()
+        context['page_name'] = 'CostBreakdowns'
+        context['subpage_name'] = 'mybreakdowns'
+        return context
+
+class EquipmentBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
+    model = EquipmentBreakdown
+    template_name = 'breakdowns/equipment_breakdown_confirm_delete.html'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
+
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        equipment_breakdown = EquipmentBreakdown.objects.get(pk=self.kwargs['pk'])
+        return equipment_breakdown.costbreakdown.id == cost_breakdown.id
+
+    def get_success_url(self, *args, **kwargs):
+        return reverse_lazy('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(EquipmentBreakdownDelete, self).get_context_data(*args, **kwargs)
+        context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        context['equipment_breakdown'] = EquipmentBreakdown.objects.get(pk=self.kwargs['pk'])
+        context['page_name'] = 'CostBreakdowns'
+        context['subpage_name'] = 'mybreakdowns'
+        return context
