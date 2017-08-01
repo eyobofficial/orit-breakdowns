@@ -66,11 +66,13 @@
                                         <a href="{% url 'breakdowns:breakdown_create' %}"><span class="fa fa-angle-right"></span>&nbsp; Add New</a>
                                     </li>
 
-                                    <li {% if subpage_name == 'library' %} class="active" {% endif %}>
-                                        <a href="{% url 'breakdowns:cost_breakdown_list' %}"><span class="fa fa-angle-right"></span>&nbsp; Library</a>
-                                    </li>
                                 </ul>
                                 {% endif %}
+                            </li>
+
+
+                            <li {% if page_name == 'library' %} class="active" {% endif %}>
+                                <a href="{% url 'breakdowns:cost_breakdown_list' %}"><span class="fa fa-archive"></span>&nbsp; Standard Library</a>
                             </li>
 
                             <li {% if page_name == 'Materials' %}class="active"{% endif %}>

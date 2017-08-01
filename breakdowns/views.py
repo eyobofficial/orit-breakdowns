@@ -297,7 +297,7 @@ def cost_breakdown_list(request):
         cost_breakdown_list = cost_breakdown_list.filter(created_by=admin.id).filter(full_title__icontains=cost_breakdown_search)      
 
     cost_breakdown_catagory_list = get_list_or_404(CostBreakdownCatagory)
-    page_name = 'CostBreakdowns'
+    page_name = 'library'
     template_name = 'breakdowns/cost_breakdown_list.html'
 
     return render(request, template_name, context={
@@ -436,8 +436,7 @@ class CostBreakdownDetail(LoginRequiredMixin, UserPassesTestMixin, generic.Detai
         context['material_list'] = material_list
         context['labour_list'] = labour_list
         context['equipment_list'] = equipment_list
-        context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'library'
+        context['page_name'] = 'library'
         return context
 
 # Create a new cost breakdown view
