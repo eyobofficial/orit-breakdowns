@@ -364,47 +364,56 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
     def get_context_data(self, *args, **kwargs):
         context = super(MyBreakdownDetail, self).get_context_data(*args, **kwargs)
         
-        # Inititalize direct material cost subtotal for this cost breakdown
-        material_direct_cost = 0
+        # Material List
         material_list = MaterialBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('rate')
-        
-        # Calculate material cost subtotal
-        for material in material_list:
-            material_direct_cost += material.subtotal()
 
-        # Initialize direct labour costs
-        labour_direct_cost = 0
+        # Labour List
         labour_list = LabourBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-hourly_rate')
 
-        # Calculate labour cost subtotal
-        for labour in labour_list:
-            labour_direct_cost += labour.subtotal()
-
-        # Initialize direct equipment cost subtotal
-        equipment_direct_cost = 0
-
-        # Calculate equipment cost subtotal
+        # Equipment List
         equipment_list = EquipmentBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-rental_rate')
-        for equipment in equipment_list:
-            equipment_direct_cost += equipment.subtotal()
 
-        # Calculate total direct cost
-        direct_cost = material_direct_cost + labour_direct_cost + equipment_direct_cost
+        if not context['cost_breakdown'].is_library:
+            material_direct_cost = 0
+                        
+            # Calculate material cost subtotal
+            for material in material_list:
+                material_direct_cost += material.subtotal()
 
-        # Calculate indirect cost
-        indirect_cost = round(direct_cost * (context['cost_breakdown'].profit + context['cost_breakdown'].overhead) / 100, 2)
+            context['material_direct_cost'] = material_direct_cost
 
-        # Calculate total cost ( after profit and overhead)
-        total_cost = direct_cost + indirect_cost 
+            # Initialize direct labour costs
+            labour_direct_cost = 0
+           
+            # Calculate labour cost subtotal
+            for labour in labour_list:
+                labour_direct_cost += labour.subtotal()
 
-        context['material_list'] = material_list
-        context['material_direct_cost'] = material_direct_cost
+            context['labour_direct_cost'] = labour_direct_cost
+
+            # Initialize direct equipment cost subtotal
+            equipment_direct_cost = 0
+
+            # Calculate equipment cost subtotal       
+            for equipment in equipment_list:
+                equipment_direct_cost += equipment.subtotal()
+
+            context['equipment_direct_cost'] = equipment_direct_cost
+
+            # Calculate total direct cost
+            direct_cost = material_direct_cost + labour_direct_cost + equipment_direct_cost
+            context['direct_cost'] = direct_cost
+
+            # Calculate indirect cost
+            indirect_cost = round(direct_cost * (context['cost_breakdown'].profit + context['cost_breakdown'].overhead) / 100, 2)
+
+            # Calculate total cost ( after profit and overhead)
+            total_cost = direct_cost + indirect_cost
+            context['total_cost'] = total_cost
+
+        context['material_list'] = material_list        
         context['labour_list'] = labour_list
-        context['labour_direct_cost'] = labour_direct_cost
-        context['equipment_list'] = equipment_list
-        context['equipment_direct_cost'] = equipment_direct_cost
-        context['direct_cost'] = direct_cost
-        context['total_cost'] = total_cost
+        context['equipment_list'] = equipment_list     
         context['page_name'] = 'CostBreakdowns'
         context['subpage_name'] = 'mybreakdowns'
         return context
@@ -528,7 +537,10 @@ class MaterialBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteVie
         return material_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self, *args, **kwargs):
-        return reverse_lazy('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
+        if cost_breakdown.is_library:
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
         context = super(MaterialBreakdownDelete, self).get_context_data(*args, **kwargs)

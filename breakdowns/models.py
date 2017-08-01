@@ -215,8 +215,8 @@ class CostBreakdown(models.Model):
     full_title = models.CharField(max_length=120, help_text='Work Item Title')
     description = models.TextField(null=True, blank=True)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, help_text='Measurement unit for the cost breakdown')
-    overhead = models.DecimalField(max_digits=6, decimal_places=2, help_text='Overhead percentage in decimal number. Example: 0.15 for 15%')
-    profit = models.DecimalField(max_digits=6, decimal_places=2, help_text='Profit percentage in decimal number. Example: 0.2 for 20%')
+    overhead = models.DecimalField(null=True, blank=True, max_digits=6, decimal_places=2, help_text='Overhead percentage in decimal number. Example: 0.15 for 15%')
+    profit = models.DecimalField(null=True, blank=True, max_digits=6, decimal_places=2, help_text='Profit percentage in decimal number. Example: 0.2 for 20%')
     output = models.DecimalField(max_digits=3, decimal_places=2, help_text='Labour and equipment output')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     updated_at = models.DateField(auto_now=True)
@@ -230,6 +230,16 @@ class CostBreakdown(models.Model):
                 ('download_cost_breakdown', 'Can download cost breakdown in excel and pdf'),
                 ('manage_cost_breakdown', 'Can manage own cost breakdown'),
             )
+
+    @property 
+    def is_library(self):
+        """
+        Return True if cost breakdown is created by a staff user. 
+        Return False if not
+        """
+        if self.created_by.is_staff:
+            return True
+        return False
 
     def get_absolute_url(self):
         """

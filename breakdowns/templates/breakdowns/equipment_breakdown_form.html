@@ -75,7 +75,7 @@
                         </div>
                     </div><!-- /.form-group -->
 
-
+                    {% if not cost_breakdown.is_library %}
                     <div class="form-group">
                         <label for="rental_rate" class="col-sm-4 control-label">Rental Rate (ETB)</label>
                         <div class="col-sm-8">
@@ -85,6 +85,7 @@
                             </div>
                         </div>
                     </div><!-- /.form-group -->
+                    {% endif %}
 
                     <div class="form-group breath-up-md text-right pad-right-md">
                         {% if equipment_breakdown %}

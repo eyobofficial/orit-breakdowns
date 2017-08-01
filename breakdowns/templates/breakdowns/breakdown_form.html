@@ -98,7 +98,8 @@
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
-
+                        
+                        {% if not user.is_staff %}
                         <div class="form-group">
                             <label for="overhead" class="col-sm-4 control-label">Overhead(%)</label>
                             <div class="col-sm-8">
@@ -118,6 +119,7 @@
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
+                        {% endif %}
                     </fieldset>
                    
 
