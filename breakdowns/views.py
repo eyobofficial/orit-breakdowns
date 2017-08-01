@@ -413,7 +413,7 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
 class CostBreakdownDetail(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
     model = CostBreakdown
     context_object_name = 'cost_breakdown'
-    template_name = 'breakdowns/breakdown_detail.html'
+    template_name = 'breakdowns/library_detail.html'
     login_url = 'breakdowns:cost_breakdown_list'
     redirect_field_name = None
 
@@ -424,47 +424,18 @@ class CostBreakdownDetail(LoginRequiredMixin, UserPassesTestMixin, generic.Detai
     def get_context_data(self, *args, **kwargs):
         context = super(CostBreakdownDetail, self).get_context_data(*args, **kwargs)
         
-        # Inititalize direct material cost subtotal for this cost breakdown
-        material_direct_cost = 0
+        # Material List
         material_list = MaterialBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('rate')
-        
-        # Calculate material cost subtotal
-        for material in material_list:
-            material_direct_cost += material.subtotal()
 
-        # Initialize direct labour costs
-        labour_direct_cost = 0
+        # Labours List
         labour_list = LabourBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-hourly_rate')
 
-        # Calculate labour cost subtotal
-        for labour in labour_list:
-            labour_direct_cost += labour.subtotal()
-
-        # Initialize direct equipment cost subtotal
-        equipment_direct_cost = 0
-
-        # Calculate equipment cost subtotal
+        # Equipement
         equipment_list = EquipmentBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-rental_rate')
-        for equipment in equipment_list:
-            equipment_direct_cost += equipment.subtotal()
-
-        # Calculate total direct cost
-        direct_cost = material_direct_cost + labour_direct_cost + equipment_direct_cost
-
-        # Calculate indirect cost
-        indirect_cost = round(direct_cost * (context['cost_breakdown'].profit + context['cost_breakdown'].overhead) / 100, 2)
-
-        # Calculate total cost ( after profit and overhead)
-        total_cost = direct_cost + indirect_cost 
 
         context['material_list'] = material_list
-        context['material_direct_cost'] = material_direct_cost
         context['labour_list'] = labour_list
-        context['labour_direct_cost'] = labour_direct_cost
         context['equipment_list'] = equipment_list
-        context['equipment_direct_cost'] = equipment_direct_cost
-        context['direct_cost'] = direct_cost
-        context['total_cost'] = total_cost
         context['page_name'] = 'CostBreakdowns'
         context['subpage_name'] = 'library'
         return context
