@@ -335,7 +335,11 @@ def my_breakdown_list(request):
     if cost_breakdown_search is not None:
         cost_breakdown_list = cost_breakdown_list.filter(created_by=request.user.id).filter(full_title__icontains=cost_breakdown_search)      
 
-    project_list = get_list_or_404(Project)
+    try:
+        project_list = Project.objects.filter(created_by=request.user.id)
+    except:
+        project_list = []
+        
     page_name = 'CostBreakdowns'
     template_name = 'breakdowns/my_breakdown_list.html'
 
@@ -461,12 +465,21 @@ class BreakdownCreate(LoginRequiredMixin, CreateView):
         form.instance.created_by = self.request.user
         return super(BreakdownCreate, self).form_valid(form, *args, **kwargs)
 
+    def get_success_url(self, *args, **kwargs):
+        if self.object.is_library:
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.object.id})
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.object.id})
+
     def get_context_data(self, *args, **kwargs):
         context = super(BreakdownCreate, self).get_context_data(*args, **kwargs)
         context['project_list'] = Project.objects.filter(created_by=self.request.user.id)
         context['catagory_list'] = CostBreakdownCatagory.objects.all()
         context['unit_list'] = Unit.objects.all()
-        context['page_name'] = 'CostBreakdowns'
+
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            context['page_name'] = 'library'
+        else:
+            context['page_name'] = 'CostBreakdowns'
         context['subpage_name'] = 'add'
         return context
 

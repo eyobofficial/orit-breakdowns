@@ -229,6 +229,7 @@ class CostBreakdown(models.Model):
         permissions = (
                 ('download_cost_breakdown', 'Can download cost breakdown in excel and pdf'),
                 ('manage_cost_breakdown', 'Can manage own cost breakdown'),
+                ('manage_library', 'Can manage standard cost breakdown library'),
             )
 
     @property 

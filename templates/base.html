@@ -53,7 +53,8 @@
                             <li {% if page_name == 'Index' %} class="active" {% endif %}>
                                 <a href="{% url 'breakdowns:index' %}"><span class="fa fa-home"></span>&nbsp; Home</a>
                             </li>
-
+                            
+                            {% if not perms.breakdowns.manage_library %}
                             <li {% if page_name == 'CostBreakdowns' %} class="active" {% endif %}>
                                 <a href="{% url 'breakdowns:my_breakdown_list' %}"><span class="fa fa-file-o"></span>&nbsp; Cost Breakdowns</a>
                                 {% if page_name == 'CostBreakdowns' %}
@@ -69,10 +70,18 @@
                                 </ul>
                                 {% endif %}
                             </li>
+                            {% endif %}
 
 
                             <li {% if page_name == 'library' %} class="active" {% endif %}>
                                 <a href="{% url 'breakdowns:cost_breakdown_list' %}"><span class="fa fa-archive"></span>&nbsp; Standard Library</a>
+                                {% if page_name == 'library' and perms.breakdowns.manage_library %}
+                                <ul class="list-unstyled secondary-menu">
+                                    <li {% if subpage_name == 'add' %} class="active" {% endif %}>
+                                        <a href="{% url 'breakdowns:breakdown_create' %}"><span class="fa fa-angle-right"></span>&nbsp; Add New</a>
+                                    </li>
+                                </ul>
+                                {% endif %}
                             </li>
 
                             <li {% if page_name == 'Materials' %}class="active"{% endif %}>
