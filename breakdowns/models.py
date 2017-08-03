@@ -31,11 +31,29 @@ class Project(models.Model):
         """
         return self.full_title
 
+class UnitCatagory(models.Model):
+    """
+    Model representing catagory of measurement units
+    Example: length, mass, area, volume
+    """
+    full_title = models.CharField(max_length=60)
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['full_title']
+
+    def __str__(self):
+        """
+        Returns string representation of unit catagory model
+        """
+        return self.full_title
+
 class Unit(models.Model):
     """
     Model representing material measurement units
     Example: Kg, m, litre, m2, m3, ml, quital etc
     """
+    catagory = models.ForeignKey(UnitCatagory, on_delete=models.CASCADE, help_text='Type of measurement units')
     full_title = models.CharField(max_length=60)
     short_title = models.CharField(max_length=30, null=True, blank=True)
 
