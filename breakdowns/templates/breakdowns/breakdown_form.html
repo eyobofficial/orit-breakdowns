@@ -18,7 +18,8 @@
                     {{ form.non_field_errors }}
                     <fieldset id="breakdown-meta">
                         <legend>Descriptions</legend>
-
+                        
+                        {% if not perms.breakdowns.manage_library %}
                         <div class="form-group">
                             <label for="project" class="col-sm-4 control-label">Project</label>
                             <div class="col-sm-8">
@@ -33,6 +34,7 @@
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
+                        {% endif %}
 
                         <div class="form-group">
                             <label for="catagory" class="col-sm-4 control-label">Catagory</label>
@@ -75,7 +77,7 @@
                         <legend>Data</legend>
 
                         <div class="form-group">
-                            <label for="unit" class="col-sm-4 control-label">Unit</label>
+                            <label for="unit" class="col-sm-4 control-label">Measurment Unit</label>
                             <div class="col-sm-8">
                                 <select name="unit" class="form-control">
                                     {% for unit in unit_list %}
@@ -90,7 +92,7 @@
                         </div><!-- /.form-group -->
 
                         <div class="form-group">
-                            <label for="output" class="col-sm-4 control-label">Output</label>
+                            <label for="output" class="col-sm-4 control-label">Hourly Output</label>
                             <div class="col-sm-8">
                                 <input type="text" name="output" id="output" class="form-control" value="{{ form.output.value|default_if_none:'' }}">
                                 <div class="errorlist-container">
