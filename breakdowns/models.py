@@ -2,6 +2,22 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 
+class City(models.Model):
+    """
+    Model represents city
+    """
+    full_title = models.CharField(max_length=60, help_text='The full official city title')
+    short_title = models.CharField(max_length=30, null=True, blank=True, help_text='Short unofficial city title. (Optional)')
+
+    class Meta:
+        ordering = ['full_title']
+
+    def __str__(self):
+        """
+        Returns string representation of the city model
+        """
+        return self.full_title
+
 class Project(models.Model):
     """
     Model represents a construction project
