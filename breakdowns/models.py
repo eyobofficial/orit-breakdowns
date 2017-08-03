@@ -112,6 +112,44 @@ class Material(models.Model):
         """
         return self.full_title
 
+class MaterialSupplier(models.Model):
+    """
+    Model representing a material supplier company
+    """
+    full_title = models.CharField(max_length=120, help_text='Material Supplier Company name')
+    short_title = models.CharField(max_length=30, null=True, blank=True, help_text='Material Supplier short(unofficial) name')
+    description = models.TextField(null=True, blank=True,help_text='Short summary about the supplier')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+
+    class Meta:
+        ordering = ['full_title']
+
+    def __str__(self):
+        """
+        Returns string representation of the Material supplier model
+        """
+        return self.full_title
+
+class MaterialPrice(models.Model):
+    """
+    Model represents material rate per a particular supplier
+    """
+    material = models.ForeignKey(Material, on_delete=models.CASCADE)
+    supplier = models.ForeignKey(MaterialSupplier, on_delete=models.CASCADE)
+    price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, help_text="Supplier's current material price(Before TAX)")
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    updated_at = models.DateField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['material', '-price']
+
+    def __str__(self):
+        """
+        Returns string representation of the Material price model
+        """
+        return 'Material: {}, Supplier: {}, Price: {}'.format(self.material.full_title, self.supplier.full_title, self.price)
+
 class LabourCatagory(models.Model):
     """
     Model Representing a labour type catagory
