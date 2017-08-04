@@ -107,14 +107,13 @@ class Material(models.Model):
     material_catagory = models.ForeignKey(MaterialCatagory, null=True, on_delete=models.SET_NULL)
     full_title = models.CharField(max_length=120)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-    rate = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, default=0, help_text='Current market unit rate of material')
     description = models.TextField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
-        ordering = ['full_title', '-rate', '-updated_at']
+        ordering = ['full_title', '-updated_at']
 
     def get_absolute_url(self):
         """
@@ -186,19 +185,18 @@ class LabourCatagory(models.Model):
 
 class Labour(models.Model):
     """
-    Model representing a labour trade
+    Model representing a particular labour trade
     """
     labour_catagory = models.ForeignKey(LabourCatagory, null=True, on_delete=models.SET_NULL)
     full_title = models.CharField(max_length=120)
     short_title = models.CharField(max_length=30, null=True, blank=True)
-    hourly_rate = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, default=0, help_text='Current hourly rate')
     description = models.TextField(null=True, blank=True)
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
-        ordering = ['full_title', '-hourly_rate', '-updated_at']
+        ordering = ['full_title', '-updated_at']
 
     def get_absolute_url(self):
         """
@@ -211,6 +209,27 @@ class Labour(models.Model):
         Returns string representation of the Labour model
         """
         return self.full_title
+
+class LabourPrice(models.Model):
+    """
+    Model representing a labour price per city
+    """
+    labour = models.ForeignKey(Labour, on_delete=models.CASCADE)
+    city = models.ForeignKey(City, on_delete=models.CASCADE)
+    hourly_rate = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True, default=0, help_text='Current hourly rate')
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    updated_at = models.DateField(auto_now=True)
+    created_at = models.DateField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['city', 'hourly_rate']
+
+    def __str__(self):
+        """
+        Returns string representation of the Labour model
+        """
+        return 'Labour: {}, City: {}, Rate:{}'.format(self.labour.full_title, self.city.full_title, self.hourly_rate)
+
 
 class EquipmentCatagory(models.Model):
     """
@@ -258,6 +277,7 @@ class Equipment(models.Model):
         Returns string representation of the Equipment model
         """
         return self.full_title
+
 
 class CostBreakdownCatagory(models.Model):
     """
