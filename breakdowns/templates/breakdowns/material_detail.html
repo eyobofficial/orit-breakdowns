@@ -1,7 +1,8 @@
 {% extends 'base.html' %}
+{% load humanize %}
 
 {% block title %}
-<title>{{ material.full_title|title }} | Orit</title>
+<title>{{ material.full_title }} | Orit</title>
 {% endblock %}
 
 {% block content %}
@@ -15,13 +16,7 @@
         <div class="col-sm-6 col-sm-offset-1">
             <dl>
                 <dt>Material</dt>
-                <dd>{{ material.full_title|title }}</dd>
-
-                <dt>Price</dt>
-                <dd>{{ material.rate }} ETB per {% autoescape off %}{{ material.unit.short_title }}{% endautoescape %}</dd>
-
-                <dt>Price Last Updated</dt>
-                <dd>{{ material.updated_at|date:'M d, Y' }}</dd>
+                <dd>{{ material.full_title }}</dd>
 
                 <dt>Description</dt>
                 <dd>
@@ -36,4 +31,41 @@
     </div><!-- /.row -->
     </div><!-- /.panel-body -->
 </div><!-- /END .material-detail-panel -->
+
+<div class="panel panel-default panel-list" id="material-price-list-panel">
+    <div class="panel-heading">
+        Material Price List
+    </div>
+
+    <div class="panel-body">
+       {% if price_list %}
+       <div class="table-responsive">
+           <table class="material-price-table table panel-table table-hover table-stripped">
+               <thead>
+                   <tr>
+                       <th>#</th>
+                       <th>Supplier</th>
+                       <th class="text-right">Price ({% autoescape off %}{{ material.unit.short_title }}{% endautoescape %} Per ETB)</th>
+                       <th class="text-center">Last Updated</th>
+                   </tr>
+               </thead>
+
+               <tbody>
+                   {% for price in price_list %}
+                   <tr>
+                       <td>{{ forloop.counter }}</td>
+                       <td>{{ price.supplier.full_title }}</td>
+                       <td class="text-right">{{ price.price|intcomma }}</td>
+                       <td class="text-center text-danger bold">{{ price.updated_at|date:'M d, Y' }}</td>
+                   </tr>
+                   {% endfor %}
+
+               </tbody>
+           </table>
+       </div><!-- /END .table-responsive -->
+       {% else %}
+       <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> There are currently no materials in the database</strong></p>
+       {% endif %}
+    </div>
+</div>
 {% endblock content %}

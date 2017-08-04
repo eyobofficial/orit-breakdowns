@@ -1,11 +1,14 @@
 from django.contrib import admin
-from .models import Project, Unit, MaterialCatagory, Material, LabourCatagory, Labour, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
+from .models import Project,UnitCatagory, Unit, MaterialCatagory, Material, MaterialSupplier, MaterialPrice, LabourCatagory, Labour, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
 # Register Project model
 @admin.register(Project)
 class ProjectAdmin(admin.ModelAdmin):
     list_display = ('id', 'full_title', 'client', 'consultant', 'contractor', 'created_by')
     list_filter = ('created_by', 'contractor', 'consultant', 'client')
+
+# Register UnitCatagory Model
+admin.site.register(UnitCatagory)
 
 # Register Unit model
 @admin.register(Unit)
@@ -20,6 +23,18 @@ admin.site.register(MaterialCatagory)
 class MaterialAdmin(admin.ModelAdmin):
     list_display = ('full_title', 'updated_at', 'created_by')
     list_filter = ('created_by', 'updated_at')
+
+# Register MaterialSupplier
+@admin.register(MaterialSupplier)
+class MaterialSupplierAdmin(admin.ModelAdmin):
+    list_display = ('full_title', 'short_title', 'created_by')
+    list_filter = ('created_by',)
+
+# Register MaterialPrice
+@admin.register(MaterialPrice)
+class MaterialPriceAdmin(admin.ModelAdmin):
+    list_display = ('material', 'supplier', 'price')
+    list_filter = ('material', 'supplier', 'price')
 
 # Register LabourCatagory
 admin.site.register(LabourCatagory)

@@ -8,7 +8,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from .forms import SignupForm
-from .models import Project, Unit, MaterialCatagory, Material, LabourCatagory, Labour, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
+from .models import Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
 # Create your views here.
 @login_required
@@ -96,6 +96,7 @@ class MaterialDetail(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(MaterialDetail, self).get_context_data(*args, **kwargs)
+        context['price_list'] = MaterialPrice.objects.filter(material_id=self.kwargs['pk'])
         context['page_name'] = 'Materials'
         return context
 
