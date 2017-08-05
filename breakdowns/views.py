@@ -8,7 +8,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from .forms import SignupForm
-from .models import Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
+from .models import City, Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
 # Create your views here.
 @login_required
@@ -106,39 +106,35 @@ def labour_list(request):
     """
     Returns labour list 
     """
-    try:
-        labour_catagory = int(request.GET.get('labour_catagory'))
-    except:
-        labour_catagory = None
     labour_search = request.GET.get('labour_search')
 
-    # Admin User
-    admin = User.objects.get(pk=1)
-    
-    # Return all labour objects
     try:
-        labour_list = Labour.objects.filter(created_by=admin.id)
-    except Labour.DoesNotExist:
-        raise Http404('page not found')
+        labour_city = int(request.GET['city'])
+    except:
+        default_city = City.objects.get(full_title='Addis Ababa')
+        labour_city = default_city.id
 
-
-    if labour_catagory is not None:
-        labour_catagory = int(labour_catagory)
-        labour_list = Labour.objects.filter(labour_catagory=labour_catagory)
+    labour_price_list = LabourPrice.objects.filter(city=labour_city)
 
     if labour_search is not None:
-        labour_list = labour_list.filter(full_title__icontains=labour_search)      
+        labour_list = []
+        for labour_price in labour_price_list:
+            if str(labour_search) in str(labour_price.labour.full_title):
+                labour_list.append(labour_price)
+    else:
+        labour_list = list(labour_price_list)
 
-    labour_catagory_list = get_list_or_404(LabourCatagory)
+
+    city_list = get_list_or_404(City)
     page_name = 'Labours'
     template_name = 'breakdowns/labour_list.html'
 
     return render(request, template_name, context={
-            'labour_list': labour_list,
-            'labour_catagory_list': labour_catagory_list,
+            'labour_price_list': labour_list,
+            'city_list': city_list,
             'page_name': page_name,
             'labour_search': labour_search,
-            'labour_catagory': labour_catagory,
+            'labour_city': labour_city,
         })
 
 # Labour Detail View

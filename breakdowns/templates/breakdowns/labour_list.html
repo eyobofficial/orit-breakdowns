@@ -34,11 +34,10 @@
             <div class="row">
                 <div class="col-sm-4">
                         <div class="form-group">
-                            <label for="labour-catagory-select">Select Catagory</label>
-                            <select name="labour_catagory" id="labour-catagory-select" class="form-control catagory-selector">
-                                <option {% if labour_catagory is None %} selected="selected"{% endif %}>All</option>
-                                {% for catagory in labour_catagory_list %}
-                                <option value="{{ catagory.id }}" {% if labour_catagory == catagory.id %} selected="selected"{% endif %}>{{ catagory.full_title|title }}</option>
+                            <label for="labour-catagory-select">Select City</label>
+                            <select name="city" id="labour-city-select" class="form-control catagory-selector">
+                                {% for city in city_list %}
+                                <option value="{{ city.id }}" {% if labour_city == city.id %} selected="selected" {% endif %}>{{ city.full_title|title }}</option>
                                 {% endfor %}
                             </select>
                         </div><!-- /.form-group -->
@@ -47,7 +46,7 @@
             </div><!-- /.row -->
         </div><!-- /.catagory-selector-container -->
         
-        {% if labour_list %}
+        {% if labour_price_list %}
         <div class="table-responsive">
             <table class="labour-table table panel-table table-hover table-stripped">
                 <thead>
@@ -55,19 +54,21 @@
                         <th>#</th>
                         <th>Labours</th>
                         <th>Catagory</th>
+                        <th>City/Town</th>
                         <th class="text-right">Index Hourly Rate (ETB)</th>
                         <th class="text-center">Last Updated</th>
                     </tr>
                 </thead>
 
                 <tbody>
-                    {% for labour in labour_list %}
+                    {% for labour_price in labour_price_list %}
                     <tr>
                         <td>{{ forloop.counter }}</td>
-                        <td><a href="{% url 'breakdowns:labour_detail' labour.id %}">{{ labour.full_title|capfirst }}</a></td>
-                        <td>{{ labour.labour_catagory.full_title|capfirst }}</td>
-                        <td class="text-right">{{ labour.hourly_rate|intcomma }}</td>
-                        <td class="text-center text-danger bold">{{ labour.updated_at|date:'M d, Y' }}</td>
+                        <td><a href="#">{{ labour_price.labour.full_title|capfirst }}</a></td>
+                        <td>{{ labour_price.labour.labour_catagory.full_title|capfirst }}</td>
+                        <td>{{ labour_price.city.full_title|title }}</td>
+                        <td class="text-right">{{ labour_price.hourly_rate|intcomma }}</td>
+                        <td class="text-center text-danger bold">{{ labour_price.updated_at|date:'M d, Y' }}</td>
                     </tr>
                     {% endfor %}
 

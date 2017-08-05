@@ -1,5 +1,8 @@
 from django.contrib import admin
-from .models import Project,UnitCatagory, Unit, MaterialCatagory, Material, MaterialSupplier, MaterialPrice, LabourCatagory, Labour, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
+from .models import City, Project,UnitCatagory, Unit, MaterialCatagory, Material, MaterialSupplier, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
+
+# Register City
+admin.site.register(City)
 
 # Register Project model
 @admin.register(Project)
@@ -44,6 +47,12 @@ admin.site.register(LabourCatagory)
 class LabourAdmin(admin.ModelAdmin):
     list_display = ('full_title', 'short_title', 'updated_at', 'created_by')
     list_filter = ('created_by', 'updated_at')
+
+# Register LabourPrice model
+@admin.register(LabourPrice)
+class LabourPriceAdmin(admin.ModelAdmin):
+    list_display = ('labour', 'city', 'hourly_rate')
+    list_filter = ('labour', 'city')
 
 # Register EquipmentCatagory
 admin.site.register(EquipmentCatagory)

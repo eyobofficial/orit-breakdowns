@@ -196,7 +196,7 @@ class Labour(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
-        ordering = ['full_title', '-updated_at']
+        ordering = ['labour_catagory', '-updated_at']
 
     def get_absolute_url(self):
         """
@@ -222,7 +222,7 @@ class LabourPrice(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
-        ordering = ['city', 'hourly_rate']
+        ordering = ['city', '-hourly_rate']
 
     def __str__(self):
         """

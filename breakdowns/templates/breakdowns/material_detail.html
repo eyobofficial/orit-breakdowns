@@ -44,7 +44,7 @@
                <thead>
                    <tr>
                        <th>#</th>
-                       <th>Supplier</th>
+                       <th>Material Supplier</th>
                        <th class="text-right">Price ({% autoescape off %}{{ material.unit.short_title }}{% endautoescape %} Per ETB)</th>
                        <th class="text-center">Last Updated</th>
                    </tr>
@@ -54,7 +54,7 @@
                    {% for price in price_list %}
                    <tr>
                        <td>{{ forloop.counter }}</td>
-                       <td>{{ price.supplier.full_title }}</td>
+                       <td><a href="#">{{ price.supplier.full_title }}</a></td>
                        <td class="text-right">{{ price.price|intcomma }}</td>
                        <td class="text-center text-danger bold">{{ price.updated_at|date:'M d, Y' }}</td>
                    </tr>
