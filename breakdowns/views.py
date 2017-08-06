@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, get_list_or_404
-from django.http import Http404
+from django.http import Http404, HttpResponse
 from django.views import generic
 from django.urls import reverse_lazy, reverse
 from django.views.generic.edit import FormView, CreateView, UpdateView, DeleteView
@@ -7,6 +7,8 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
+from django.conf import settings
+import openpyxl
 from .forms import SignupForm
 from .models import City, Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
@@ -361,6 +363,28 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
     def test_func(self, *args, **kwargs):
         cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
         return cost_breakdown.created_by.id == self.request.user.id
+
+    def get(self, *args, **kwargs):
+        if self.request.GET.get('excel'):
+            # Get context object
+            self.object = self.get_object()
+
+            # Import Excel Template
+            excel_template_path = settings.MEDIA_ROOT + 'Template_working.xlsx'
+            wb = openpyxl.load_workbook(excel_template_path)
+            ws = wb.get_sheet_by_name('breakdown')
+
+            # Add breakdown data to excel
+            ws['C1'].value = self.object.project.full_title
+            ws['C2'].value = self.object.full_title
+
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=mydata.xlsx'
+
+            wb.save(response)
+            return response
+        return super(MyBreakdownDetail, self).get(*args, **kwargs)
+
 
     def get_context_data(self, *args, **kwargs):
         context = super(MyBreakdownDetail, self).get_context_data(*args, **kwargs)

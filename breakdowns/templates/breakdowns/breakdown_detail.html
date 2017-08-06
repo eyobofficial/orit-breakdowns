@@ -6,6 +6,12 @@
 {% endblock %}
 
 {% block content %}
+<div class="text-right">
+    <form action="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}" method="GET">
+        <input type="hidden" name="excel" value="1">
+        <button type="submit" class="btn btn-primary btn-sm"><span class="fa fa-table"></span>&nbsp; Excel</button>
+    </form>
+</div>
 <div class="panel panel-default panel-detail" id="cost-breakdown-detail-panel">
     <div class="panel-heading">
         <div class="row">
