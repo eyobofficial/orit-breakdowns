@@ -66,7 +66,7 @@
                         <td>{{ forloop.counter }}</td>
                         <td><a href="{% url 'breakdowns:material_detail' material.id %}">{{ material.full_title|capfirst }}</a></td>
                         <td>{{ material.material_catagory.full_title|capfirst }}</td>
-                        <td class="text-center">{% autoescape off %}{{ material.unit.short_title }}{% endautoescape %}</td>
+                        <td class="text-center">{% autoescape off %}{{ material.unit.html_title }}{% endautoescape %}</td>
                         <td class="text-center text-danger bold">{{ material.updated_at|date:'M d, Y' }}</td>
                     </tr>
                     {% endfor %}

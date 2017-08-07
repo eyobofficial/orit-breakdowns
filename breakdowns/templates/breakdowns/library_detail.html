@@ -45,12 +45,12 @@
                 <dl>
                     <div class="dl-group">
                         <dt>Quantity</dt>
-                        <dd>1{% autoescape off %}{{ cost_breakdown.unit.short_title }}{% endautoescape %}</dd>
+                        <dd>1{% autoescape off %}{{ cost_breakdown.unit.html_title }}{% endautoescape %}</dd>
                     </div><!-- /.dl-group -->
 
                     <div class="dl-group">
                         <dt>Output</dt>
-                        <dd>{{ cost_breakdown.output }}{% autoescape off %}{{ cost_breakdown.unit.short_title }}{% endautoescape %} per hour</dd>
+                        <dd>{{ cost_breakdown.output }}{% autoescape off %}{{ cost_breakdown.unit.html_title }}{% endautoescape %} per hour</dd>
                     </div><!-- /.dl-group -->
                 </dl>
             </div><!-- /.col-sm-6 -->
@@ -95,7 +95,7 @@
                     <tr>
                         <td>{{ forloop.counter }}</td>
                         <td><a href="{% url 'breakdowns:material_detail' material.id %}">{{ material.material.full_title|capfirst }}</a></td>
-                        <td>{% autoescape off %}{{ material.unit.short_title }}{% endautoescape %}</td>
+                        <td>{% autoescape off %}{{ material.unit.html_title }}{% endautoescape %}</td>
 
                         <td class="text-right">{{ material.quantity|intcomma }}</td>
 

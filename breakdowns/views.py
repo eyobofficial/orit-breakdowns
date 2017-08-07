@@ -369,17 +369,39 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
             # Get context object
             self.object = self.get_object()
 
+            # Get Material, Labour and Equipment list
+            material_list = list(MaterialBreakdown.objects.filter(costbreakdown_id=self.object.id).order_by('-rate'))
+            labour_list = list(LabourBreakdown.objects.filter(costbreakdown_id=self.object.id).order_by('-hourly_rate'))
+            equipment_list = list(EquipmentBreakdown.objects.filter(costbreakdown_id=self.object.id).order_by('-rental_rate'))
+
+            row_count = max(len(material_list), len(labour_list), len(equipment_list))
+
             # Import Excel Template
-            excel_template_path = settings.MEDIA_ROOT + 'Template_working.xlsx'
+            if row_count <= 8:
+                excel_template_path = settings.MEDIA_ROOT + 'Template_working.xlsx'
+            elif row_count > 8 and row_count <= 12:
+                pass
+            else:
+                pass
+            
             wb = openpyxl.load_workbook(excel_template_path)
             ws = wb.get_sheet_by_name('breakdown')
 
             # Add breakdown data to excel
             ws['C1'].value = self.object.project.full_title
             ws['C2'].value = self.object.full_title
+            
+            material_row_count = 7 # Material Excel Row Starts at B7 row
+            for mb in enumerate(material_list, start=1):
+                ws['A{}'.format(material_row_count)].value = mb[0]
+                ws['B{}'.format(material_row_count)].value = mb[1].material.full_title 
+                ws['C{}'.format(material_row_count)].value = mb[1].unit.short_title
+                ws['D{}'.format(material_row_count)].value = mb[1].quantity
+                ws['E{}'.format(material_row_count)].value = mb[1].rate
+                material_row_count += 1
 
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            response['Content-Disposition'] = 'attachment; filename=mydata.xlsx'
+            response['Content-Disposition'] = 'attachment; filename=cost_breakdown_{}.xlsx'.format(self.object.id)
 
             wb.save(response)
             return response

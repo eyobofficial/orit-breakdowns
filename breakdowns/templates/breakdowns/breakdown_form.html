@@ -81,7 +81,7 @@
                             <div class="col-sm-8">
                                 <select name="unit" class="form-control">
                                     {% for unit in unit_list %}
-                                    <option value="{{ unit.id }}">{{ unit.full_title|title}}({% autoescape off %}{{ unit.short_title }}){% endautoescape %}</option>
+                                    <option value="{{ unit.id }}">{{ unit.full_title|title}}({% autoescape off %}{{ unit.html_title }}){% endautoescape %}</option>
                                     {% endfor %}
                                 </select>
 
