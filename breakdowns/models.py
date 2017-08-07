@@ -71,7 +71,8 @@ class Unit(models.Model):
     """
     catagory = models.ForeignKey(UnitCatagory, on_delete=models.CASCADE, help_text='Type of measurement units')
     full_title = models.CharField(max_length=60)
-    short_title = models.CharField(max_length=30, null=True, blank=True)
+    short_title = models.CharField(max_length=10)
+    html_title = models.CharField(max_length=30, null=True, blank=True, help_text='Unit with superscript tags. Eg. m3, m2...')
 
     class Meta:
         ordering = ['full_title']
