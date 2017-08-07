@@ -8,6 +8,7 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.conf import settings
+from datetime import date
 import openpyxl
 from .forms import SignupForm
 from .models import City, Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
@@ -377,28 +378,63 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
             row_count = max(len(material_list), len(labour_list), len(equipment_list))
 
             # Import Excel Template
-            if row_count <= 8:
-                excel_template_path = settings.MEDIA_ROOT + 'Template_working.xlsx'
-            elif row_count > 8 and row_count <= 12:
+            if row_count <= 14:
+                excel_template_path = settings.MEDIA_ROOT + 'Template_sm.xlsx'
+            elif row_count > 14 and row_count <= 18:
                 pass
             else:
                 pass
             
             wb = openpyxl.load_workbook(excel_template_path)
+            wb.template = True
             ws = wb.get_sheet_by_name('breakdown')
 
-            # Add breakdown data to excel
-            ws['C1'].value = self.object.project.full_title
-            ws['C2'].value = self.object.full_title
-            
-            material_row_count = 7 # Material Excel Row Starts at B7 row
-            for mb in enumerate(material_list, start=1):
-                ws['A{}'.format(material_row_count)].value = mb[0]
-                ws['B{}'.format(material_row_count)].value = mb[1].material.full_title 
-                ws['C{}'.format(material_row_count)].value = mb[1].unit.short_title
-                ws['D{}'.format(material_row_count)].value = mb[1].quantity
-                ws['E{}'.format(material_row_count)].value = mb[1].rate
-                material_row_count += 1
+            # Add General breakdown data to excel
+            ws['D1'].value = self.object.project.full_title
+            ws['D2'].value = self.object.project.client
+            ws['D3'].value = self.object.project.consultant
+            ws['D4'].value = self.object.project.contractor
+            ws['D6'].value = self.object.full_title
+            ws['P1'].value = self.object.project.city
+            # ws['P2'].value = self.
+
+            # Add Material Breakdown data to excel
+            if len(material_list) > 0:
+                mb_row_count = 13 # Material Excel Row Starts at 7 row
+
+                for mb in enumerate(material_list, start=1):
+                    ws['A{}'.format(mb_row_count)].value = mb[0]
+                    ws['B{}'.format(mb_row_count)].value = mb[1].material.full_title 
+                    ws['C{}'.format(mb_row_count)].value = mb[1].unit.short_title
+                    ws['D{}'.format(mb_row_count)].value = mb[1].quantity
+                    ws['E{}'.format(mb_row_count)].value = mb[1].rate
+                    mb_row_count += 1
+
+            # Add Labour Breakdown data to excel
+            if len(labour_list) > 0:
+                lb_row_count = 13 # Labour Excel Row Starts at 7 row
+
+                ws['L32'].value = self.object.output
+
+                for lb in enumerate(labour_list, start=1):
+                    ws['H{}'.format(lb_row_count)].value = lb[1].labour.full_title 
+                    ws['I{}'.format(lb_row_count)].value = lb[1].number
+                    ws['J{}'.format(lb_row_count)].value = lb[1].uf
+                    ws['E{}'.format(lb_row_count)].value = lb[1].hourly_rate
+                    lb_row_count += 1
+
+            # Add Equipement Breakdown data to excel
+            if len(equipment_list) > 0:
+                eb_row_count = 13 # Equipement Excel Row Starts at 7 row
+
+                ws['R32'].value = self.object.output
+
+                for eb in enumerate(equipment_list, start=1):
+                    ws['N{}'.format(eb_row_count)].value = eb[1].equipment.full_title 
+                    ws['O{}'.format(eb_row_count)].value = eb[1].number
+                    ws['P{}'.format(eb_row_count)].value = eb[1].uf
+                    ws['Q{}'.format(eb_row_count)].value = eb[1].rental_rate
+                    eb_row_count += 1
 
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             response['Content-Disposition'] = 'attachment; filename=cost_breakdown_{}.xlsx'.format(self.object.id)
