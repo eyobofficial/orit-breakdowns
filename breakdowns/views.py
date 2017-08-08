@@ -10,6 +10,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMix
 from django.conf import settings
 from datetime import date
 import openpyxl
+from xlrd import open_workbook
+from xlwt import Workbook
+from xlutils.copy import copy
 from .forms import SignupForm
 from .models import City, Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
@@ -366,6 +369,33 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
         return cost_breakdown.created_by.id == self.request.user.id
 
     def get(self, *args, **kwargs):
+        if self.request.GET.get('excel'):
+            # Get context object
+            self.object = self.get_object()
+
+            # Get Material, Labour and Equipment list
+            material_list = list(MaterialBreakdown.objects.filter(costbreakdown_id=self.object.id).order_by('-rate'))
+            labour_list = list(LabourBreakdown.objects.filter(costbreakdown_id=self.object.id).order_by('-hourly_rate'))
+            equipment_list = list(EquipmentBreakdown.objects.filter(costbreakdown_id=self.object.id).order_by('-rental_rate'))
+
+            row_count = max(len(material_list), len(labour_list), len(equipment_list))
+
+            excel_template_path = settings.MEDIA_ROOT + 'Template_sm_3.xls'
+
+            rb = open_workbook(excel_template_path, formatting_info=True)
+            wb = copy(rb)
+
+            s = wb.get_sheet(0)
+            s.write(15,1,'Eyobas ksdljsldfjsljdf')
+            
+            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+            response['Content-Disposition'] = 'attachment; filename=test_breakdown_{}.xls'.format(self.object.id)
+
+            wb.save(response)
+            return response
+        return super(MyBreakdownDetail, self).get(*args, **kwargs)
+
+    def xget(self, *args, **kwargs):
         if self.request.GET.get('excel'):
             # Get context object
             self.object = self.get_object()

@@ -39,6 +39,9 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django.contrib.humanize',
     'openpyxl',
+    'xlrd',
+    'xlwt',
+    'xlutils',
     'breakdowns',
 ]
 
