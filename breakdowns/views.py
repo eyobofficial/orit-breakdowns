@@ -11,7 +11,7 @@ from django.conf import settings
 from datetime import date
 import openpyxl
 from xlrd import open_workbook
-from xlwt import Workbook, easyxf
+from xlwt import Workbook, easyxf, Formula
 from xlutils.copy import copy
 from .forms import SignupForm
 from .models import City, Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
@@ -413,7 +413,7 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
 
             # Import Excel Template
             if row_count <= 14:
-                excel_template_path = settings.MEDIA_ROOT + 'Template_sm_3.xls'
+                excel_template_path = settings.MEDIA_ROOT + 'blank_template_sm_2.xls'
             elif row_count > 14 and row_count <= 18:
                 pass
             else:
@@ -422,22 +422,30 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
             rb = open_workbook(excel_template_path, formatting_info=True)
             wb = copy(rb)
             ws = wb.get_sheet(0)
-
-            style_left = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz left;')
-            style_center = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz center;')
-            style_right = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz right;')
-            style_left_bold = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz left; font: bold on;')
-            style_center_bold = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz center; font: bold on;')
-            style_right_bold = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz right; font: bold on;')
-            style_center_shade = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz center; pattern: pattern solid, fore_colour yellow;')
+            
+            style_default = easyxf('font: name Courier New, height 180;')
+            style_default_center_bold = easyxf('font: name Courier New, height 180, bold on; align: horiz center')
+            style_left = easyxf('font: name Courier New, height 180; borders: left thin, right thin, top thin, bottom thin; align: horiz left;')
+            style_center = easyxf('font: name Courier New, height 180; borders: left thin, right thin, top thin, bottom thin; align: horiz center;')
+            style_right = easyxf('font: name Courier New, height 180; borders: left thin, right thin, top thin, bottom thin; align: horiz right;')
+            style_left_bold = easyxf('font: name Courier New, height 180; borders: left thin, right thin, top thin, bottom thin; align: horiz left; font: bold on;')
+            style_center_bold = easyxf('font: name Courier New, height 180, bold on; borders: left thin, right thin, top thin, bottom thin; align: horiz center;')
+            style_right_bold = easyxf('font: name Courier New, height 180, bold on; borders: left thin, right thin, top thin, bottom thin; align: horiz right;')
+            style_center_shade = easyxf('font: name Courier New, height 180; borders: left thin, right thin, top thin, bottom thin; align: horiz center; pattern: pattern solid, fore_colour yellow;')
+            style_percent = easyxf(num_format_str='0.00%')
 
             # Add General breakdown data to excel
-            ws.write(0, 3, self.object.project.full_title, style_left)
-            ws.write(1, 3, self.object.project.client, style_left)
-            ws.write(2, 3, self.object.project.consultant, style_left)
-            ws.write(3, 3, self.object.project.contractor, style_left)
-            ws.write(5, 3, self.object.full_title, style_left)
+            ws.write(0, 3, self.object.project.full_title, style_default)
+            ws.write(1, 3, self.object.project.client, style_default)
+            ws.write(2, 3, self.object.project.consultant, style_default)
+            ws.write(3, 3, self.object.project.contractor, style_default)
+            ws.write(5, 3, self.object.full_title, style_default)
             ws.write(0, 15, self.object.project.city, style_center_shade)
+            # ws.write(1, 15, self.object.created_at, style_center_shade)
+            ws.write(39, 2, self.request.user.get_full_name(), style_default)
+            ws.write(35, 16, self.object.overhead/100, style_percent)
+            ws.write(36, 16, self.object.profit/100, style_percent)
+            ws.write(37, 16, self.object.unit.short_title, style_default_center_bold)
 
             # Add Material Breakdown data to excel
             if len(material_list) > 0:
@@ -449,7 +457,12 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
                     ws.write(mb_row_count, 2, mb.unit.short_title, style_center)
                     ws.write(mb_row_count, 3, mb.quantity, style_right)
                     ws.write(mb_row_count, 4, mb.rate, style_right)
+                    ws.write(mb_row_count, 5, Formula("D{}*E{}".format(mb_row_count + 1, mb_row_count + 1)), style_right)
                     mb_row_count += 1
+
+                # Material Subtotal
+                ws.write(28, 5, Formula("SUM(F13:F26)"), style_right)
+                ws.write(32, 5, Formula("F29"), style_right)
 
             # Add Labour Breakdown data to excel
             if len(labour_list) > 0:
@@ -461,7 +474,15 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
                     ws.write(lb_row_count, 8, lb.number, style_center)
                     ws.write(lb_row_count, 9, lb.uf, style_center)
                     ws.write(lb_row_count, 10, lb.hourly_rate, style_right)
+                    ws.write(lb_row_count, 11, Formula("I{}*J{}*K{}".format(lb_row_count + 1, lb_row_count + 1, lb_row_count + 1)), style_right)
                     lb_row_count += 1
+
+                # Labour Subtotal
+                ws.write(28, 11, Formula("ROUND(SUM(L13:L26),2)"), style_right)
+                ws.write(32, 11, Formula("L29/L32"), style_right)
+            else:
+                # Labour Subtotal
+                ws.write(32, 11, 0.0, style_right)
 
             # Add Equipement Breakdown data to excel
             if len(equipment_list) > 0:
@@ -473,7 +494,27 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
                     ws.write(eb_row_count, 14, eb.number, style_center)
                     ws.write(eb_row_count, 15, eb.uf, style_center)
                     ws.write(eb_row_count, 16, eb.rental_rate, style_right)
+                    ws.write(eb_row_count, 17, Formula("O{}*P{}*Q{}".format(eb_row_count + 1, eb_row_count + 1, eb_row_count + 1)), style_right)
                     eb_row_count += 1
+
+                # Equipment Subtotal
+                ws.write(28, 17, Formula("ROUND(SUM(R13:R26),2)"), style_right)
+                ws.write(32, 17, Formula("R29/R32"), style_right)
+            else:
+                # Equipment Subtotal
+                ws.write(32, 17, 0.0, style_right)
+
+            # Direct Cost
+            ws.write(34, 17, Formula("SUM(F33+L33+R33)"), style_right)
+
+            # Overhead Cost
+            ws.write(35, 17, Formula("ROUND(R35*Q36, 2)"), style_right)
+
+            # Profit Cost
+            ws.write(36, 17, Formula("ROUND(R35*Q37,2)"), style_right)
+
+            # Total Cost
+            ws.write(37, 17, Formula("SUM(R35+R36+R37)"), style_right_bold)
 
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             response['Content-Disposition'] = 'attachment; filename=cost_breakdown_{}.xlsx'.format(self.object.id)
