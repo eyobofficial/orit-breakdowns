@@ -11,7 +11,7 @@ from django.conf import settings
 from datetime import date
 import openpyxl
 from xlrd import open_workbook
-from xlwt import Workbook
+from xlwt import Workbook, easyxf
 from xlutils.copy import copy
 from .forms import SignupForm
 from .models import City, Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
@@ -368,7 +368,7 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
         cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
         return cost_breakdown.created_by.id == self.request.user.id
 
-    def get(self, *args, **kwargs):
+    def xget(self, *args, **kwargs):
         if self.request.GET.get('excel'):
             # Get context object
             self.object = self.get_object()
@@ -386,7 +386,11 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
             wb = copy(rb)
 
             s = wb.get_sheet(0)
-            s.write(15,1,'Eyobas ksdljsldfjsljdf')
+            style_left = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz left;')
+            style_center = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz center;')
+            style_right = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz right;')
+            style_right_bold = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz right; font: bold on;')
+            s.write(14,9,1,style_right_bold)
             
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
             response['Content-Disposition'] = 'attachment; filename=test_breakdown_{}.xls'.format(self.object.id)
@@ -395,7 +399,7 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
             return response
         return super(MyBreakdownDetail, self).get(*args, **kwargs)
 
-    def xget(self, *args, **kwargs):
+    def get(self, *args, **kwargs):
         if self.request.GET.get('excel'):
             # Get context object
             self.object = self.get_object()
@@ -409,61 +413,66 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
 
             # Import Excel Template
             if row_count <= 14:
-                excel_template_path = settings.MEDIA_ROOT + 'Template_sm.xlsx'
+                excel_template_path = settings.MEDIA_ROOT + 'Template_sm_3.xls'
             elif row_count > 14 and row_count <= 18:
                 pass
             else:
                 pass
             
-            wb = openpyxl.load_workbook(excel_template_path)
-            wb.template = True
-            ws = wb.get_sheet_by_name('breakdown')
+            rb = open_workbook(excel_template_path, formatting_info=True)
+            wb = copy(rb)
+            ws = wb.get_sheet(0)
+
+            style_left = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz left;')
+            style_center = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz center;')
+            style_right = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz right;')
+            style_left_bold = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz left; font: bold on;')
+            style_center_bold = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz center; font: bold on;')
+            style_right_bold = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz right; font: bold on;')
+            style_center_shade = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz center; pattern: pattern solid, fore_colour yellow;')
 
             # Add General breakdown data to excel
-            ws['D1'].value = self.object.project.full_title
-            ws['D2'].value = self.object.project.client
-            ws['D3'].value = self.object.project.consultant
-            ws['D4'].value = self.object.project.contractor
-            ws['D6'].value = self.object.full_title
-            ws['P1'].value = self.object.project.city
-            # ws['P2'].value = self.
+            ws.write(0, 3, self.object.project.full_title, style_left)
+            ws.write(1, 3, self.object.project.client, style_left)
+            ws.write(2, 3, self.object.project.consultant, style_left)
+            ws.write(3, 3, self.object.project.contractor, style_left)
+            ws.write(5, 3, self.object.full_title, style_left)
+            ws.write(0, 15, self.object.project.city, style_center_shade)
 
             # Add Material Breakdown data to excel
             if len(material_list) > 0:
-                mb_row_count = 13 # Material Excel Row Starts at 7 row
+                mb_row_count = 12 # Material Excel Row Starts at 7 row
 
-                for mb in enumerate(material_list, start=1):
-                    ws['A{}'.format(mb_row_count)].value = mb[0]
-                    ws['B{}'.format(mb_row_count)].value = mb[1].material.full_title 
-                    ws['C{}'.format(mb_row_count)].value = mb[1].unit.short_title
-                    ws['D{}'.format(mb_row_count)].value = mb[1].quantity
-                    ws['E{}'.format(mb_row_count)].value = mb[1].rate
+                for i, mb in enumerate(material_list, start=1):
+                    ws.write(mb_row_count, 0, i, style_center)
+                    ws.write(mb_row_count, 1, mb.material.full_title, style_left)
+                    ws.write(mb_row_count, 2, mb.unit.short_title, style_center)
+                    ws.write(mb_row_count, 3, mb.quantity, style_right)
+                    ws.write(mb_row_count, 4, mb.rate, style_right)
                     mb_row_count += 1
 
             # Add Labour Breakdown data to excel
             if len(labour_list) > 0:
-                lb_row_count = 13 # Labour Excel Row Starts at 7 row
+                lb_row_count = 12 # Labour Excel Row Starts at 7 row
+                ws.write(31, 11, self.object.output, style_right)
 
-                ws['L32'].value = self.object.output
-
-                for lb in enumerate(labour_list, start=1):
-                    ws['H{}'.format(lb_row_count)].value = lb[1].labour.full_title 
-                    ws['I{}'.format(lb_row_count)].value = lb[1].number
-                    ws['J{}'.format(lb_row_count)].value = lb[1].uf
-                    ws['E{}'.format(lb_row_count)].value = lb[1].hourly_rate
+                for i, lb in enumerate(labour_list, start=1):
+                    ws.write(lb_row_count, 7, lb.labour.full_title, style_left)
+                    ws.write(lb_row_count, 8, lb.number, style_center)
+                    ws.write(lb_row_count, 9, lb.uf, style_center)
+                    ws.write(lb_row_count, 10, lb.hourly_rate, style_right)
                     lb_row_count += 1
 
             # Add Equipement Breakdown data to excel
             if len(equipment_list) > 0:
-                eb_row_count = 13 # Equipement Excel Row Starts at 7 row
+                eb_row_count = 12 # Equipement Excel Row Starts at 7 row
+                ws.write(31, 17, self.object.output, style_right)
 
-                ws['R32'].value = self.object.output
-
-                for eb in enumerate(equipment_list, start=1):
-                    ws['N{}'.format(eb_row_count)].value = eb[1].equipment.full_title 
-                    ws['O{}'.format(eb_row_count)].value = eb[1].number
-                    ws['P{}'.format(eb_row_count)].value = eb[1].uf
-                    ws['Q{}'.format(eb_row_count)].value = eb[1].rental_rate
+                for i, eb in enumerate(equipment_list, start=1):
+                    ws.write(eb_row_count, 13, eb.equipment.full_title, style_left)
+                    ws.write(eb_row_count, 14, eb.number, style_center)
+                    ws.write(eb_row_count, 15, eb.uf, style_center)
+                    ws.write(eb_row_count, 16, eb.rental_rate, style_right)
                     eb_row_count += 1
 
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
