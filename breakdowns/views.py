@@ -517,7 +517,7 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
             ws.write(37, 17, Formula("SUM(R35+R36+R37)"), style_right_bold)
 
             response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            response['Content-Disposition'] = 'attachment; filename=cost_breakdown_{}.xlsx'.format(self.object.id)
+            response['Content-Disposition'] = 'attachment; filename=cost_breakdown_{}.xls'.format(self.object.id)
 
             wb.save(response)
             return response
