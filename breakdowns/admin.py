@@ -1,6 +1,10 @@
 from django.contrib import admin
 from .models import City, Project,UnitCatagory, Unit, MaterialCatagory, Material, MaterialSupplier, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
+# Customize admin site header and title
+admin.site.site_header = 'Orit-Breakdowns Admin'
+admin.site.site_title = 'Orit Breakdowns Admin'
+
 # Register City
 admin.site.register(City)
 
