@@ -1,0 +1,207 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    
+    <!-- PAGE TITLE -->
+    {% block title %}
+    <title>Orit Cost Breakdowns</title>
+    {% endblock title %}
+
+    <meta name="author" content="Eyob Tariku <eyobtariku@gmail.com>">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+     
+     <!-- PAGE DESCRIPTION -->
+    {% block description %}
+    <meta name="description" content="">
+    {% endblock description %}
+
+    <!-- BOOTSTRAP -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/bootstrap.min.css' %}">
+
+    <!-- FONT-AWESOME -->
+    <link rel="stylesheet" type="text/css" href="{% static 'css/font-awesome.min.css' %}">
+    
+    <!-- DEFAULT STYLE -->
+    {% block default_style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/default.css' %}">
+    {% endblock default_style %}
+
+    <!-- MAIN STYLE -->
+    {% block main_style %}
+    <link rel="stylesheet" type="text/css" href="{% static 'css/main.css' %}">
+    {% endblock main_style %}
+
+    <!-- PAGE STYLE -->
+    {% block page_style %}
+    {% endblock page_style %}
+</head>
+<body>
+    {% block wrapper %}
+    <div id="account-wrapper">
+        <div class="container">
+            <div class="row">
+                
+                <!-- PAGE NAVIGATION -->
+                {% block page_nav %}
+                <nav class="col-sm-2 account-left-col height-lg" id="account-nav">
+                    <h2 class="h4"><a id="account-brand" href="{% url 'breakdowns:index' %}"><span class="fa fa-fire"></span> Orit Breakdowns</a></h2>
+
+                    <nav id="side-nav">
+                        <ul class="list-unstyled">
+                            <li {% if page_name == 'Index' %} class="active" {% endif %}>
+                                <a href="{% url 'breakdowns:index' %}"><span class="fa fa-home"></span>&nbsp; Home</a>
+                            </li>
+                            
+                            {% if not perms.breakdowns.manage_library %}
+                            <li {% if page_name == 'CostBreakdowns' %} class="active" {% endif %}>
+                                <a href="{% url 'breakdowns:my_breakdown_list' %}"><span class="fa fa-file-o"></span>&nbsp; Cost Breakdowns</a>
+                                {% if page_name == 'CostBreakdowns' %}
+                                <ul class="list-unstyled secondary-menu">
+                                    <li {% if subpage_name == 'mybreakdowns' %} class="active" {% endif %}>
+                                        <a href="{% url 'breakdowns:my_breakdown_list' %}"><span class="fa fa-angle-right"></span>&nbsp; My Breakdowns</a>
+                                    </li>
+                                    
+                                    <li {% if subpage_name == 'add' %} class="active" {% endif %}>
+                                        <a href="{% url 'breakdowns:breakdown_create' %}"><span class="fa fa-angle-right"></span>&nbsp; Add New</a>
+                                    </li>
+
+                                </ul>
+                                {% endif %}
+                            </li>
+                            {% endif %}
+
+
+                            <li {% if page_name == 'library' %} class="active" {% endif %}>
+                                <a href="{% url 'breakdowns:cost_breakdown_list' %}"><span class="fa fa-archive"></span>&nbsp; Standard Library</a>
+                                {% if page_name == 'library' and perms.breakdowns.manage_library %}
+                                <ul class="list-unstyled secondary-menu">
+                                    <li {% if subpage_name == 'add' %} class="active" {% endif %}>
+                                        <a href="{% url 'breakdowns:breakdown_create' %}"><span class="fa fa-angle-right"></span>&nbsp; Add New</a>
+                                    </li>
+                                </ul>
+                                {% endif %}
+                            </li>
+
+                            <li {% if page_name == 'Materials' %}class="active"{% endif %}>
+                                <a href="{% url 'breakdowns:material_list' %}"><span class="fa fa-cube"></span>&nbsp; Material Library</a>
+                            </li>
+
+                            <li {% if page_name == 'Labours' %}class="active"{% endif %}>
+                                <a href="{% url 'breakdowns:labour_list' %}"><span class="fa fa-child"></span>&nbsp; Labour Library</a>
+                            </li>
+
+                            <li {% if page_name == 'Equipments' %}class="active"{% endif %}>
+                                <a href="{% url 'breakdowns:equipment_list' %}"><span class="fa fa-wrench"></span>&nbsp; Equipment Library</a>
+                            </li>
+
+                            <li {% if page_name == 'Projects' %}class="active"{% endif %}>
+                                <a href="{% url 'breakdowns:project_list' %}"><span class="fa fa-database"></span>&nbsp; Projects</a>
+                                {% if page_name == 'Projects' %}
+                                <ul class="list-unstyled secondary-menu">
+                                    <li {% if subpage_name == 'Add' %} class="active" {% endif %}>
+                                        <a href="{% url 'breakdowns:project_create' %}"><span class="fa fa-angle-right"></span>&nbsp; Add</a>
+                                    </li>
+                                </ul>
+                                {% endif %}
+                            </li>
+
+                            <li><a href="#"><span class="fa fa-bookmark"></span>&nbsp; Tutorial</a></li>
+                            <li><a href="#"><span class="fa fa-book"></span>&nbsp; Documentation</a></li>
+                            <li><a href="#"><span class="fa fa-user"></span>&nbsp; Profile</a></li>
+                            <li><a href="#"><span class="fa fa-sliders"></span>&nbsp; Settings</a></li>
+                        </ul>
+                    </nav>
+                </nav><!-- /#account-nav -->
+                {% endblock page_nav %}<!-- /END PAGE NAVIGATION -->
+                
+                <!-- PAGE MAIN CONTENT -->
+                {% block right-col %}
+                <section class="col-sm-10 account-right-col height-lg">
+
+                    <!-- HEADER -->
+                    {% block header %}
+                    <header id="account-header">
+                        <nav class="navbar navbar-default">
+                            <div class="navbar-header">
+                                <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#menu" aria-expanded="false">
+                                       <span class="sr-only">Toggle navigation</span>
+                                       <span class="icon-bar"></span>
+                                       <span class="icon-bar"></span>
+                                       <span class="icon-bar"></span>
+                                 </button>
+                            </div><!-- /.navbar-header -->
+
+                            <div class="collapse navbar-collapse" id="menu">
+                                <form class="navbar-form navbar-left" name="search_form" action="#">
+                                    <div class="form-group">
+                                        <div class="input-group input-group-sm">
+                                            <input type="search" class="form-control" id="global-search-input" name="global_search" placeholder="Search">
+                                            <span class="input-group-btn">
+                                                <button type="button" class="btn btn-default">
+                                                    <span class="fa fa-search"></span>
+                                                </button>
+                                            </span>
+                                        </div><!-- /.input-group -->                                    
+                                    </div><!-- /.form-group -->
+                                </form>
+
+                                <ul class="nav navbar-nav navbar-right">
+                                    <li class="bold"><a href="#"><span class="fa fa-user" aria-hidden="true"></span>&nbsp; {% if user.get_full_name %}{{ user.get_full_name|title }}{% else %}{{ user.get_username|capfirst }}{% endif %}</a></li>
+                                    <li class="bold"><a href="{% url 'logout' %}">Logout <span class="fa fa-sign-out"></span></a></li>
+                                </ul>
+                            </div><!-- /#menu -->
+                        </nav>
+                    </header><!-- /#account-header -->
+                    {% endblock header %}
+                    
+                    {% block main %}
+                    <main role="main" id="main">
+                        <article id="account-main-article">
+                            {% block content %}
+                            {% endblock content %}
+                        </article>
+                    </main>
+                    {% endblock main %}
+                </section><!-- /.account-right-col -->
+                {% endblock right-col %}
+            </div><!-- /.row -->    
+            
+            {% block footer %}
+            <footer id="page-footer">
+                {% block footer-content %}
+                <ul class="list-inline text-center">
+                    <li class="small"><a href="#"><span class="fa fa-envelope"></span></a></li>
+                    <li class="small"><a href="#"><span class="fa fa-facebook"></span></a></li>
+                    <li class="small"><a href="#"><span class="fa fa-twitter"></span></a></li>
+                    <li class="small"><a href="#"><span class="fa fa-whatsapp"></span></a></li>
+                    <li class="small"><a href="#"><span class="fa fa-linkedin"></span></a></li> | 
+                    <li class="small">Copyright &copy; {% now 'Y' %}. All Rights Reserved.</li>
+                </ul>
+                {% endblock footer-content %}
+            </footer><!-- /#page-footer -->
+            {% endblock footer %}
+        </div><!-- /.container -->
+    </div><!-- /#account-wrapper -->
+    {% endblock wrapper %}
+    
+
+<!-- JQUERY -->
+<script src="{% static 'js/jquery.min.js' %}"></script>
+
+<!-- BOOTSTRAP SCRIPT -->
+<script src="{% static 'js/bootstrap.min.js' %}"></script>
+
+<!-- MAIN SCRIPT -->
+{% block main_script %}
+<script src="{% static 'js/script.js' %}"></script>
+{% endblock main_script %}
+
+<!-- PAGE SCRIPT -->
+{% block page_script %}
+{% endblock page_script %}
+</body>
+</html>
+
+
