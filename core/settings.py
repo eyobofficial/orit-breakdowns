@@ -25,7 +25,7 @@ SECRET_KEY = '6l*@+@nbw3l+=%0zo=h$zp*a5)m$wg1p#6-tq90)6$)(vqv_u^'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'eyobofficial.pythonanywhere.com']
+ALLOWED_HOSTS = ['127.0.0.1', 'eyobofficial.pythonanywhere.com', 'eyob.pythonanywhere.com']
 
 
 # Application definition
