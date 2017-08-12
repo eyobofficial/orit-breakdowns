@@ -368,9 +368,8 @@ class MaterialBreakdown(models.Model):
         """
         Returns subtotal of a single material direct cost
         """
-        if self.rate is None:
-            return round(self.quantity * self.material.rate, 2)
-        return round(self.quantity * self.rate, 2)
+        if self.rate is not None:
+            return round(self.quantity * self.rate, 2)
 
     def get_absolute_url(self):
         """
