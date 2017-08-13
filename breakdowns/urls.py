@@ -20,7 +20,8 @@ urlpatterns = [
     url(r'^my-breakdown/(?P<pk>[0-9]+)/$', views.MyBreakdownDetail.as_view(), name='my_breakdown_detail'),
 
     # User Cost Breakdown Create URL
-    url(r'^cost-breakdown/create/$', views.BreakdownCreate.as_view(), name='breakdown_create'),
+    # url(r'^cost-breakdown/create/$', views.BreakdownCreate.as_view(), name='breakdown_create'),
+    url(r'^cost-breakdown/create/$', views.breakdown_create, name='breakdown_create'),
 
     # Create a MaterialBreakdown for Breakdown URL
     url(r'^my-breakdown/(?P<pk>[0-9]+)/material/add/$', views.MaterialBreakdownCreate.as_view(), name='material_breakdown_create'),

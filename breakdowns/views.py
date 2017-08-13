@@ -13,7 +13,7 @@ import openpyxl
 from xlrd import open_workbook
 from xlwt import Workbook, easyxf, Formula
 from xlutils.copy import copy
-from .forms import SignupForm
+from .forms import SignupForm, StepOneForm
 from .models import City, Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
 # Create your views here.
@@ -610,6 +610,19 @@ class CostBreakdownDetail(LoginRequiredMixin, UserPassesTestMixin, generic.Detai
         context['equipment_list'] = equipment_list
         context['page_name'] = 'library'
         return context
+
+# Create a new cost breakdown view
+def breakdown_create(request):
+    form_class = StepOneForm
+
+    if request.method == 'POST':
+        form = form_class(request.POST)
+
+        if form.is_valid():
+            return redirect('breakdowns:index')
+    else:
+        form = form_class()
+    return render(request, 'breakdowns/breakdown_form_step_1.html', {'form': form})
 
 # Create a new cost breakdown view
 class BreakdownCreate(LoginRequiredMixin, CreateView):

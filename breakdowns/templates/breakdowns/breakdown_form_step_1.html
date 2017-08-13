@@ -1,0 +1,54 @@
+{% extends 'base.html' %}
+
+{% block title %}
+<title>Step 1 | Orit</title>
+{% endblock %}
+
+{% block content %}
+<div class="panel panel-default panel-detail" id="material-detail-panel">
+    <div class="panel-heading">
+        Create New Breakdown - Step 1
+    </div><!-- /END .panel-heading -->
+
+    <div class="panel-body">
+        <div class="row">
+            <div class="col-sm-8 col-sm-offset-1 breath-up-sm">
+                <form name="step_1_form" id="step-1-form" class="form-horizontal" method="POST">
+                {% csrf_token %}
+                    {{ form.non_field_errors }}
+                    {{ form }}
+                    <hr>
+                    
+                    <input type="hidden" name="step" value="1">
+                    <div class="option-group">
+                        <div class="form-group">
+                            <labelclass="radio">
+                               <input type="radio" name="option" value="0" checked="checked"> Select a breakdown from the standard libray
+                            </label>
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group pad-left-sm">
+                            <select name="breakdown_id" id="breakdown-select" class="form-control">
+                                <option value="">Some Breakdown</option>
+                            </select>
+                        </div>                 
+                    </div><!-- /END .option-group -->
+
+                    <div class="option-group pad-up-md">
+                        <div class="form-group">
+                            <labelclass="radio">
+                               <input type="radio" name="option" value="1"> Create a new cost breakdown from scratch
+                            </label>
+                        </div><!-- /.form-group -->
+                    </div><!-- /.option-group -->
+                   
+
+                    <div class="form-group text-right pad-right-sm pad-up-md">
+                        <button type="submit" class="btn btn-primary">Next</button>
+                    </div><!-- /.form-group -->
+                </form>
+            </div><!-- /.col-sm-6 -->
+        </div><!-- /.row -->
+    </div><!-- /.panel-body -->
+</div><!-- /END .material-detail-panel -->
+{% endblock content %}
