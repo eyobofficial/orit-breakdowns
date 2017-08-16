@@ -528,7 +528,7 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
         context = super(MyBreakdownDetail, self).get_context_data(*args, **kwargs)
         
         # Material List
-        material_list = MaterialBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('rate')
+        material_list = MaterialBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-rate')
 
         # Labour List
         labour_list = LabourBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-hourly_rate')
@@ -668,6 +668,8 @@ class MaterialBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateVie
         return cost_breakdown.created_by.id == self.request.user.id
 
     def get_success_url(self):
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form, *args, **kwargs):
@@ -697,6 +699,8 @@ class MaterialBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateVie
         return material_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self):
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
@@ -722,8 +726,7 @@ class MaterialBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteVie
         return material_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self, *args, **kwargs):
-        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
-        if cost_breakdown.is_library:
+        if self.request.user.has_perm('breakdowns.manage_library'):
             return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
@@ -748,6 +751,8 @@ class LabourBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView)
         return cost_breakdown.created_by.id == self.request.user.id
 
     def get_success_url(self):
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form, *args, **kwargs):
@@ -778,6 +783,8 @@ class LabourBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
         return labour_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self):
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
@@ -803,7 +810,9 @@ class LabourBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
         return labour_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self, *args, **kwargs):
-        return reverse_lazy('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
         context = super(LabourBreakdownDelete, self).get_context_data(*args, **kwargs)
@@ -826,6 +835,8 @@ class EquipmentBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateVi
         return cost_breakdown.created_by.id == self.request.user.id
 
     def get_success_url(self):
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form, *args, **kwargs):
@@ -855,6 +866,8 @@ class EquipmentBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
         return equipment_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self):
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
@@ -879,7 +892,9 @@ class EquipmentBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteVi
         return equipment_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self, *args, **kwargs):
-        return reverse_lazy('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
         context = super(EquipmentBreakdownDelete, self).get_context_data(*args, **kwargs)

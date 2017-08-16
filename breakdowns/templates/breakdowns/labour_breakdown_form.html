@@ -19,7 +19,8 @@
             <div class="col-sm-8 col-sm-offset-1">
                 <form method="POST" id="labour-form" class="form-horizontal">
                 {% csrf_token %}
-
+                    {{ form.non_field_errors }}
+                    {{ form.hourly_rate.errors }}
                     <div class="form-group">
                         <label for="breakdown" class="col-sm-4 control-label">Cost Breakdown</label>
                         <div class="col-sm-8">
