@@ -73,8 +73,8 @@ admin.site.register(CostBreakdownCatagory)
 # Register CostBreakdown model
 @admin.register(CostBreakdown)
 class CostBreakdownAdmin(admin.ModelAdmin):
-    list_display = ('full_title', 'project', 'created_by')
-    list_filter = ('project', 'created_by')
+    list_display = ('full_title', 'project', 'created_by', 'is_library',)
+    list_filter = ('project', 'created_by', 'is_library',)
 
 # Register MaterialBreakdown model
 @admin.register(MaterialBreakdown)

@@ -13,7 +13,7 @@ import openpyxl
 from xlrd import open_workbook
 from xlwt import Workbook, easyxf, Formula
 from xlutils.copy import copy
-from .forms import SignupForm, StepOneForm
+from .forms import SignupForm, StepOneForm, StepTwoForm
 from .models import City, Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
 # Create your views here.
@@ -611,18 +611,53 @@ class CostBreakdownDetail(LoginRequiredMixin, UserPassesTestMixin, generic.Detai
         context['page_name'] = 'library'
         return context
 
-# Create a new cost breakdown view
-def breakdown_create(request):
+# Create a new cost breakdown - Step 1
+def step_one(request):
     form_class = StepOneForm
+    step_1_template = 'breakdowns/breakdown_form_step_1.html'
+    step_2_template = 'breakdowns/breakdown_form_step_2.html'
 
     if request.method == 'POST':
         form = form_class(request.POST)
 
         if form.is_valid():
-            return redirect('breakdowns:index')
+            library_breakdown = form.cleaned_data.get('breakdown')
+            if library_breakdown is not None:
+                request.session['library_breakdown'] = library_breakdown.id
+            return redirect('breakdowns:breakdown_create_step_2')
+    else:
+        request.session['library_breakdown'] = None
+        form = form_class()
+    return render(request, step_1_template, context={'form': form})
+
+# Create a new cost breakdown - Step 2
+def step_two(request):
+    form_class = StepTwoForm
+    template_name = 'breakdowns/breakdown_form_step_2.html'
+    catagory_list = CostBreakdownCatagory.objects.all()
+    unit_list = Unit.objects.all()
+    project_list = Project.objects.filter(created_by = request.user.id)
+
+    if request.session.get('library_breakdown') is not None:
+        library_breakdown = CostBreakdown.objects.get(pk=request.session.get('library_breakdown'))
+    else:
+        library_breakdown = None
+
+    if request.method == 'POST': 
+        form = form_class(request.POST)
+
+        if form.is_valid():
+            pass
     else:
         form = form_class()
-    return render(request, 'breakdowns/breakdown_form_step_1.html', {'form': form})
+
+    return render(request, template_name, {
+            'form': form,
+            'catagory_list': catagory_list,
+            'unit_list': unit_list,
+            'library_breakdown': library_breakdown,
+            'project_list': project_list,
+        })
 
 # Create a new cost breakdown view
 class BreakdownCreate(LoginRequiredMixin, CreateView):
@@ -635,6 +670,9 @@ class BreakdownCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form, *args, **kwargs):
         form.instance.created_by = self.request.user
+
+        if self.request.user.is_staff:
+            form.instance.is_library = True
         return super(BreakdownCreate, self).form_valid(form, *args, **kwargs)
 
     def get_success_url(self, *args, **kwargs):

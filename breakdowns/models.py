@@ -314,6 +314,7 @@ class CostBreakdown(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
+    is_library = models.BooleanField(default=False)
 
     class Meta:
         verbose_name = 'cost breakdown'
@@ -324,16 +325,6 @@ class CostBreakdown(models.Model):
                 ('manage_cost_breakdown', 'Can manage own cost breakdown'),
                 ('manage_library', 'Can manage standard cost breakdown library'),
             )
-
-    @property 
-    def is_library(self):
-        """
-        Return True if cost breakdown is created by a staff user. 
-        Return False if not
-        """
-        if self.created_by.is_staff:
-            return True
-        return False
 
     def get_absolute_url(self):
         """
