@@ -621,14 +621,21 @@ def step_one(request):
         form = form_class(request.POST)
 
         if form.is_valid():
-            library_breakdown = form.cleaned_data.get('breakdown')
-            if library_breakdown is not None:
-                request.session['library_breakdown'] = library_breakdown.id
+            option = int(form.cleaned_data['options'])
+            breakdown_id = form.cleaned_data['breakdown'].id
+
+            if option == 0:
+                request.session['library_breakdown'] = CostBreakdown.objects.get(pk=breakdown_id).id
+            else:
+                request.session['library_breakdown'] = None
             return redirect('breakdowns:breakdown_create_step_2')
     else:
         request.session['library_breakdown'] = None
         form = form_class()
-    return render(request, step_1_template, context={'form': form})
+
+    return render(request, step_1_template, {
+            'form': form,
+        })
 
 # Create a new cost breakdown - Step 2
 def step_two(request):
