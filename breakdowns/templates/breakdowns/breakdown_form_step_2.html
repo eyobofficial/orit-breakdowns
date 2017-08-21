@@ -20,12 +20,13 @@
                     <fieldset id="breakdown-meta">
                         <legend>Descriptions</legend>
                         
+                        <!--- PROJECT TITLE -->
                         {% if not perms.breakdowns.manage_library %}
                         <div class="form-group">
                             <label for="project" class="col-sm-4 control-label">Project</label>
                             <div class="col-sm-8">
                                 <select name="project" class="form-control">
-                                    <option>(Please Select a Project)</option>
+                                    <option>(Select a Project)</option>
                                     {% for project in project_list %}
                                     <option value="{{ project.id }}" {% if project.id == form.project.value|add:0 %} selected="selected" {% endif%}>
                                         {{ project }}
@@ -39,11 +40,13 @@
                             </div>
                         </div><!-- /.form-group -->
                         {% endif %}
-
+                        
+                        <!-- COST BREAKDOWN CATAGORY -->
                         <div class="form-group">
                             <label for="catagory" class="col-sm-4 control-label">Catagory</label>
                             <div class="col-sm-8">
                                 <select name="cost_breakdown_catagory" class="form-control">
+                                     <option>(Select a Catagory)</option>
                                      {% for catagory in catagory_list %}
                                          <option value="{{ catagory.id }}" 
                                              {% if catagory.id == form.cost_breakdown_catagory.value|add:0 %} 
@@ -61,7 +64,8 @@
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
-
+                        
+                        <!-- COST BREAKDOWN TITLE -->
                         <div class="form-group">
                             <label for="full-title" class="col-sm-4 control-label">Title</label>
                             <div class="col-sm-8">
@@ -76,11 +80,14 @@
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
-
+                        
+                        <!-- COST BREAKDOWN DESCRIPTION/SUMMARY -->
                         <div class="form-group">
                             <label for="description" class="col-sm-4 control-label">Summary</label>
                             <div class="col-sm-8">
-                                <textarea name="description" id="description"class="form-control">{{ form.description.value|default_if_none:'' }}</textarea>
+                                <textarea name="description" id="description"class="form-control" rows="5"> {% if form.description.value %}{{ form.description.value|default_if_none:'' }}"
+                                {% elif library_breakdown.description %}{{ library_breakdown.description|default_if_none:'' }}
+                                {% endif %}</textarea>
                                 <div class="errorlist-container">
                                     {{ form.description.errors }}
                                 </div>
@@ -88,16 +95,25 @@
                         </div><!-- /.form-group -->
                         
                     </fieldset>
-
+                    
                     <fieldset id="breakdown-meta">
                         <legend>Data</legend>
-
+                        
+                        <!-- MEASUREMENT UNIT -->
                         <div class="form-group">
                             <label for="unit" class="col-sm-4 control-label">Measurment Unit</label>
                             <div class="col-sm-8">
-                                <select name="unit" class="form-control">
+                                <select name="unit" class="form-control" {% if library_breakdown.unit %} disabled="disabled" {% endif %}>
+                                    <option>(Please Select Measurment Unit)</option>
                                     {% for unit in unit_list %}
-                                    <option value="{{ unit.id }}">{{ unit.full_title|title}}({% autoescape off %}{{ unit.html_title }}){% endautoescape %}</option>
+                                        <option value="{{ unit.id }}" 
+                                            {% if unit.id == form.unit.value|add:0 %} 
+                                               selected="selected"
+                                            {% elif unit.id == library_breakdown.unit.id %}
+                                               selected="selected"
+                                            {% endif%}>
+                                            {{ unit.full_title }} ({{ unit.short_title }})
+                                        </option>
                                     {% endfor %}
                                 </select>
 
@@ -107,31 +123,57 @@
                             </div>
                         </div><!-- /.form-group -->
 
+                        {% if library_breakdown.unit %}
+                        <input type="hidden" name="unit" value="{{ library_breakdown.unit.id }}">
+                        {% endif %}
+                        
+                        <!-- HOURLY OUTPUT -->
                         <div class="form-group">
                             <label for="output" class="col-sm-4 control-label">Hourly Output</label>
                             <div class="col-sm-8">
-                                <input type="text" name="output" id="output" class="form-control" value="{{ form.output.value|default_if_none:'' }}">
+                                <input type="text" name="output" id="output" class="form-control"
+                                {% if form.output.value %}
+                                 value="{{ form.output.value|default_if_none:'' }}"
+                                {% elif library_breakdown.output %}
+                                 value="{{ library_breakdown.output|default_if_none:'' }}"
+                                {% endif %}>
                                 <div class="errorlist-container">
                                     {{ form.output.errors }}
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
                         
+                        <!-- OVERHEAD -->
                         {% if not user.is_staff %}
                         <div class="form-group">
                             <label for="overhead" class="col-sm-4 control-label">Overhead(%)</label>
                             <div class="col-sm-8">
-                                <input type="text" name="overhead" id="overhead" class="form-control" value="{{ form.overhead.value|default_if_none:'' }}">
+                                <input type="text" name="overhead" id="overhead" class="form-control"
+                                {% if form.overhead.value %}
+                                 value="{{ form.overhead.value|default_if_none:'' }}"
+                                {% elif library_breakdown.overhead %}
+                                 value="{{ library_breakdown.overhead }}"
+                                {% else %}
+                                value="0.00"
+                                {% endif %}>
                                 <div class="errorlist-container">
                                     {{ form.overhead.errors }}
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
-
+                        
+                        <!-- PROFIT -->
                         <div class="form-group">
                             <label for="profit" class="col-sm-4 control-label">Profit(%)</label>
                             <div class="col-sm-8">
-                                <input type="text" name="profit" id="profit" class="form-control" value="{{ form.profit.value|default_if_none:'' }}">
+                                <input type="text" name="profit" id="profit" class="form-control"
+                                {% if form.profit.value %}
+                                 value="{{ form.profit.value|default_if_none:'' }}"
+                                {% elif library_breakdown.profit %}
+                                 value="{{ library_breakdown.profit }}"
+                                {% else %}
+                                value="0.00"
+                                {% endif %}>
                                 <div class="errorlist-container">
                                     {{ form.profit.errors }}
                                 </div>
@@ -142,15 +184,8 @@
                    
 
                     <div class="form-group text-right pad-right-sm pad-up-sm">
-                    {% if project %}
-                        <a href="{% url 'breakdowns:project_detail' project.id %}" class="btn btn-default">Cancel</a>&nbsp;
-                    {% else %}
-                        <a href="{% url 'breakdowns:project_list' %}" class="btn btn-default">Cancel</a>&nbsp;
-                    {% endif %}
+                        <a href="{% url 'breakdowns:my_breakdown_list' %}" class="btn btn-default">Cancel</a>&nbsp;
                         <input type="submit" class="btn btn-primary" value="Submit">&nbsp;
-                    {% if project %}
-                        <a href="{% url 'breakdowns:project_delete' project.id %}" class="btn btn-danger"><span class="fa fa-trash"></span> Delete</a>
-                    {% endif %}
                     </div><!-- /.form-group -->
                 </form>
             </div><!-- /.col-sm-6 -->

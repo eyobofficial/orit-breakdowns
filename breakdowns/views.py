@@ -612,6 +612,7 @@ class CostBreakdownDetail(LoginRequiredMixin, UserPassesTestMixin, generic.Detai
         return context
 
 # Create a new cost breakdown - Step 1
+@login_required
 def step_one(request):
     form_class = StepOneForm
     step_1_template = 'breakdowns/breakdown_form_step_1.html'
@@ -619,13 +620,10 @@ def step_one(request):
 
     if request.method == 'POST':
         form = form_class(request.POST)
-
         if form.is_valid():
             option = int(form.cleaned_data['options'])
-            breakdown_id = form.cleaned_data['breakdown'].id
-
             if option == 0:
-                request.session['library_breakdown'] = CostBreakdown.objects.get(pk=breakdown_id).id
+                request.session['library_breakdown'] = CostBreakdown.objects.get(pk=form.cleaned_data['breakdown'].id).id
             else:
                 request.session['library_breakdown'] = None
             return redirect('breakdowns:breakdown_create_step_2')
@@ -638,6 +636,7 @@ def step_one(request):
         })
 
 # Create a new cost breakdown - Step 2
+@login_required
 def step_two(request):
     form_class = StepTwoForm
     template_name = 'breakdowns/breakdown_form_step_2.html'
@@ -647,17 +646,45 @@ def step_two(request):
 
     if request.session.get('library_breakdown') is not None:
         library_breakdown = CostBreakdown.objects.get(pk=request.session.get('library_breakdown'))
+    elif request.GET.get('library_breakdown') is not None:
+        library_breakdown = CostBreakdown.objects.get(pk=int(request.GET.get('library_breakdown')))
     else:
         library_breakdown = None
 
     if request.method == 'POST': 
         form = form_class(request.POST)
-
         if form.is_valid():
-            pass
+            cb = form.save(commit=False)
+            cb.created_by = request.user
+            cb.save()
+            
+            # If cost_breakdown is duplicated from the library
+            if library_breakdown is not None:
+                mb_list = MaterialBreakdown.objects.filter(costbreakdown = library_breakdown.id)
+                lb_list = LabourBreakdown.objects.filter(costbreakdown = library_breakdown.id)
+                eb_list = EquipmentBreakdown.objects.filter(costbreakdown = library_breakdown.id)
+
+                for mb in mb_list:
+                    mb.costbreakdown = cb
+                    mb.pk = None
+                    mb.save()
+
+                for lb in lb_list:
+                    lb.costbreakdown = cb
+                    lb.pk = None
+                    lb.save()
+
+                for eb in eb_list:
+                    eb.costbreakdown = cb
+                    eb.pk = None
+                    eb.save()
+            # Destroy session data        
+            request.session.library_breakdown = None
+
+            # Redirect to newly created cost breakdown
+            return redirect(reverse('breakdowns:my_breakdown_detail', kwargs={'pk': cb.id}))           
     else:
         form = form_class()
-
     return render(request, template_name, {
             'form': form,
             'catagory_list': catagory_list,

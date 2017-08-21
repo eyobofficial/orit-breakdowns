@@ -346,7 +346,7 @@ class MaterialBreakdown(models.Model):
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     quantity = models.DecimalField(max_digits=12, decimal_places=2, default=1)
-    rate = models.DecimalField(max_digits=12, decimal_places=2, null=True, blank=True)
+    rate = models.DecimalField(max_digits=12, decimal_places=2, blank=True, default=0)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
 
@@ -359,8 +359,7 @@ class MaterialBreakdown(models.Model):
         """
         Returns subtotal of a single material direct cost
         """
-        if self.rate is not None:
-            return round(self.quantity * self.rate, 2)
+        return round(self.quantity * self.rate, 2)
 
     def get_absolute_url(self):
         """

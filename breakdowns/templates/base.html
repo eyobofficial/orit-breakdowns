@@ -72,13 +72,12 @@
                             </li>
                             {% endif %}
 
-
                             <li {% if page_name == 'library' %} class="active" {% endif %}>
                                 <a href="{% url 'breakdowns:cost_breakdown_list' %}"><span class="fa fa-archive"></span>&nbsp; Standard Library</a>
                                 {% if page_name == 'library' and perms.breakdowns.manage_library %}
                                 <ul class="list-unstyled secondary-menu">
                                     <li {% if subpage_name == 'add' %} class="active" {% endif %}>
-                                        <a href="{% url 'breakdowns:breakdown_create' %}"><span class="fa fa-angle-right"></span>&nbsp; Add New</a>
+                                        <a href="{% url 'breakdowns:breakdown_create_step_1' %}"><span class="fa fa-angle-right"></span>&nbsp; Add New</a>
                                     </li>
                                 </ul>
                                 {% endif %}
