@@ -14,7 +14,7 @@ from xlrd import open_workbook
 from xlwt import Workbook, easyxf, Formula
 from xlutils.copy import copy
 from .forms import SignupForm, StepOneForm, StepTwoForm
-from .models import City, Project, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
+from .models import City, Project, UnitCatagory, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
 # Create your views here.
 @login_required
@@ -641,7 +641,8 @@ def step_two(request):
     form_class = StepTwoForm
     template_name = 'breakdowns/breakdown_form_step_2.html'
     catagory_list = CostBreakdownCatagory.objects.all()
-    unit_list = Unit.objects.all()
+    #unit_list = Unit.objects.all()
+    unit_catagory_list = UnitCatagory.objects.all()
     project_list = Project.objects.filter(created_by = request.user.id)
 
     if request.session.get('library_breakdown') is not None:
@@ -688,7 +689,7 @@ def step_two(request):
     return render(request, template_name, {
             'form': form,
             'catagory_list': catagory_list,
-            'unit_list': unit_list,
+            'unit_catagory_list': unit_catagory_list,
             'library_breakdown': library_breakdown,
             'project_list': project_list,
         })

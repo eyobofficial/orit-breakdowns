@@ -26,3 +26,10 @@ class StepTwoForm(forms.ModelForm):
     class Meta:
         model = CostBreakdown
         fields = ['cost_breakdown_catagory', 'project', 'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
+
+    def clean_project(self):
+        data = self.cleaned_data.get('project')
+        if data is None:
+            raise forms.ValidationError('This field is required.')
+
+        return data

@@ -67,7 +67,7 @@ class UnitCatagory(models.Model):
 class Unit(models.Model):
     """
     Model representing material measurement units
-    Example: Kg, m, litre, m2, m3, ml, quital etc
+    Example: Kg, m, litre, m2, m3, ml, quintal etc
     """
     catagory = models.ForeignKey(UnitCatagory, on_delete=models.CASCADE, help_text='Type of measurement units')
     full_title = models.CharField(max_length=60)

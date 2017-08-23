@@ -26,8 +26,7 @@
                         </div><!-- /.form-group -->
 
                         <div class="form-group pad-left-sm">
-                            <select name="breakdown" id="breakdown-select" class="form-control">
-                                <option value=''>(Select a Breakdown)</option>
+                            <select name="breakdown" id="breakdown-select" class="selectpicker show-tick" data-width="100%" title="Select A Breakdown" data-live-search="true">
                                 {% for cb in form.breakdown.field.queryset %}
                                     <option value="{{ cb.id }}">{{ cb.full_title }}</option>
                                 {% endfor %}
