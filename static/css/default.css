@@ -651,6 +651,7 @@ a.btn-danger,
 	border: 1px solid silver;
 	color: #333;
 	font-weight: normal;
+	border-radius: 2px !important;
 }
 
 .input-group .btn {
@@ -672,24 +673,35 @@ a.btn-danger,
 
 /************** FORM STYLES ********************/
 input.form-control, select.form-control, textarea.form-control {
-	color: inherit;
-	border-radius: 2px !important;
-	border: 1px solid #e5e6e7;
-	font-size: 13px;
+	color: #333;
+	border-radius: 4px !important;
+	border: 1px solid #ccc;
+	font-size: 12px;
 	box-shadow: none !important;
+	padding: 6px 12px;
 }
 
 
 input.form-control:focus, select.form-control:focus, textarea.form-control:focus {
-	border: 1px solid #1ab394 !important;
+	border: 1px solid #23c6c8 !important;
+}
+
+.bootstrap-select button {
+	padding: 7px 12px;
 }
 
 .dropdown-menu li a {
 	color: #676a6c !important;
 }
 
-.dropdown-menu li.selected.active a {
+.dropdown-menu li.selected a {
 	color: #fff !important;
+	background-color: #23c6c8 !important;
+	border: none !important;
+}
+
+.dropdown-menu li.selected {
+	border: none;
 }
 
 .form-group label {

@@ -19,8 +19,12 @@
             <div class="col-sm-8 col-sm-offset-1">
                 <form method="POST" id="labour-form" class="form-horizontal">
                 {% csrf_token %}
-                    {{ form.non_field_errors }}
-                    {{ form.hourly_rate.errors }}
+
+                    <div class="errorlist-container">
+                        {{ form.non_field_errors }}
+                    </div>
+                    
+                    <!-- COST BREAKDOWN -->
                     <div class="form-group">
                         <label for="breakdown" class="col-sm-4 control-label">Cost Breakdown</label>
                         <div class="col-sm-8">
@@ -31,6 +35,7 @@
                         </div>
                     </div><!-- /.form-group -->
 
+                    <!-- OUTPUT -->
                     <div class="form-group">
                         <label for="output" class="col-sm-4 control-label">Output ({% autoescape off %}{{cost_breakdown.unit.html_title }}{% endautoescape %}/hr)</label>
                         <div class="col-sm-8">
@@ -40,10 +45,11 @@
                         </div>
                     </div><!-- /.form-group -->
 
+                    <!-- LABOUR LIST -->
                     <div class="form-group">
                         <label for="labour" class="col-sm-4 control-label">Labour</label>
                         <div class="col-sm-8">
-                            <select name="labour" class="form-control">
+                            <select name="labour" class="selectpicker show-tick" data-width="100%" title="Choose Labour Type">
                                 {% for labour in labour_list %}
                                 <option {% if labour_breakdown.labour.id == labour.id %} selected="selected" {% endif %}value="{{ labour.id }}">{{ labour }}</option>
                                 {% endfor %}
@@ -55,7 +61,7 @@
                         </div>
                     </div><!-- /.form-group -->
 
-                
+                    <!-- NUMBER -->
                     <div class="form-group">
                         <label for="number" class="col-sm-4 control-label">Number</label>
                         <div class="col-sm-8">
@@ -66,6 +72,7 @@
                         </div>
                     </div><!-- /.form-group -->
 
+                    <!-- UTILIZATION FACTOR -->
                     <div class="form-group">
                         <label for="uf" class="col-sm-4 control-label">Utilization Factor</label>
                         <div class="col-sm-8">
@@ -75,7 +82,8 @@
                             </div>
                         </div>
                     </div><!-- /.form-group -->
-
+                    
+                    <!-- HOURLY RATE -->
                     {% if not cost_breakdown.is_library %}
                     <div class="form-group">
                         <label for="hourly_rate" class="col-sm-4 control-label">Hourly Rate (ETB)</label>
@@ -87,7 +95,8 @@
                         </div>
                     </div><!-- /.form-group -->
                     {% endif %}
-
+                    
+                    <!-- SUBMIT -->
                     <div class="form-group breath-up-md text-right pad-right-md">
                         {% if labour_breakdown %}
                         <a href="{% url 'breakdowns:labour_breakdown_delete' cost_breakdown.id labour_breakdown.id %}" class="btn btn-danger"><span class="fa fa-trash"></span> DELETE</a>&nbsp;&nbsp;

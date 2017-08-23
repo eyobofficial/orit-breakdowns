@@ -19,7 +19,12 @@
             <div class="col-sm-8 col-sm-offset-1">
                 <form method="POST" id="material-form" class="form-horizontal">
                 {% csrf_token %}
-
+                    
+                    <div class="errorlist-container">
+                        {{ form.non_field_errors }}
+                    </div>
+                    
+                    <!-- COST BREAKDOWN -->
                     <div class="form-group">
                         <label for="breakdown" class="col-sm-4 control-label">Cost Breakdown</label>
                         <div class="col-sm-8">
@@ -30,10 +35,11 @@
                         </div>
                     </div><!-- /.form-group -->
 
+                    <!-- MATERIAL LIST -->
                     <div class="form-group">
                         <label for="material" class="col-sm-4 control-label">Material</label>
                         <div class="col-sm-8">
-                            <select name="material" class="form-control">
+                            <select name="material" class="selectpicker show-tick" data-width="100%" data-live-search="true" title="Choose Material...">
                                 {% for material in material_list %}
                                 <option {% if material_breakdown.material.id == material.id %} selected="selected" {% endif %} value="{{ material.id }}">{{ material }}</option>
                                 {% endfor %}
@@ -44,11 +50,12 @@
                             </div>
                         </div>
                     </div><!-- /.form-group -->
-
+                    
+                    <!-- UNIT LIST -->
                     <div class="form-group">
                         <label for="unit" class="col-sm-4 control-label">Unit</label>
                         <div class="col-sm-8">
-                            <select name="unit" class="form-control">
+                            <select name="unit" class="selectpicker show-tick" data-width="100%" data-live-search="true" title="Choose Measurement Unit">
                                 {% for unit in unit_list %}
                                 <option {% if material_breakdown.unit.id == unit.id %} selected="selected" {% endif %} value="{{ unit.id }}">{{ unit.full_title|title}}({% autoescape off %}{{ unit.html_title }}){% endautoescape %}</option>
                                 {% endfor %}
@@ -60,6 +67,7 @@
                         </div>
                     </div><!-- /.form-group -->
 
+                    <!-- QUANTITY -->
                     <div class="form-group">
                         <label for="quantity" class="col-sm-4 control-label">Quantity</label>
                         <div class="col-sm-8">
@@ -70,6 +78,7 @@
                         </div>
                     </div><!-- /.form-group -->
                     
+                    <!-- PRICE -->
                     {% if not cost_breakdown.is_library %}
                     <div class="form-group">
                         <label for="rate" class="col-sm-4 control-label">Price</label>
@@ -82,6 +91,7 @@
                     </div><!-- /.form-group -->
                     {% endif %}
 
+                    <!-- SUBMIT -->
                     <div class="form-group breath-up-md text-right pad-right-md">
                         {% if material_breakdown %}
                         <a href="{% url 'breakdowns:material_breakdown_delete' cost_breakdown.id material_breakdown.id %}" class="btn btn-danger"><span class="fa fa-trash"></span> DELETE</a>&nbsp;&nbsp;

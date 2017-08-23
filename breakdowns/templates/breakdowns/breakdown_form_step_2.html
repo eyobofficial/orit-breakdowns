@@ -83,8 +83,7 @@
                         <div class="form-group">
                             <label for="description" class="col-sm-4 control-label">Summary</label>
                             <div class="col-sm-8">
-                                <textarea name="description" id="description"class="form-control" rows="5"> {% if form.description.value %}{{ form.description.value|default_if_none:'' }}"
-                                {% elif library_breakdown.description %}{{ library_breakdown.description|default_if_none:'' }}
+                                <textarea name="description" id="description"class="form-control" rows="5"> {% if form.description.value %}{{ form.description.value|default_if_none:'' }}{% elif library_breakdown.description %}{{ library_breakdown.description|default_if_none:'' }}
                                 {% endif %}</textarea>
                                 <div class="errorlist-container">
                                     {{ form.description.errors }}
@@ -101,7 +100,7 @@
                         <div class="form-group">
                             <label for="unit" class="col-sm-4 control-label">Measurment Unit</label>
                             <div class="col-sm-8">
-                                <select name="unit" class="selectpicker " data-live-search="true" title="Choose measurement unit..." data-width="100%" {% if library_breakdown.unit %} disabled="disabled" {% endif %}>
+                                <select name="unit" class="selectpicker " data-live-search="true" title="Choose Measurement Unit" data-width="100%" {% if library_breakdown.unit %} disabled="disabled" {% endif %}>
                                     {% for unit_catagory in unit_catagory_list %}
                                     <optgroup label="{{ unit_catagory.full_title }}">
                                         {% for unit in unit_catagory.unit_set.all %}

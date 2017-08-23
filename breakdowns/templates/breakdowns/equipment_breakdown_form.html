@@ -20,6 +20,11 @@
                 <form method="POST" id="equipment-form" class="form-horizontal">
                 {% csrf_token %}
 
+                    <div class="errorlist-container">
+                        {{ form.non_field_errors }}
+                    </div>
+                    
+                    <!-- COST BREAKDOWN -->
                     <div class="form-group">
                         <label for="breakdown" class="col-sm-4 control-label">Cost Breakdown</label>
                         <div class="col-sm-8">
@@ -30,6 +35,7 @@
                         </div>
                     </div><!-- /.form-group -->
 
+                    <!-- OUTPUT -->
                     <div class="form-group">
                         <label for="output" class="col-sm-4 control-label">Output ({% autoescape off %}{{cost_breakdown.unit.html_title }}{% endautoescape %}/hr)</label>
                         <div class="col-sm-8">
@@ -39,10 +45,11 @@
                         </div>
                     </div><!-- /.form-group -->
 
+                    <!-- EQUIPMENT LIST -->
                     <div class="form-group">
                         <label for="equipment" class="col-sm-4 control-label">Equipment</label>
                         <div class="col-sm-8">
-                            <select name="equipment" class="form-control">
+                            <select name="equipment" class="selectpicker show-tick" data-width="100%" title="Choose Equipment Type">
                                 {% for equipment in equipment_list %}
                                 <option {% if equipment_breakdown.equipment.id == equipment.id %} selected="selected" {% endif %}value="{{ equipment.id }}">{{ equipment }}</option>
                                 {% endfor %}
@@ -54,7 +61,7 @@
                         </div>
                     </div><!-- /.form-group -->
 
-                
+                    <!-- NUMBER -->
                     <div class="form-group">
                         <label for="number" class="col-sm-4 control-label">Number</label>
                         <div class="col-sm-8">
@@ -65,6 +72,7 @@
                         </div>
                     </div><!-- /.form-group -->
 
+                    <!-- UTILIZATION FACTOR -->
                     <div class="form-group">
                         <label for="uf" class="col-sm-4 control-label">Utilization Factor</label>
                         <div class="col-sm-8">
@@ -75,6 +83,7 @@
                         </div>
                     </div><!-- /.form-group -->
 
+                    <!-- RENTAL RATE -->
                     {% if not cost_breakdown.is_library %}
                     <div class="form-group">
                         <label for="rental_rate" class="col-sm-4 control-label">Rental Rate (ETB)</label>
@@ -87,6 +96,7 @@
                     </div><!-- /.form-group -->
                     {% endif %}
 
+                    <!-- SUBMIT -->
                     <div class="form-group breath-up-md text-right pad-right-md">
                         {% if equipment_breakdown %}
                         <a href="{% url 'breakdowns:equipment_breakdown_delete' cost_breakdown.id equipment_breakdown.id %}" class="btn btn-danger"><span class="fa fa-trash"></span> DELETE</a>&nbsp;&nbsp;

@@ -5,7 +5,6 @@ $(function(){
     $('.catagory-selector').change(function(){
         $('.cost-form').submit();
     });
-
     
     /**
     * Turn on/off between selecting an existing consultant and creating a new one
