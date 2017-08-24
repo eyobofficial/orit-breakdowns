@@ -694,6 +694,35 @@ def step_two(request):
             'project_list': project_list,
         })
 
+# Update an Existing Breakdown
+class BreakdownUpdate(LoginRequiredMixin, UpdateView):
+    """
+    Update existing cost breakdown
+    """
+    model = CostBreakdown
+    fields = ['cost_breakdown_catagory', 'project', 'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
+    template_name = 'breakdowns/breakdown_form_update.html'
+
+    def get_success_url(self, *args, **kwargs):
+        if self.object.is_library:
+            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.object.id})
+        return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.object.id})
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(BreakdownUpdate, self).get_context_data(*args, **kwargs)
+        context['project_list'] = Project.objects.filter(created_by=self.request.user.id)
+        context['catagory_list'] = CostBreakdownCatagory.objects.all()
+        context['unit_catagory_list'] = UnitCatagory.objects.all()
+        if self.request.user.has_perm('breakdowns.manage_library'):
+            context['page_name'] = 'library'
+        else:
+            context['page_name'] = 'CostBreakdowns'
+        context['subpage_name'] = 'mybreakdowns'
+        return context
+
+# Delete an Existing Breakdown
+
+
 # Create a new cost breakdown view
 class BreakdownCreate(LoginRequiredMixin, CreateView):
     """

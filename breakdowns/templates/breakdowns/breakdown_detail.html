@@ -21,7 +21,7 @@
             
             {% if cost_breakdown.created_by.id == user.id %}
             <div class="col-sm-4 text-right">
-                <a href="#"><span class="fa fa-edit"></span>&nbsp; Edit</a>
+                <a href="{% url 'breakdowns:breakdown_update' cost_breakdown.id %}"><span class="fa fa-edit"></span>&nbsp; Edit</a>
             </div><!-- /.col-sm-4 -->
             {% endif %}
         </div><!-- /END .row -->
