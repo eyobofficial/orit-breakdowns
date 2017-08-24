@@ -721,7 +721,17 @@ class BreakdownUpdate(LoginRequiredMixin, UpdateView):
         return context
 
 # Delete an Existing Breakdown
+class BreakdownDelete(LoginRequiredMixin, DeleteView):
+    """
+    Delete an existing cost breakdown
+    """
+    model = CostBreakdown
+    template_name = 'breakdowns/breakdown_confirm_delete.html'
 
+    def get_success_url(self, *args, **kwargs):
+        if self.object.is_library:
+            return reverse('breakdowns:cost_breakdown_list')
+        return reverse('breakdowns:my_breakdown_list')
 
 # Create a new cost breakdown view
 class BreakdownCreate(LoginRequiredMixin, CreateView):

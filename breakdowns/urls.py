@@ -26,7 +26,10 @@ urlpatterns = [
     url(r'^cost-breakdown/create/step-2$', views.step_two, name='breakdown_create_step_2'),
 
     # Update cost breakdown
-    url(r'cost-breakdown/update/(?P<pk>[0-9]+)/$', views.BreakdownUpdate.as_view(), name="breakdown_update"),
+    url(r'my-breakdown/update/(?P<pk>[0-9]+)/$', views.BreakdownUpdate.as_view(), name="breakdown_update"),
+
+    # Delete cost breakdown
+    url(r'my-breakdown/delete/(?P<pk>[0-9]+)/$', views.BreakdownDelete.as_view(), name="breakdown_delete"),
 
     # Create a MaterialBreakdown for Breakdown URL
     url(r'^my-breakdown/(?P<pk>[0-9]+)/material/add/$', views.MaterialBreakdownCreate.as_view(), name='material_breakdown_create'),
