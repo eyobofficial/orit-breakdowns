@@ -168,66 +168,59 @@ a:hover {
 
 .btn {
 	font-size: 12px !important;
+	line-height: 1.25;
+	border-radius: 2px !important;
+	font-weight: normal;
 }
 
-.btn-success {
-	border-radius: 0 !important;
-	font-weight: bold;
-	background-color: #1ab394;
-	color: #fff;
+a.btn-default,
+.btn-default {
+	background-color: transparent;
+	border: 1px solid #cfd2da !important;
+	color: #cfd2da !important;
 }
 
+
+a.btn-default:hover,
+.btn-default:hover {
+	background-color: #fff !important;
+	border: 1px solid #fff !important;
+	color: #252830 !important;
+	transition: all 0.4s;
+}
 
 a.btn-primary,
 .btn-primary {
+	line-height: 1.25;
 	border-radius: 2px !important;
-	font-weight: bold;
-	background-color: #1ab394 !important;
+	font-weight: normal;
+	background-color: inherit;
 	border: 1px solid #1ab394 !important;
-	color: #fff;
+	color: #1ab394;
 }
 
-a.btn-primary-o
-.btn-primary-o {
-	border-radius: 2px !important;
-	font-weight: bold;
-	background-color: #1ab394 !important;
-	border: 1px solid #1ab394 !important;
-	color: #fff;
-}
-
-
+a.btn-primary:hover,
 .btn-primary:hover {
-	background-color: #fff !important;
+	background-color: #1ab394 !important;
 	border: 1px solid #1ab394 !important;
-	color: #1ab394;
+	color: #fff;
 	transition: all 0.4s;
 }
-
-
-.btn-primary-o:hover {
-	background-color: #fff !important;
-	border: 1px solid #1ab394 !important;
-	color: #1ab394;
-	transition: all 0.4s;
-}
-
-
 
 a.btn-warning,
 .btn-warning {
 	border-radius: 2px !important;
 	font-weight: bold;
+	background-color: transparent;
+	border: 1px solid #F0AD4E !important;
+	color: #F0AD4E !important;
+}
+
+a.btn-warning:hover,
+.btn-warning:hover {
 	background-color: #F0AD4E !important;
 	border: 1px solid #F0AD4E !important;
 	color: #fff;
-}
-
-
-.btn-warning:hover {
-	background-color: #fff !important;
-	border: 1px solid #F0AD4E !important;
-	color: #F0AD4E;
 	transition: all 0.4s;
 }
 
@@ -253,18 +246,16 @@ a.btn-info,
 
 a.btn-danger, 
 .btn-danger {
-	border-radius: 2px !important;
-	font-weight: bold;
-	background-color:  #d9534f !important;
-	border: 1px solid  #d9534f !important;
-	color: #fff !important;
+	background-color: transparent !important;
+	border: 1px solid #d9534f !important;
+	color: #d9534f !important;
 }
 
 
 .btn-danger:hover {
-	background-color: #fff !important;
+	background-color: #d9534f !important;
 	border: 1px solid  #d9534f !important;
-	color:  #d9534f !important;
+	color:  #fff !important;
 	transition: all 0.4s;
 }
 
@@ -695,12 +686,12 @@ a.btn-danger,
 
 /************** FORM STYLES ********************/
 input.form-control, select.form-control, textarea.form-control {
-	color: #333;
-	border-radius: 4px !important;
-	border: 1px solid #ccc;
+	background-color: #434857;
+	border: none !important;
+	color: inherit;
 	font-size: 12px;
+	border-radius: 2px !important;
 	box-shadow: none !important;
-	padding: 6px 12px;
 }
 
 
@@ -730,6 +721,8 @@ input.form-control:focus, select.form-control:focus, textarea.form-control:focus
 .form-group label {
 	color: inherit;
 	margin-bottom: 0.6em;
+	font-weight: 400;
+	letter-spacing: 0.1em;
 }
 
 
