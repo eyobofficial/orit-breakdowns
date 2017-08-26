@@ -610,6 +610,9 @@ a.btn-danger,
     background-color: #434857;
 }
 
+.panel-default .table-responsive {
+	border: none !important;
+}
 
 /********************* Panel table *****************************************/
 
