@@ -28,9 +28,3 @@ dl.dl-horizontal .dl-group {
     list-style-type: square !important;
     color: #a94442 !important;
 }
-
-select {
-    background: #434857 !important;
-    border: 4px solid #434857 !important;
-    color: #fff !important;
-}

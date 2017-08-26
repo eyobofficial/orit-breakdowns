@@ -102,11 +102,10 @@
 
 body {
 	font-family: "open sans", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
-	font-family: "Roboto", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
 	font-size: 13px;
 	line-height: 1.2em;
-	background: #252830;
-	color: #cfd2da;
+	background: #efefef;
+	color: #676a6c;
 }
 
 h1,
@@ -523,7 +522,6 @@ a.btn-danger,
 
 #account-brand {
 	color: #676a6c !important;
-	font-weight: 300;
 }
 
 #account-brand:hover {
@@ -555,7 +553,7 @@ a.btn-danger,
 }
 #side-nav li {
 	font-size: 13px;
-	font-weight: 400;
+	font-weight: bold;
 	margin-bottom: 1.8em;
 }
 
@@ -586,25 +584,13 @@ a.btn-danger,
 /********************* Panel-default *********************************/
 .panel-default {
 	border-radius: 5px;
-	border: 1px solid #434857;
-	background-color: transparent !important;
+	border-top: 4px solid #e7eaec;
 }
 
 .panel-default .panel-heading {
-	background-color: transparent !important;
+	background: #fff;
 	padding-top: 1.2em;
 	padding-bottom: 1.2em;
-	border-bottom: 1px solid #434857;
-	color: #fff;
-	font-weight: 400 !important;
-	text-transform: uppercase;
-}
-
-.panel-default .panel-footer {
-	background-color: transparent !important;
-	color: #cfd2da;
-	font-weight: 300 !important;
-	border-top: 1px solid #434857;
 }
 
 .panel {
@@ -615,20 +601,16 @@ a.btn-danger,
 	text-indent: 8px;
 }
 
-.panel .table-hover tr:hover td {
-    background-color: #434857;
-}
-
 
 /********************* Panel table *****************************************/
 
 .panel-table thead th {
-	border-bottom: 1.4px solid #434857 !important;
-	font-weight: 600  !important;
+	border-bottom: 1.4px solid #ccc !important;
+	font-weight: bold !important;
 }
 
 .panel-table tbody td {
-	border-bottom: 1px solid #434857;;
+	border-bottom: 1px solid #efefef;
 	padding-top: 1em !important;
 	padding-bottom: 0.8em !important;
 }
@@ -641,6 +623,11 @@ a.btn-danger,
 	font-size: 16px !important;
 	font-weight: bold !important;
 	vertical-align: baseline;
+}
+
+.panel-heading {
+	font-weight: bold !important;
+	text-transform: uppercase;
 }
 
 
@@ -664,25 +651,20 @@ a.btn-danger,
 
 
 .input-group input[type='search']{
-	background-color: #434857;
-	border: none !important;
+	background-color: #f5f5f5;
+	border: 1px solid silver;
 	color: #333;
 	font-weight: normal;
 	border-radius: 2px !important;
 }
 
 .input-group .btn {
-	border: none !important;
+	border: 1px solid #1ab394 !important;
 }
 
 
 .input-group button.btn-default{
-	background: #434857;
-	color: #fff;
-}
-
-.input-group input[type='search']:focus + span > button.btn-default {
-	background: #1997c6;
+	background: #1ab394;
 	color: #fff;
 }
 
@@ -705,8 +687,7 @@ input.form-control, select.form-control, textarea.form-control {
 
 
 input.form-control:focus, select.form-control:focus, textarea.form-control:focus {
-	border: 1px solid #1997c6 !important;
-	color: #fff;
+	border: 1px solid #23c6c8 !important;
 }
 
 .bootstrap-select button {

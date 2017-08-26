@@ -65,8 +65,8 @@
                         <td>{{ forloop.counter }}</td>
                         <td><a href="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}">{{ cost_breakdown.full_title|capfirst }}</a></td>
                         <td>{{ cost_breakdown.cost_breakdown_catagory.full_title|capfirst }}</td>
-                        <th>{{ cost_breakdown.project.full_title }}</th>
-                        <th class="bold text-danger">{{ cost_breakdown.created_at|date:'M d, Y' }}</th>
+                        <td>{{ cost_breakdown.project.full_title }}</td>
+                        <td class="bold text-danger">{{ cost_breakdown.created_at|date:'M d, Y' }}</td>
                     </tr>
                     {% endfor %}
 
