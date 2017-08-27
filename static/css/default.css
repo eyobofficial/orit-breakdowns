@@ -794,6 +794,28 @@ input[type='checkbox'] {
 }
 
 
+/*************** Panel Sizing Styles ***************/
+.panel-xs .panel-body {
+	min-height: 120px;
+}
+
+.panel-sm .panel-body {
+	min-height: 240px;
+}
+
+
+.panel-md .panel-body {
+	min-height: 320px;
+}
+
+.panel-lg .panel-body {
+	min-height: 520px;
+}
+
+.panel-xlg .panel-body {
+	min-height: 720px;
+}
+
 
 
 

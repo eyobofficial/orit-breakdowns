@@ -5,7 +5,7 @@
 {% endblock %}
 
 {% block content %}
-<div class="panel panel-default panel-detail" id="material-detail-panel">
+<div class="panel panel-default panel-detail panel-lg" id="material-detail-panel">
     <div class="panel-heading">
       Create New Breakdown - Step 2
     </div><!-- /END .panel-heading -->
@@ -17,15 +17,13 @@
                 {% csrf_token %}
 
                     {{ form.non_field_errors }}
-                    <fieldset id="breakdown-meta">
-                        <legend>Descriptions</legend>
-                        
+                    <fieldset id="breakdown-meta">                      
                         <!--- PROJECT TITLE -->
                         {% if not perms.breakdowns.manage_library %}
                         <div class="form-group">
                             <label for="project" class="col-sm-4 control-label">Project</label>
                             <div class="col-sm-8">
-                                <select name="project" class="selectpicker" data-width="100%" data-live-search="true" title="Select A Project">
+                                <select name="project" class="selectpicker" data-width="100%" data-live-search="true" title="Choose a project">
                                     {% for project in project_list %}
                                     <option value="{{ project.id }}" {% if project.id == form.project.value|add:0 %} selected="selected" {% endif%}>
                                         {{ project }}
@@ -44,7 +42,7 @@
                         <div class="form-group">
                             <label for="catagory" class="col-sm-4 control-label">Catagory</label>
                             <div class="col-sm-8">
-                                <select name="cost_breakdown_catagory" class="selectpicker" data-width="100%" title="Choose a Catagory" data-live-search="true">
+                                <select name="cost_breakdown_catagory" class="selectpicker" data-width="100%" title="Choose a catagory" data-live-search="true">
                                      {% for catagory in catagory_list %}
                                          <option value="{{ catagory.id }}" 
                                              {% if catagory.id == form.cost_breakdown_catagory.value|add:0 %} 
@@ -90,17 +88,12 @@
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
-                        
-                    </fieldset>
-                    
-                    <fieldset id="breakdown-meta">
-                        <legend>Data</legend>
-                        
+
                         <!-- MEASUREMENT UNIT -->
                         <div class="form-group">
                             <label for="unit" class="col-sm-4 control-label">Measurment Unit</label>
                             <div class="col-sm-8">
-                                <select name="unit" class="selectpicker " data-live-search="true" title="Choose Measurement Unit" data-width="100%" {% if library_breakdown.unit %} disabled="disabled" {% endif %}>
+                                <select name="unit" class="selectpicker " data-live-search="true" title="Choose measurement unit" data-width="100%" {% if library_breakdown.unit %} disabled="disabled" {% endif %}>
                                     {% for unit_catagory in unit_catagory_list %}
                                     <optgroup label="{{ unit_catagory.full_title }}">
                                         {% for unit in unit_catagory.unit_set.all %}
@@ -178,9 +171,8 @@
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
-                        {% endif %}
+                        {% endif %}                  
                     </fieldset>
-                   
 
                     <div class="form-group text-right pad-right-sm pad-up-sm">
                         <a href="{% url 'breakdowns:my_breakdown_list' %}" class="btn btn-default">Cancel</a>&nbsp;

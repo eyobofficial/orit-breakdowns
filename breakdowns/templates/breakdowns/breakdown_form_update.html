@@ -18,8 +18,6 @@
 
                     {{ form.non_field_errors }}
                     <fieldset id="breakdown-meta">
-                        <legend>Descriptions</legend>
-                        
                         <!--- PROJECT TITLE -->
                         {% if not perms.breakdowns.manage_library %}
                         <div class="form-group">
@@ -90,12 +88,7 @@
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
-                        
-                    </fieldset>
-                    
-                    <fieldset id="breakdown-meta">
-                        <legend>Data</legend>
-                        
+
                         <!-- MEASUREMENT UNIT -->
                         <div class="form-group">
                             <label for="unit" class="col-sm-4 control-label">Measurment Unit</label>
@@ -178,9 +171,8 @@
                                 </div>
                             </div>
                         </div><!-- /.form-group -->
-                        {% endif %}
+                        {% endif %}                      
                     </fieldset>
-
 
                     <div class="row">
                         <div class="col-sm-4 col-sm-offset-4">
@@ -196,9 +188,7 @@
                             </div>
                         </div>
                     </div><!-- /.row -->
-                   
-
-                    
+                  
                 </form>
             </div><!-- /.col-sm-6 -->
         </div><!-- /.row -->
