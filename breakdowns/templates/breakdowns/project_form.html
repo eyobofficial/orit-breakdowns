@@ -64,17 +64,27 @@
                         </div>
                     </div><!-- /.form-group -->
 
-                    <div class="form-group text-right pad-right-sm pad-up-sm">
-                    {% if project %}
-                        <a href="{% url 'breakdowns:project_detail' project.id %}" class="btn btn-default">Cancel</a>&nbsp;
-                    {% else %}
-                        <a href="{% url 'breakdowns:project_list' %}" class="btn btn-default">Cancel</a>&nbsp;
-                    {% endif %}
-                        <input type="submit" class="btn btn-primary" value="Submit">&nbsp;
-                    {% if project %}
-                        <a href="{% url 'breakdowns:project_delete' project.id %}" class="btn btn-danger"><span class="fa fa-trash"></span> Delete</a>
-                    {% endif %}
-                    </div><!-- /.form-group -->
+                    <!-- SUBMIT/CANCEL/DELETE BUTTONS -->
+                    <div class="row">
+                        <div class="col-sm-4 col-sm-offset-4">
+                        {% if project %}
+                            <div class="form-group pad-left-sm pad-up-sm">
+                                <a href="{% url 'breakdowns:project_delete' project.id %}" class="btn btn-danger">Delete</a>&nbsp;
+                            </div><!-- /.form-group -->
+                        {% endif %}
+                        </div><!-- /.col-sm-4 -->
+
+                        <div class="col-sm-4">
+                            <div class="pad-up-sm text-right">
+                            {% if project %}
+                                <a href="{% url 'breakdowns:project_detail' project.id %}" class="btn btn-default">Cancel</a>&nbsp;
+                            {% else %}
+                                <a href="{% url 'breakdowns:project_list' %}" class="btn btn-default">Cancel</a>&nbsp;
+                            {% endif %}
+                                <input type="submit" class="btn btn-primary" value="Submit">&nbsp;
+                            </div>
+                        </div>
+                    </div><!-- /.row -->
 
                 </form>
             </div><!-- /.col-sm-6 -->
