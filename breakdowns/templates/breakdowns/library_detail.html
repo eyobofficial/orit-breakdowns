@@ -9,19 +9,25 @@
 <div class="panel panel-default panel-detail" id="libary-detail-panel">
     <div class="panel-heading">
         <div class="row">
-            <div class="col-sm-8">
+            <div class="col-sm-6">
                 Cost Breakdown Summary
             </div><!-- /.col-sm-8 -->
             
-            {% if cost_breakdown.created_by.id == user.id %}
-            <div class="col-sm-4 text-right">
-                <a href="#"><span class="fa fa-edit"></span>&nbsp; Edit</a>
+            <div class="col-sm-6 text-right">
+                <form action="{% url 'breakdowns:breakdown_create_step_2' %}" class="form-inline">
+                    <input type="hidden" name="library_breakdown" value="{{ cost_breakdown.id }}">
+                    <button type="submit" class="btn btn-primary"><span class="fa fa-exchange"></span>&nbsp; Convert</button>
+                </form>
             </div><!-- /.col-sm-4 -->
-            {% endif %}
         </div><!-- /END .row -->
     </div><!-- /END .panel-heading -->
 
     <div class="panel-body">
+        {% if cost_breakdown.created_by.id == user.id %}
+        <div class="text-right">
+            <a href="{% url 'breakdowns:breakdown_update' cost_breakdown.id %}"><span class="fa fa-edit"></span>&nbsp; Edit</a>&nbsp;&nbsp;
+        </div>
+        {% endif %}
         <div class="row">
             <div class="col-sm-5 col-sm-offset-1">
                 <dl>
@@ -55,15 +61,6 @@
                 </dl>
             </div><!-- /.col-sm-6 -->
         </div><!-- /.row -->
-
-        <div class="row">
-            <div class="col-sm-10 col-sm-offset-1 text-right">
-                <form action="{% url 'breakdowns:breakdown_create_step_2' %}">
-                    <input type="hidden" name="library_breakdown" value="{{ cost_breakdown.id }}">
-                    <button type="submit" class="btn btn-primary">New From Current</button>
-                </form>
-            </div>
-        </div><!-- /.row -->     
     </div><!-- /.panel-body -->
 </div><!-- /END .cost-breakdown-detail-panel -->
 

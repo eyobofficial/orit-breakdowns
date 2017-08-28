@@ -160,7 +160,7 @@ a, a:visited {
 
 
 a:hover {
-	color: #F0AD4E!important;
+	color: #F0AD4E;
 	transition: all 0.2s;
 }
 
@@ -203,7 +203,7 @@ a.btn-primary:hover,
 .btn-primary:hover {
 	background-color: #1ab394 !important;
 	border: 1px solid #1ab394 !important;
-	color: #fff;
+	color: #fff !important;
 	transition: all 0.4s;
 }
 
@@ -220,7 +220,7 @@ a.btn-warning:hover,
 .btn-warning:hover {
 	background-color: #F0AD4E !important;
 	border: 1px solid #F0AD4E !important;
-	color: #fff;
+	color: #fff !important;
 	transition: all 0.4s;
 }
 
@@ -518,7 +518,8 @@ a.btn-danger,
 }
 
 #account-brand:hover {
-	color: #23c6c8 !important;
+	color: #ccc !important;
+	transition: 0.4s all;
 }
 
 /******************************* Navbar Style ***************************/
@@ -801,20 +802,20 @@ input[type='checkbox'] {
 	}
 
 	.panel-sm .panel-body {
-		min-height: 240px;
+		min-height: 180px;
 	}
 
 
 	.panel-md .panel-body {
-		min-height: 320px;
+		min-height: 220px;
 	}
 
 	.panel-lg .panel-body {
-		min-height: 520px;
+		min-height: 440px;
 	}
 
 	.panel-xlg .panel-body {
-		min-height: 720px;
+		min-height: 620px;
 	}
 }
 
