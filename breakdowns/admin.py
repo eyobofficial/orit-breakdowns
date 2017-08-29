@@ -1,5 +1,9 @@
 from django.contrib import admin
-from .models import (City, 
+from .models import (Company,
+                     AccountType,
+                     CompanyMembership,
+                     UserMembership,
+                     City, 
                      Project,
                      UnitCatagory, 
                      Unit, 
@@ -16,11 +20,41 @@ from .models import (City,
                      CostBreakdown, 
                      MaterialBreakdown, 
                      LabourBreakdown, 
-                     EquipmentBreakdown,)
+                     EquipmentBreakdown,
+                     LibraryBreakdownCatagory,
+                     StandardLibrary,
+                     StandardBreakdown,
+                     StandardMaterialBreakdown,
+                     StandardLabourBreakdown,
+                     StandardEquipmentBreakdown,)
 
 # Customize admin site header and title
 admin.site.site_header = 'Orit-Breakdowns Admin'
 admin.site.site_title = 'Orit Breakdowns Admin'
+
+# Register Company
+@admin.register(Company)
+class CompanyAdmin(admin.ModelAdmin):
+    list_display = ('id', 'full_title', 'registered_date',)
+    list_filter = ('registered_date',)
+
+# Register AccountType
+@admin.register(AccountType)
+class AccountTypeAdmin(admin.ModelAdmin):
+    list_display = ('full_title', 'price', 'duration',)
+    list_filter = ('duration',)
+
+# Register CompanyMembership
+@admin.register(CompanyMembership)
+class CompanyMembershipAdmin(admin.ModelAdmin):
+    list_display = ('company', 'start_date', 'end_date',)
+    list_filter = ('end_date',)
+
+# Register UserMembership
+@admin.register(UserMembership)
+class UserMembershipAdmin(admin.ModelAdmin):
+    list_display = ('user', 'account_type', 'start_date', 'end_date', 'is_approved',)
+    list_filter = ('is_approved', 'account_type',)
 
 # Register City
 admin.site.register(City)
@@ -110,3 +144,36 @@ class LabourBreakdownAdmin(admin.ModelAdmin):
 class EquipmentBreakdownAdmin(admin.ModelAdmin):
     list_display = ('costbreakdown', 'equipment', 'rental_rate')
     list_filter = ('costbreakdown', 'equipment', 'rental_rate')
+
+# Register LibraryBreakdownCatagory
+admin.site.register(LibraryBreakdownCatagory)
+
+# Register StandardLibrary
+admin.register(StandardLibrary)
+class StandardLibraryAdmin(admin.ModelAdmin):
+    list_display = ('full_title', 'is_private', 'company',)
+    list_filter  = ('is_private', )
+
+# Register StandardBreakdown
+admin.register(StandardBreakdown)
+class StandardBreakdownAdmin(admin.ModelAdmin):
+    list_display = ('full_title', 'library_breakdown_catagory', 'created_by', 'updated_at', 'is_premium',)
+    list_filter = ('library_breakdown_catagory', 'updated_at', 'is_premium', 'created_by',)
+
+# Register StandardMaterialBreakdown
+admin.register(StandardMaterialBreakdown)
+class StandardMaterialBreakdownAdmin(admin.ModelAdmin):
+    list_display = ('standard_breakdown', 'material', 'updated_at',)
+    list_filter = ('standard_breakdown', 'material', 'updated_at')
+
+# Register StandardLabourBreakdown
+admin.register(StandardLabourBreakdown)
+class StandardLabourBreakdownAdmin(admin.ModelAdmin):
+    list_display = ('standard_breakdown', 'labour', 'updated_at',)
+    list_filter = ('standard_breakdown', 'labour', 'updated_at',)
+
+# Register StandardEquipmentBreakdown
+admin.register(StandardEquipmentBreakdown)
+class StandardEquipmentBreakdownAdmin(admin.ModelAdmin):
+    list_display = ('standard_breakdown', 'equipment', 'updated_at',)
+    list_filter = ('standard_breakdown', 'equipment', 'updated_at',)

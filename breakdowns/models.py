@@ -8,6 +8,7 @@ class Company(models.Model):
     """
     full_title = models.CharField(max_length=120, help_text='Name of the Company')
     description = models.TextField(null=True, blank=True)
+    registered_date = models.DateField()
 
     class Meta:
         verbose_name_plural = 'Companies'
@@ -268,6 +269,7 @@ class Labour(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
+        verbose_name_plural = 'Labour'
         ordering = ['labour_catagory', '-updated_at']
 
     def get_absolute_url(self):
@@ -336,6 +338,7 @@ class Equipment(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
+        verbose_name_plural = 'Equipment'
         ordering = ['full_title', '-rental_rate', '-updated_at']
 
     def get_absolute_url(self):
@@ -545,11 +548,16 @@ class StandardLibrary(models.Model):
     """
     full_title = models.CharField(max_length=120, help_text='Title of the standard library')
     description = models.TextField(null=True, blank=True)
+    is_private = models.BooleanField(default=False, help_text='Does cost breakdown catagory is private to a single company?')
+    company = models.ForeignKey(Company, null=True, blank=True, default=None, on_delete=models.SET_NULL)
 
     class Meta:
         verbose_name = 'Standard Library'
         verbose_name_plural = 'Standard Libraries'
         ordering = ['full_title',]
+        permissions = (
+                ('access_private', 'Can access private standard libraries'),
+            )
 
     def __str__(self):
         """
@@ -575,6 +583,7 @@ class StandardBreakdown(models.Model):
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
+    is_premium = models.BooleanField(default=True, help_text='Does this cost breakdown is only available for paid users?')
 
     class Meta:
         verbose_name = 'Standard library breakdown'
@@ -582,6 +591,7 @@ class StandardBreakdown(models.Model):
         ordering = ['full_title', '-updated_at']
         permissions = (
                 ('manage_library', 'Can manage standard breakdown library'),
+                ('access_premium', 'Can access premium breakdowns'),
             )
 
     def get_absolute_url(self):
