@@ -1,8 +1,9 @@
 from django.contrib import admin
 from .models import (Company,
+                     PackageType,
+                     Package,
                      AccountType,
                      CompanyMembership,
-                     UserMembership,
                      City, 
                      Project,
                      UnitCatagory, 
@@ -41,20 +42,13 @@ class CompanyAdmin(admin.ModelAdmin):
 # Register AccountType
 @admin.register(AccountType)
 class AccountTypeAdmin(admin.ModelAdmin):
-    list_display = ('full_title', 'price', 'duration',)
-    list_filter = ('duration',)
+    list_display = ('full_title',)
 
 # Register CompanyMembership
 @admin.register(CompanyMembership)
 class CompanyMembershipAdmin(admin.ModelAdmin):
     list_display = ('company', 'start_date', 'end_date',)
     list_filter = ('end_date',)
-
-# Register UserMembership
-@admin.register(UserMembership)
-class UserMembershipAdmin(admin.ModelAdmin):
-    list_display = ('user', 'account_type', 'start_date', 'end_date', 'is_approved',)
-    list_filter = ('is_approved', 'account_type',)
 
 # Register City
 admin.site.register(City)

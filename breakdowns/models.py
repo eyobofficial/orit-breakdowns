@@ -20,17 +20,49 @@ class Company(models.Model):
         """
         return self.full_title
 
+class PackageType(models.Model):
+    """
+    Model the a package type is offered for sell.
+    Example: Company packages, freelance user packages etc
+    """
+    full_title = models.CharField(max_length=120)
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['full_title']
+
+    def __str__(self):
+        return self.full_title
+
+class Package(models.Model):
+    """
+    Models a package for sell
+    """
+    package_type = models.ForeignKey(PackageType, on_delete=models.CASCADE)
+    full_title = models.CharField(max_length=120)
+    description = models.TextField(null=True, blank=True)
+    duration = models.IntegerField(help_text='Number of days of the package offering')
+    max_members = models.IntegerField(help_text='Number of maximum number of membership per package')
+    price = models.DecimalField(max_digits=12, decimal_places=2)
+
+    class Meta:
+        ordering = ['package_type', 'full_title', '-price']
+
+    def __str__(self):
+        return self.full_title
+
+    def get_absolute_url(self):
+        return reverse('breakdowns:package-detail', kwargs={'pk': str(self.pk)})
+
 class AccountType(models.Model):
     """
     Models a membership account type
     """
     full_title = models.CharField(max_length=120, help_text='Title of Membership Account Type')
     description = models.TextField(null=True, blank=True, help_text='Description of the account type. Example: packages, duration, etc')
-    price = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
-    duration = models.IntegerField(null=True, blank=True, help_text='Number of dates of the duration')
 
     class Meta:
-        ordering = ['full_title', 'price']
+        ordering = ['full_title']
 
     def __str__(self):
         """
@@ -43,6 +75,7 @@ class CompanyMembership(models.Model):
     Model represents membership of a company
     """
     company = models.ForeignKey(Company, on_delete=models.CASCADE, help_text='Title of the member Company')
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
     start_date = models.DateField(help_text='Membership start date')
     end_date = models.DateField(help_text='Membership end date')
 
@@ -54,25 +87,6 @@ class CompanyMembership(models.Model):
         String representation of the CompanyMembership model
         """
         return '{} membership'.format(self.company.full_title)
-
-class UserMembership(models.Model):
-    """
-    Model represents a user membership
-    """
-    user = models.ForeignKey(User, on_delete=models.CASCADE)
-    account_type = models.ForeignKey(AccountType, null=True, on_delete=models.SET_NULL)
-    start_date = models.DateField(help_text='Membership start date')
-    end_date = models.DateField(help_text='Membership end date')
-    is_approved = models.BooleanField(default=False, help_text='Approve membership')
-
-    class Meta:
-        ordering = ['-is_approved', '-end_date', 'account_type', 'user']
-
-    def __str__(self):
-        """
-        String representation of the UserMembership model
-        """
-        return '{} membership'.format(self.user.get_full_name())
 
 class City(models.Model):
     """
