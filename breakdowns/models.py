@@ -548,7 +548,7 @@ class LibraryBreakdownCatagory(models.Model):
 
     class Meta:
         ordering = ['full_title']
-        verbose_name_plural = 'Cost Breakdown Catagories'
+        verbose_name_plural = 'Library Cost Breakdown Catagories'
 
     def __str__(self):
         """
@@ -703,3 +703,78 @@ class StandardEquipmentBreakdown(models.Model):
         Returns string repsentation of the StandardEquipmentBreakdown model
         """
         return '{} Standard Equipment Breakdown'.format(self.equipment.full_title)
+
+class NotificationGroup(models.Model):
+    """
+    Model representing different notification groups
+    Example: add new material, update material, add new supplier, update supplier etc
+    """
+    full_title = models.CharField(max_length=120, help_text='Notification group title')
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['full_title',]
+
+    def __str__(self):
+        """
+        String representation of the a particular a notification group object
+        """
+        return self.full_title
+
+class NotificationType(models.Model):
+    """
+    Model representing different notification types
+    Example: info, warning, reminder etc
+    """
+    full_title = models.CharField(max_length=120, help_text='Notification type title')
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['full_title',]
+
+    def __str__(self):
+        """
+        String representation of the a particular notification type object
+        """
+        return self.full_title
+
+class Notification(models.Model):
+    """
+    Model representing a notification
+    """
+    notification_group = models.ForeignKey(NotificationGroup, on_delete=models.CASCADE)
+    notification_type = models.ForeignKey(NotificationType, on_delete=models.CASCADE)
+    full_title = models.CharField(max_length=120, help_text='Notification title')
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['notification_group', 'notification_type',]
+
+    def __str__(self):
+        """
+        String representation of a particular notification object
+        """
+        return self.full_title
+
+class UserNotification(models.Model):
+    """
+    Model representing a notification for a particular user
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    notification = models.ForeignKey(Notification, on_delete=models.CASCADE)
+    is_seen = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        ordering = ['-is_seen', 'user', '-updated_at',]
+
+    def seen(self):
+        self.is_seen = True
+
+    def __str__(self):
+        """
+        String representation of a particular UserNotification object
+        """
+        return self.notification.full_title
+

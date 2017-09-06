@@ -27,7 +27,12 @@ from .models import (Company,
                      StandardBreakdown,
                      StandardMaterialBreakdown,
                      StandardLabourBreakdown,
-                     StandardEquipmentBreakdown,)
+                     StandardEquipmentBreakdown,
+                     NotificationGroup,
+                     NotificationType,
+                     Notification,
+                     UserNotification,
+                     )
 
 # Customize admin site header and title
 admin.site.site_header = 'Orit-Breakdowns Admin'
@@ -38,6 +43,15 @@ admin.site.site_title = 'Orit Breakdowns Admin'
 class CompanyAdmin(admin.ModelAdmin):
     list_display = ('id', 'full_title', 'registered_date',)
     list_filter = ('registered_date',)
+
+# Register PackageType
+admin.site.register(PackageType)
+
+# Register Package
+@admin.register(Package)
+class PackageAdmin(admin.ModelAdmin):
+    list_display = ('full_title', 'package_type', 'duration', 'max_members', 'price',)
+    list_filter = ('package_type', 'duration', 'max_members', 'price',)
 
 # Register AccountType
 @admin.register(AccountType)
@@ -143,31 +157,49 @@ class EquipmentBreakdownAdmin(admin.ModelAdmin):
 admin.site.register(LibraryBreakdownCatagory)
 
 # Register StandardLibrary
-admin.register(StandardLibrary)
+@admin.register(StandardLibrary)
 class StandardLibraryAdmin(admin.ModelAdmin):
     list_display = ('full_title', 'is_private', 'company',)
     list_filter  = ('is_private', )
 
 # Register StandardBreakdown
-admin.register(StandardBreakdown)
+@admin.register(StandardBreakdown)
 class StandardBreakdownAdmin(admin.ModelAdmin):
     list_display = ('full_title', 'library_breakdown_catagory', 'created_by', 'updated_at', 'is_premium',)
     list_filter = ('library_breakdown_catagory', 'updated_at', 'is_premium', 'created_by',)
 
 # Register StandardMaterialBreakdown
-admin.register(StandardMaterialBreakdown)
+@admin.register(StandardMaterialBreakdown)
 class StandardMaterialBreakdownAdmin(admin.ModelAdmin):
     list_display = ('standard_breakdown', 'material', 'updated_at',)
     list_filter = ('standard_breakdown', 'material', 'updated_at')
 
 # Register StandardLabourBreakdown
-admin.register(StandardLabourBreakdown)
+@admin.register(StandardLabourBreakdown)
 class StandardLabourBreakdownAdmin(admin.ModelAdmin):
     list_display = ('standard_breakdown', 'labour', 'updated_at',)
     list_filter = ('standard_breakdown', 'labour', 'updated_at',)
 
 # Register StandardEquipmentBreakdown
-admin.register(StandardEquipmentBreakdown)
+@admin.register(StandardEquipmentBreakdown)
 class StandardEquipmentBreakdownAdmin(admin.ModelAdmin):
     list_display = ('standard_breakdown', 'equipment', 'updated_at',)
     list_filter = ('standard_breakdown', 'equipment', 'updated_at',)
+
+# Register NotificationGroup
+admin.site.register(NotificationGroup)
+
+# Register NotificationType
+admin.site.register(NotificationType)
+
+# Register Notification
+@admin.register(Notification)
+class NotificationAdmin(admin.ModelAdmin):
+    list_display = ('full_title', 'notification_group', 'notification_type',)
+    list_filter = ('notification_group', 'notification_type',)
+
+# Register UserNotification
+@admin.register(UserNotification)
+class UserNotificationAdmin(admin.ModelAdmin):
+    list_display = ('user', 'notification', 'is_seen', 'updated_at',)
+    list_filter = ('user', 'notification', 'is_seen', 'updated_at',)
