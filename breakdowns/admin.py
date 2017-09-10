@@ -2,7 +2,6 @@ from django.contrib import admin
 from .models import (Company,
                      PackageType,
                      Package,
-                     AccountType,
                      CompanyMembership,
                      City, 
                      Project,
@@ -52,11 +51,6 @@ admin.site.register(PackageType)
 class PackageAdmin(admin.ModelAdmin):
     list_display = ('full_title', 'package_type', 'duration', 'max_members', 'price',)
     list_filter = ('package_type', 'duration', 'max_members', 'price',)
-
-# Register AccountType
-@admin.register(AccountType)
-class AccountTypeAdmin(admin.ModelAdmin):
-    list_display = ('full_title',)
 
 # Register CompanyMembership
 @admin.register(CompanyMembership)

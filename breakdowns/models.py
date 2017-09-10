@@ -43,6 +43,7 @@ class Package(models.Model):
     description = models.TextField(null=True, blank=True)
     duration = models.IntegerField(help_text='Number of days of the package offering')
     max_members = models.IntegerField(help_text='Number of maximum number of membership per package')
+    max_breakdowns = models.IntegerField(null=True, blank=True, help_text='Number of maximum number of cost breakdowns that can be generated per month')
     price = models.DecimalField(max_digits=12, decimal_places=2)
 
     class Meta:
@@ -54,22 +55,6 @@ class Package(models.Model):
     def get_absolute_url(self):
         return reverse('breakdowns:package-detail', kwargs={'pk': str(self.pk)})
 
-class AccountType(models.Model):
-    """
-    Models a membership account type
-    """
-    full_title = models.CharField(max_length=120, help_text='Title of Membership Account Type')
-    description = models.TextField(null=True, blank=True, help_text='Description of the account type. Example: packages, duration, etc')
-
-    class Meta:
-        ordering = ['full_title']
-
-    def __str__(self):
-        """
-        String representation of the AccountType model
-        """
-        return self.full_title
-
 class CompanyMembership(models.Model):
     """
     Model represents membership of a company
@@ -78,15 +63,71 @@ class CompanyMembership(models.Model):
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
     start_date = models.DateField(help_text='Membership start date')
     end_date = models.DateField(help_text='Membership end date')
+    approved = models.BooleanField(default=False, help_text='Approve company membership')
 
     class Meta:
-        ordering = ['-end_date',]
+        ordering = ['-end_date']
 
     def __str__(self):
         """
         String representation of the CompanyMembership model
         """
         return '{} membership'.format(self.company.full_title)
+
+class UserMembership(models.Model):
+    """
+    Model represents a registered user member
+    """
+    user = models.ForeignKey(User, on_delete=models.CASCADE)
+    company_membership = models.ForeignKey(CompanyMembership, null=True, blank=True, on_delete=models.SET_NULL, help_text='If user is an employee of a registered company')
+    package = models.ForeignKey(Package, on_delete=models.CASCADE)
+    start_date = models.DateField(help_text='User Membership start date')
+    end_date = models.DateField(null=True, blank=True, help_text='User Membership end date')
+    approved = models.BooleanField(default=False, help_text='Approve user membership')
+
+    class Meta:
+        ordering = ['-approved', '-end_date', 'user',]
+
+    def __str__(self):
+        """
+        String represtation of the UserMembership model
+        """
+        return 'User: {}, Company: {}, Package: {}'.format(self.user, self.company_membership, self.package)
+
+class UserPayment(models.Model):
+    """
+    Model represents user(i.e. freelance user) payment record
+    """
+    user_membership = models.ForeignKey(UserMembership, null=True, on_delete=models.SET_NULL)
+    amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, help_text='Amount paid for membership (including VAT)')
+    payment_date = models.DateField(help_text='Date where payment is completed by the registered user')
+
+    class Meta:
+        ordering = ['-payment_date', 'user_membership',]
+
+    def __str__(self):
+        """
+        String representation of the UserPayment model
+        """
+        return self.user_membership
+
+class CompanyPayment(models.Model):
+    """
+    Model represents company payment record
+    """
+    company_membership = models.ForeignKey(CompanyMembership, null=True, on_delete=models.SET_NULL)
+    amount = models.DecimalField(max_digits=12, decimal_places=2, default=0.00, help_text='Amount paid for membership (including VAT)')
+    payment_date = models.DateField(help_text='Date where payment is completed by the registered company')
+
+    class Meta:
+        ordering = ['-payment_date', 'company_membership',]
+
+    def __str__(self):
+        """
+        String representation of the CompanyPayment model
+        """
+        return self.company_membership
+
 
 class City(models.Model):
     """
