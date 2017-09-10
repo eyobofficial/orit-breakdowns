@@ -3,6 +3,9 @@ from .models import (Company,
                      PackageType,
                      Package,
                      CompanyMembership,
+                     UserMembership,
+                     UserPayment,
+                     CompanyPayment,
                      City, 
                      Project,
                      UnitCatagory, 
@@ -55,8 +58,26 @@ class PackageAdmin(admin.ModelAdmin):
 # Register CompanyMembership
 @admin.register(CompanyMembership)
 class CompanyMembershipAdmin(admin.ModelAdmin):
-    list_display = ('company', 'start_date', 'end_date',)
-    list_filter = ('end_date',)
+    list_display = ('company', 'start_date', 'end_date', 'approved',)
+    list_filter = ('end_date', 'approved',)
+
+# Register UserMembership
+@admin.register(UserMembership)
+class UserMembershipAdmin(admin.ModelAdmin):
+    list_display = ('user', 'company_membership', 'end_date', 'approved',)
+    list_filter = ('end_date', 'company_membership', 'approved',)
+
+# Register UserPayment
+@admin.register(UserPayment)
+class UserPaymentAdmin(admin.ModelAdmin):
+    list_display = ('user_membership', 'amount', 'payment_date',)
+    list_filter = ('payment_date', 'amount',)
+
+# Register CompanyPayment
+@admin.register(CompanyPayment)
+class CompanyPaymentAdmin(admin.ModelAdmin):
+    list_display = ('company_membership', 'amount', 'payment_date',)
+    list_filter = ('payment_date', 'amount',)
 
 # Register City
 admin.site.register(City)
