@@ -2,6 +2,8 @@ from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
 
+from datetime import date, timedelta
+
 class Company(models.Model):
     """
     Model a Construction Company
@@ -41,10 +43,12 @@ class Package(models.Model):
     package_type = models.ForeignKey(PackageType, on_delete=models.CASCADE)
     full_title = models.CharField(max_length=120)
     description = models.TextField(null=True, blank=True)
-    duration = models.IntegerField(help_text='Number of days of the package offering')
+    duration = models.IntegerField(null=True, blank=True, help_text='Number of days of the package offering')
     max_members = models.IntegerField(help_text='Number of maximum number of membership per package')
     max_breakdowns = models.IntegerField(null=True, blank=True, help_text='Number of maximum number of cost breakdowns that can be generated per month')
     price = models.DecimalField(max_digits=12, decimal_places=2)
+    level = models.IntegerField(unique=True, help_text='Level of the membership packages')
+    default = models.BooleanField(default=False, help_text='Default package assigned to all new registered users intially')
 
     class Meta:
         ordering = ['package_type', 'full_title', '-price']
@@ -61,13 +65,23 @@ class CompanyMembership(models.Model):
     """
     company = models.ForeignKey(Company, on_delete=models.CASCADE, help_text='Title of the member Company')
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
-    start_date = models.DateField(help_text='Membership start date')
-    end_date = models.DateField(help_text='Membership end date')
+    registered_at = models.DateField(auto_now_add=True)
+    start_date = models.DateField(null=True, blank=True, help_text='Membership start date')
+    end_date = models.DateField(null=True, blank=True, help_text='Membership end date')
     approved = models.BooleanField(default=False, help_text='Approve company membership')
 
     class Meta:
-        ordering = ['-end_date']
+        ordering = ['-end_date',]
 
+    def save(self, *args, **kwargs):
+        """
+        Overwrite the default save() method 
+        """
+        if self.approved == True and self.start_date is None:
+            self.start_date = date.today()
+            self.end_date = date.today() + timedelta(days=self.package.duration)
+        super(CompanyMembership, self).save(*args, **kwargs)
+        
     def __str__(self):
         """
         String representation of the CompanyMembership model
@@ -81,18 +95,48 @@ class UserMembership(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     company_membership = models.ForeignKey(CompanyMembership, null=True, blank=True, on_delete=models.SET_NULL, help_text='If user is an employee of a registered company')
     package = models.ForeignKey(Package, on_delete=models.CASCADE)
-    start_date = models.DateField(help_text='User Membership start date')
+    registered_at = models.DateField(auto_now_add=True)
+    start_date = models.DateField(null=True, blank=True, help_text='User Membership start date')
     end_date = models.DateField(null=True, blank=True, help_text='User Membership end date')
     approved = models.BooleanField(default=False, help_text='Approve user membership')
+    is_expired = models.BooleanField(default=False, help_text='Membership has/has not expired')
 
     class Meta:
         ordering = ['-approved', '-end_date', 'user',]
+
+    def membership_status(self):
+        """
+        Return the number of days for the membership to expire
+        """
+        if self.end_date is not None:
+            days_left = self.end_date - date.today()
+            if days_left <= 0:
+                self.is_expired = True
+            return days_left.days
+        return
+
+    def save(self, *args, **kwargs):
+        """
+        Overwrite the default save() method 
+        """
+        if self.package.default == True:
+            self.approved = True
+
+        if self.approved == True and self.start_date is None:
+            self.start_date = date.today()
+
+            try:
+                self.end_date = date.today() + timedelta(days=self.package.duration)
+            except:
+                self.end_date = None 
+
+        super(UserMembership, self).save(*args, **kwargs)
 
     def __str__(self):
         """
         String represtation of the UserMembership model
         """
-        return 'User: {}, Company: {}, Package: {}'.format(self.user, self.company_membership, self.package)
+        return 'User: {}, Company: {}, Package: {}'.format(self.user.get_full_name(), self.company_membership, self.package)
 
 class UserPayment(models.Model):
     """
@@ -138,6 +182,7 @@ class City(models.Model):
 
     class Meta:
         ordering = ['full_title']
+        verbose_name_plural = 'Cities'
 
     def __str__(self):
         """

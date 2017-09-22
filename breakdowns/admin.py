@@ -52,20 +52,20 @@ admin.site.register(PackageType)
 # Register Package
 @admin.register(Package)
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ('full_title', 'package_type', 'duration', 'max_members', 'price',)
+    list_display = ('full_title', 'package_type', 'duration', 'max_members', 'price', 'level', 'default',)
     list_filter = ('package_type', 'duration', 'max_members', 'price',)
 
 # Register CompanyMembership
 @admin.register(CompanyMembership)
 class CompanyMembershipAdmin(admin.ModelAdmin):
-    list_display = ('company', 'start_date', 'end_date', 'approved',)
+    list_display = ('company', 'registered_at', 'start_date', 'end_date', 'approved',)
     list_filter = ('end_date', 'approved',)
 
 # Register UserMembership
 @admin.register(UserMembership)
 class UserMembershipAdmin(admin.ModelAdmin):
-    list_display = ('user', 'company_membership', 'end_date', 'approved',)
-    list_filter = ('end_date', 'company_membership', 'approved',)
+    list_display = ('user', 'company_membership', 'package', 'registered_at', 'start_date', 'end_date', 'approved',)
+    list_filter = ('end_date', 'company_membership', 'package', 'approved',)
 
 # Register UserPayment
 @admin.register(UserPayment)

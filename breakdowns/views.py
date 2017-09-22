@@ -8,17 +8,21 @@ from django.contrib.auth.models import User, Group
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin, UserPassesTestMixin
 from django.conf import settings
+from django.core import serializers
 from datetime import date
 import openpyxl
 from xlrd import open_workbook
 from xlwt import Workbook, easyxf, Formula
 from xlutils.copy import copy
 from .forms import SignupForm, StepOneForm, StepTwoForm
-from .models import City, Project, UnitCatagory, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
+from .models import Package, UserMembership, City, Project, UnitCatagory, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
 # Create your views here.
 @login_required
 def index(request):
+    current_membership = list(UserMembership.objects.filter(user=request.user).filter(approved=True).filter(is_expired=False).order_by('-package')[0])
+    request.session['account'] = serializers.serialize('json', current_membership)
+
     return render(request, 'breakdowns/index.html', context={
             'page_name': 'Index',
         })
@@ -28,7 +32,6 @@ def signup(request):
     """
     Register a new user, login the new user and redirect to breakdowns:index page
     """
-
     # Check if user already logged
     if request.user.is_authenticated:
         return redirect('breakdowns:index')
@@ -49,6 +52,13 @@ def signup(request):
             member_group = Group.objects.get(name='member')
             user.groups.add(member_group,)
             user.save()
+
+            # Register new user to default account package
+            default_package = Package.objects.get(default=True)
+            membership = UserMembership(user=user, package=default_package)
+            membership.save()
+
+            # Login and redirect to user dashboard
             login(request, user)
             return redirect('breakdowns:index')
     else:
