@@ -20,8 +20,8 @@ from .models import Package, UserMembership, City, Project, UnitCatagory, Unit, 
 # Create your views here.
 @login_required
 def index(request):
-    current_membership = list(UserMembership.objects.filter(user=request.user).filter(approved=True).filter(is_expired=False).order_by('-package')[0])
-    request.session['account'] = serializers.serialize('json', current_membership)
+    # current_membership = list(UserMembership.objects.filter(user=request.user).filter(approved=True).filter(is_expired=False).order_by('-package')[0])
+    # request.session['account'] = serializers.serialize('json', current_membership)
 
     return render(request, 'breakdowns/index.html', context={
             'page_name': 'Index',

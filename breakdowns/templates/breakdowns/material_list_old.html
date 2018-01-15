@@ -1,0 +1,82 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block title %}
+<title>Material Library | Orit</title>
+{% endblock title %}
+
+{% block content %}
+<div class="panel panel-default panel-list panel-lg" id="material-list-panel">
+    <div class="panel-heading panel-heading-with-search">
+        <div class="row">
+            <div class="col-sm-7 breath-up-xs">
+                Material Library
+            </div><!-- /.col-sm-7 -->
+
+            <div class="col-sm-5">
+               <form name="material_search_form" method="GET" id="material-form" class="cost-form">
+                   <div class="form-group">
+                       <div class="input-group input-group-sm inner-search-input-group">
+                           <input type="search" class="form-control" id="material-search-input" name="material_search" placeholder="Search Material" value="{{ material_search|default_if_none:'' }}">
+                           <span class="input-group-btn">
+                               <button type="submit" class="btn btn-default">
+                                   <span class="fa fa-search"></span>
+                               </button>
+                           </span>
+                       </div><!-- /.input-group -->                                    
+                   </div><!-- /.form-group -->
+            </div><!-- /.col-sm-5 -->
+        </div><!-- /.row -->
+    </div><!-- /.panel-heading -->
+
+    <div class="panel-body">
+        <div class="catagory-selector-container breath-down-sm">
+            <div class="row">
+                <div class="col-sm-4">
+                        <div class="form-group">
+                            <label for="material-catagory-select">Select Catagory</label>
+                            <select name="material_catagory" id="material-catagory-select" class="form-control catagory-selector">
+                                <option {% if material_catagory is None %} selected="selected"{% endif %}>All</option>
+                                {% for catagory in material_catagory_list %}
+                                <option value="{{ catagory.id }}" {% if material_catagory == catagory.id %} selected="selected"{% endif %}>{{ catagory.full_title|title }}</option>
+                                {% endfor %}
+                            </select>
+                        </div><!-- /.form-group -->
+                    </form>
+                </div><!-- /.col-sm-2 -->
+            </div><!-- /.row -->
+        </div><!-- /.catagory-selector-container -->
+        
+        {% if material_list %}
+        <div class="table-responsive">
+            <table class="material-table table panel-table table-hover table-stripped">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Material</th>
+                        <th>Catagory</th>
+                        <th class="text-center">Unit</th>
+                        <th class="text-center">Last Updated</th>
+                    </tr>
+                </thead>
+
+                <tbody>
+                    {% for material in material_list %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td><a href="{% url 'breakdowns:material_detail' material.id %}">{{ material.full_title|capfirst }}</a></td>
+                        <td>{{ material.material_catagory.full_title|capfirst }}</td>
+                        <td class="text-center">{% autoescape off %}{{ material.unit.html_title }}{% endautoescape %}</td>
+                        <td class="text-center text-danger bold">{{ material.updated_at|date:'M d, Y' }}</td>
+                    </tr>
+                    {% endfor %}
+
+                </tbody>
+            </table>
+        </div><!-- /END .table-responsive -->
+        {% else %}
+        <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> There are currently no materials in the database</strong></p>
+        {% endif %}
+    </div><!--/.panel-body -->
+</div><!-- /#product-list-panel -->
+{% endblock content %}
