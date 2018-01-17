@@ -71,7 +71,7 @@ urlpatterns = [
     url(r'^labour/(?P<pk>[0-9]+)/$', views.LabourDetail.as_view(), name='labour_detail'),
 
     # Equipment List URL
-    url(r'^equipments/$', views.equipment_list, name='equipment_list'),
+    url(r'^equipments/$', views.EquipmentList.as_view(), name='equipment_list'),
 
     # Equipment Detail URL
     url(r'^equipment/(?P<pk>[0-9]+)/$', views.EquipmentDetail.as_view(), name='equipment_detail'),

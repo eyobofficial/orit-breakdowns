@@ -66,47 +66,6 @@ def signup(request):
     return render(request, template_name, context={'form': form})
 
 # Material List View
-@login_required
-def material_list(request):
-    """
-    Returns material list 
-    """
-    try:
-        material_catagory = int(request.GET.get('material_catagory'))
-    except:
-        material_catagory = None
-    material_search = request.GET.get('material_search')
-
-    # Admin User
-    admin = User.objects.get(pk=1)
-    
-    # Return all material objects
-    try:
-        material_list = Material.objects.filter(created_by=admin.id)
-    except Material.DoesNotExist:
-        raise Http404('page not found')
-
-
-    if material_catagory is not None:
-        material_catagory = int(material_catagory)
-        material_list = Material.objects.filter(material_catagory=material_catagory)
-
-    if material_search is not None:
-        material_list = material_list.filter(full_title__icontains=material_search)      
-
-    material_catagory_list = get_list_or_404(MaterialCatagory)
-    page_name = 'Materials'
-    template_name = 'breakdowns/material_list.html'
-
-    return render(request, template_name, context={
-            'material_list': material_list,
-            'material_catagory_list': material_catagory_list,
-            'page_name': page_name,
-            'material_search': material_search,
-            'material_catagory': material_catagory,
-        })
-
-# Material List View
 class MaterialList(LoginRequiredMixin, generic.ListView):
     model = Material
 
@@ -116,7 +75,7 @@ class MaterialList(LoginRequiredMixin, generic.ListView):
     def get_context_data(self, *args, **kwargs):
         context = super(MaterialList, self).get_context_data(*args, **kwargs)
         context['catagory_count'] = MaterialCatagory.objects.all().count()
-        context['page_name'] = 'Materials'
+        context['page_name'] = 'materials'
         return context  
 
 # Material Detail View
@@ -126,45 +85,8 @@ class MaterialDetail(LoginRequiredMixin, generic.DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(MaterialDetail, self).get_context_data(*args, **kwargs)
         context['price_list'] = MaterialPrice.objects.filter(material_id=self.kwargs['pk'])
-        context['page_name'] = 'Materials'
+        context['page_name'] = 'materials'
         return context
-
-# Labour List View
-@login_required
-def labour_list(request):
-    """
-    Returns labour list 
-    """
-    labour_search = request.GET.get('labour_search')
-
-    try:
-        labour_city = int(request.GET['city'])
-    except:
-        default_city = City.objects.get(full_title='Addis Ababa')
-        labour_city = default_city.id
-
-    labour_price_list = LabourPrice.objects.filter(city=labour_city)
-
-    if labour_search is not None:
-        labour_list = []
-        for labour_price in labour_price_list:
-            if str(labour_search) in str(labour_price.labour.full_title):
-                labour_list.append(labour_price)
-    else:
-        labour_list = list(labour_price_list)
-
-
-    city_list = get_list_or_404(City)
-    page_name = 'Labours'
-    template_name = 'breakdowns/labour_list.html'
-
-    return render(request, template_name, context={
-            'labour_price_list': labour_list,
-            'city_list': city_list,
-            'page_name': page_name,
-            'labour_search': labour_search,
-            'labour_city': labour_city,
-        })
 
 # Labour List View
 class LabourPriceList(LoginRequiredMixin, generic.ListView):
@@ -180,7 +102,7 @@ class LabourPriceList(LoginRequiredMixin, generic.ListView):
         context = super(LabourPriceList, self).get_context_data(*args, **kwargs)
         context['catagory_count'] = LabourCatagory.objects.all().count()
         context['city_count'] = City.objects.all().count()
-        context['page_name'] = 'Labour'
+        context['page_name'] = 'labour'
         return context  
 
 # Labour Detail View
@@ -189,8 +111,21 @@ class LabourDetail(LoginRequiredMixin, generic.DetailView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(LabourDetail, self).get_context_data(*args, **kwargs)
-        context['page_name'] = 'Labours'
+        context['page_name'] = 'labour'
         return context
+
+# Equipment List View
+class EquipmentList(LoginRequiredMixin, generic.ListView):
+    model = Equipment
+
+    def get_queryset(self, *args, **kwargs):
+        return Equipment.objects.filter(created_by__is_staff=True)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(EquipmentList, self).get_context_data(*args, **kwargs)
+        context['catagory_count'] = EquipmentCatagory.objects.all().count()
+        context['page_name'] = 'equipment'
+        return context 
 
 # Equipment List View
 @login_required

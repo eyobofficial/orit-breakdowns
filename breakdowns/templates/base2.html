@@ -112,7 +112,7 @@
                 <li class="nav-category">
                     MARKET ANALYSIS
                 </li>
-                <li>
+                <li {% if page_name == 'materials' %}class="active"{% endif %}>
                     <a href="{% url 'breakdowns:material_list' %}">Material</a>
                 </li>
                <!--  <li>
@@ -125,12 +125,12 @@
                        <li><a href="activity.html">Sanitary</a></li>
                    </ul>
                </li> -->
-               <li>
+               <li {% if page_name == 'labour' %}class="active"{% endif %}>
                    <a href="{% url 'breakdowns:labour_list' %}">Labour</a>
                </li>
 
-                <li>
-                    <a href="#">Equipment</a>
+                <li {% if page_name == 'equipment' %}class="active"{% endif %}>
+                    <a href="{% url 'breakdowns:equipment_list' %}">Equipment</a>
                 </li>
 
                 <li class="nav-category">
