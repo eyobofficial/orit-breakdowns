@@ -28,7 +28,7 @@
 
     <!-- MAIN STYLE -->
     {% block main_style %}
-    <link rel="stylesheet" type="text/css" href="{% static 'css/main-x.css' %}">
+    <link rel="stylesheet" type="text/css" href="{% static 'luna/styles/main.css' %}">
     {% endblock main_style %}
 
     <!-- PAGE STYLE -->
@@ -514,7 +514,9 @@
 <!-- End wrapper-->
 
 <!-- Vendor scripts -->
+{% block pace-script %}
 <script src="{% static 'luna/vendor/pacejs/pace.min.js' %}"></script>
+{% endblock pace-script %}
 <script src="{% static 'luna/vendor/jquery/dist/jquery.min.js' %}"></script>
 <script src="{% static 'luna/vendor/bootstrap/js/bootstrap.min.js' %}"></script>
 <script src="{% static 'luna/vendor/toastr/toastr.min.js' %}"></script>

@@ -1,54 +1,64 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
 
 {% block title %}
 <title>Login | Orit Breakdown</title>
 {% endblock title %}
 
 {% block wrapper %}
-<div id="account-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-4 col-sm-offset-4">
-                <div class="panel panel-default panel-form" id="login-panel">
-                    <div class="panel-heading text-center">
-                        Login | <span class="fa fa-fire"></span> Orit Breakdowns
-                    </div><!-- /EN .panel-heading -->
+<!-- Main content-->
+<section class="container-fluid">
+    <div class="back-link">
+        <a href="#" class="btn btn-accent"><span class="fa fa-home"></span> Home</a>
+    </div>
 
-                    <div class="panel-body">
-                        {{ form.non_field_errors }}
+    <div class="container-center animated slideInDown">
 
-                        <form action="" method="POST">
-                            {% csrf_token %}
 
-                            <!-- HIDDEN FIELDS -->
-                            <input type="hidden" name="next" value="{{ next }}"> 
-
-                            <!-- USERNAME -->
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" name="username" id="username" class="form-control" placeholder="Username" value="{{ form.username.value|default_if_none:'' }}">
-                                {{ form.username.errors }}
-                            </div><!-- /.form-group -->
-
-                            <!-- PASSWORD -->
-                            <div class="form-group">
-                                <label for="password">Password</label>
-                                <input type="password" name="password" id="password" class="form-control" placeholder="Password">
-                                {{ form.password.errors }}
-                            </div><!-- /.form-group -->
-
-                            <div class="form-group">
-                                <input type="submit" value="Login" class="btn btn-primary btn-block"> 
-                            </div><!-- /.form-group -->
-                        </form>
-                    </div><!-- /.panel-body -->
-
-                    <div class="panel-footer text-center">
-                        Don't have an account yet? <a href="{% url 'signup' %}">Register now</a>
-                    </div><!-- /.panel-footer -->
-                </div>
+        <div class="view-header">
+            <div class="header-icon">
+                <i class="pe page-header-icon pe-7s-unlock"></i>
             </div>
-        </div><!-- /END .row -->
-    </div><!-- /END .container -->
-</div><!-- /END #account-wrapper -->
+            <div class="header-title">
+                <h3>Login</h3>
+                <small>
+                    Please enter your credentials to login.
+                </small>
+            </div>
+        </div>
+
+        <div class="panel panel-filled">
+            <div class="panel-body">
+                {{ form.non_field_errors }}
+                <form action="" method="POST" id="loginForm" novalidate>
+                    {% csrf_token %}
+
+                    <!-- HIDDEN FIELDS -->
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <div class="form-group">
+                        <label class="control-label" for="username">Username</label>
+                        <input type="text" placeholder="example@gmail.com" title="Please enter you username" required="" name="username" id="username" class="form-control" value="{{ form.username.value|default_if_none:'' }}">
+                        <span class="help-block small">Your unique username to app</span>
+                        {{ form.username.errors }}
+                    </div>
+                    <div class="form-group">
+                        <label class="control-label" for="password">Password</label>
+                        <input type="password" title="Please enter your password" placeholder="******" required="" value="" name="password" id="password" class="form-control">
+                        <span class="help-block small">Your strong password</span>
+                        {{ form.password.errors }}
+                    </div>
+                    <div>
+                        <button class="btn btn-accent">Login</button>
+                        <a class="btn btn-default" href="{% url 'signup' %}">Register</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- End main content-->
 {% endblock wrapper %}
+
+<!-- OVERRIDE (REMOVE) pace.js SCRIPT -->
+{% block pace-script %}{% endblock pace-script %}
