@@ -167,15 +167,19 @@ def labour_list(request):
         })
 
 # Labour List View
-class LabourList(LoginRequiredMixin, generic.ListView):
+class LabourPriceList(LoginRequiredMixin, generic.ListView):
     model = LabourPrice
+    template_name = 'breakdowns/labour_list.html'
+    context_object_name = 'labour_price_list'
 
     def get_queryset(self, *args, **kwargs):
-        return Labour.objects.filter(created_by__is_staff=True)
+        # return LabourPrice.objects.filter(created_by__is_staff=True)
+        return LabourPrice.objects.all()
 
     def get_context_data(self, *args, **kwargs):
-        context = super(LabourList, self).get_context_data(*args, **kwargs)
+        context = super(LabourPriceList, self).get_context_data(*args, **kwargs)
         context['catagory_count'] = LabourCatagory.objects.all().count()
+        context['city_count'] = City.objects.all().count()
         context['page_name'] = 'Labour'
         return context  
 

@@ -65,7 +65,7 @@ urlpatterns = [
     url(r'^material/(?P<pk>[0-9]+)/$', views.MaterialDetail.as_view(), name='material_detail'),
 
     # Labour List URL
-    url(r'^labours/$', views.labour_list, name='labour_list'),
+    url(r'^labours/$', views.LabourPriceList.as_view(), name='labour_list'),
 
     # Labour Detail URL
     url(r'^labour/(?P<pk>[0-9]+)/$', views.LabourDetail.as_view(), name='labour_detail'),

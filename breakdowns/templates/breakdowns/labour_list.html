@@ -1,83 +1,128 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
 {% load humanize %}
 
 {% block title %}
-<title>Labours Library | Orit</title>
+<title>Labour | Orit</title>
 {% endblock title %}
 
 {% block content %}
-<div class="panel panel-default panel-list panel-lg" id="labour-list-panel">
-    <div class="panel-heading panel-heading-with-search">
-        <div class="row">
-            <div class="col-sm-7 breath-up-xs">
-                Labour Library
-            </div><!-- /.col-sm-7 -->
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="view-header">
+                <div class="pull-right text-right" style="line-height: 14px">
+                    <small>Luna Admin Theme<br>Dashboard<br> <span class="c-white">v.1.3</span></small>
+                </div>
+                <div class="header-icon">
+                    <i class="pe page-header-icon pe-7s-shield"></i>
+                </div>
+                <div class="header-title">
+                    <h3 class="m-b-xs">Labour</h3>
+                    <small>
+                        Special minimal admin theme with Dark UI style for monitoring or administration web applications.
+                    </small>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
 
-            <div class="col-sm-5">
-               <form name="labour_search_form" method="GET" id="labour-form" class="cost-form">
-                   <div class="form-group">
-                       <div class="input-group input-group-sm inner-search-input-group">
-                           <input type="search" class="form-control" id="labour-search-input" name="labour_search" placeholder="Search Labours" value="{{ labour_search|default_if_none:'' }}">
-                           <span class="input-group-btn">
-                               <button type="submit" class="btn btn-default">
-                                   <span class="fa fa-search"></span>
-                               </button>
-                           </span>
-                       </div><!-- /.input-group -->                                    
-                   </div><!-- /.form-group -->
-            </div><!-- /.col-sm-5 -->
-        </div><!-- /.row -->
-    </div><!-- /.panel-heading -->
+    <div class="row">
 
-    <div class="panel-body">
-        <div class="catagory-selector-container breath-down-sm">
-            <div class="row">
-                <div class="col-sm-4">
-                        <div class="form-group">
-                            <label for="labour-catagory-select">Select City</label>
-                            <select name="city" id="labour-city-select" class="form-control catagory-selector">
-                                {% for city in city_list %}
-                                <option value="{{ city.id }}" {% if labour_city == city.id %} selected="selected" {% endif %}>{{ city.full_title|title }}</option>
-                                {% endfor %}
-                            </select>
-                        </div><!-- /.form-group -->
-                    </form>
-                </div><!-- /.col-sm-2 -->
-            </div><!-- /.row -->
-        </div><!-- /.catagory-selector-container -->
-        
-        {% if labour_price_list %}
-        <div class="table-responsive">
-            <table class="labour-table table panel-table table-hover table-stripped">
-                <thead>
-                    <tr>
-                        <th>#</th>
-                        <th>Labours</th>
-                        <th>Catagory</th>
-                        <th>City/Town</th>
-                        <th class="text-right">Index Hourly Rate (ETB)</th>
-                        <th class="text-center">Last Updated</th>
-                    </tr>
-                </thead>
+        <div class="col-lg-3 col-xs-6">
+            <div class="panel panel-filled">
 
-                <tbody>
-                    {% for labour_price in labour_price_list %}
-                    <tr>
-                        <td>{{ forloop.counter }}</td>
-                        <td><a href="#">{{ labour_price.labour.full_title|capfirst }}</a></td>
-                        <td>{{ labour_price.labour.labour_catagory.full_title|capfirst }}</td>
-                        <td>{{ labour_price.city.full_title|title }}</td>
-                        <td class="text-right">{{ labour_price.hourly_rate|intcomma }}</td>
-                        <td class="text-center text-danger bold">{{ labour_price.updated_at|date:'M d, Y' }}</td>
-                    </tr>
-                    {% endfor %}
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        {{ labour_price_list.count }}+
+                    </h2>
+                    <div class="small">Labour</div>
+                    <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">10:22pm</span>  </div>
+                </div>
+            </div>
+        </div>
 
-                </tbody>
-            </table>
-        </div><!-- /END .table-responsive -->
-        {% else %}
-        <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> There are currently no labours in the database</strong></p>
-        {% endif %}
-    </div><!--/.panel-body -->
-</div><!-- /#product-list-panel -->
+        <div class="col-lg-3 col-xs-6">
+            <div class="panel panel-filled">
+
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        {{ catagory_count }}+
+                    </h2>
+                    <div class="small"> Materials Catagories</div>
+                    <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">10:22pm</span>  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-xs-6">
+            <div class="panel panel-filled">
+
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        {{ city_count }}+
+                    </h2>
+                    <div class="small">City</div>
+                    <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">10:22pm</span>  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-xs-6">
+            <div class="panel panel-filled">
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        140+ <span class="slight"><i class="fa fa-play fa-rotate-90 c-white"> </i> 5%</span>
+                    </h2>
+                    <div class="small">Total visitors</div>
+                    <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">9:10am</span> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-filled">
+                <div class="panel-heading">
+                    Complete list of all labour types
+                </div>
+                <div class="panel-body">
+                   {% if labour_price_list %}
+                   <div class="table-responsive">
+                       <table class="labour-table table data-table table-hover table-stripped">
+                           <thead>
+                               <tr>
+                                   <th>#</th>
+                                   <th>Labours</th>
+                                   <th>Catagory</th>
+                                   <th>City/Town</th>
+                                   <th class="text-right">Index Hourly Rate (ETB)</th>
+                                   <th class="text-center">Last Updated</th>
+                               </tr>
+                           </thead>
+
+                           <tbody>
+                               {% for labour_price in labour_price_list %}
+                               <tr>
+                                   <td>{{ forloop.counter }}</td>
+                                   <td><a href="#">{{ labour_price.labour.full_title|capfirst }}</a></td>
+                                   <td>{{ labour_price.labour.labour_catagory.full_title|capfirst }}</td>
+                                   <td>{{ labour_price.city.full_title|title }}</td>
+                                   <td class="text-right">{{ labour_price.hourly_rate|intcomma }}</td>
+                                   <td class="text-center">{{ labour_price.updated_at|date:'M d, Y' }}</td>
+                               </tr>
+                               {% endfor %}
+
+                           </tbody>
+                       </table>
+                   </div><!-- /END .table-responsive -->
+                   {% else %}
+                   <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> There are currently no labours in the database</strong></p>
+                   {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
 {% endblock content %}
