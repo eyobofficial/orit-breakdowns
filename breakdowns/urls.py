@@ -59,7 +59,7 @@ urlpatterns = [
     url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/equipment/delete/(?P<pk>[0-9]+)/$', views.EquipmentBreakdownDelete.as_view(), name='equipment_breakdown_delete'),
 
     # Material List URL
-    url(r'^materials/$', views.material_list, name='material_list'),
+    url(r'^materials/$', views.MaterialList.as_view(), name='material_list'),
 
     # Material Detail URL
     url(r'^material/(?P<pk>[0-9]+)/$', views.MaterialDetail.as_view(), name='material_detail'),

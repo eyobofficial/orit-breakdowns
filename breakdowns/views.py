@@ -106,6 +106,19 @@ def material_list(request):
             'material_catagory': material_catagory,
         })
 
+# Material List View
+class MaterialList(LoginRequiredMixin, generic.ListView):
+    model = Material
+
+    def get_queryset(self, *args, **kwargs):
+        return Material.objects.filter(created_by__is_staff=True)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(MaterialList, self).get_context_data(*args, **kwargs)
+        context['catagory_count'] = MaterialCatagory.objects.all().count()
+        context['page_name'] = 'Materials'
+        return context  
+
 # Material Detail View
 class MaterialDetail(LoginRequiredMixin, generic.DetailView):
     model = Material
@@ -152,6 +165,19 @@ def labour_list(request):
             'labour_search': labour_search,
             'labour_city': labour_city,
         })
+
+# Labour List View
+class LabourList(LoginRequiredMixin, generic.ListView):
+    model = LabourPrice
+
+    def get_queryset(self, *args, **kwargs):
+        return Labour.objects.filter(created_by__is_staff=True)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(LabourList, self).get_context_data(*args, **kwargs)
+        context['catagory_count'] = LabourCatagory.objects.all().count()
+        context['page_name'] = 'Labour'
+        return context  
 
 # Labour Detail View
 class LabourDetail(LoginRequiredMixin, generic.DetailView):
