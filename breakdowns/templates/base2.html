@@ -73,7 +73,7 @@
                     </li>
                     <li class=" profil-link">
                         <a href="login.html">
-                            <span class="profile-address">{% if user.get_full_name %}{{ user.get_full_name }} {% else %}{{ user.username }}{% endif %}</span>
+                            <span class="profile-address">{% if user.get_full_name %}{{ user.first_name|capfirst }} {% else %}{{ user.username }}{% endif %}</span>
                             <img src="{% static 'luna/images/profile.jpg' %}" class="img-circle" alt="">
                         </a>
                     </li>

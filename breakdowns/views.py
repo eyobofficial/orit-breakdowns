@@ -45,18 +45,20 @@ def signup(request):
         if form.is_valid():
             first_name = form.cleaned_data.get('first_name')
             last_name = form.cleaned_data.get('last_name')
+            email = form.cleaned_data.get('email')
             form.save()
             user = authenticate(username=form.cleaned_data['username'], password=form.cleaned_data['password1'])
             user.first_name = first_name
             user.last_name = last_name
-            member_group = Group.objects.get(name='member')
-            user.groups.add(member_group,)
+            user.email = email
+            # member_group = Group.objects.get(name='member')
+            # user.groups.add(member_group,)
             user.save()
 
             # Register new user to default account package
-            default_package = Package.objects.get(default=True)
-            membership = UserMembership(user=user, package=default_package)
-            membership.save()
+            # default_package = Package.objects.get(default=True)
+            # membership = UserMembership(user=user, package=default_package)
+            # membership.save()
 
             # Login and redirect to user dashboard
             login(request, user)

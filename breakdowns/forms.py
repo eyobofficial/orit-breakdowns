@@ -5,6 +5,7 @@ from .models import CostBreakdown, Project
 class SignupForm(UserCreationForm):
     first_name = forms.CharField(max_length=60)
     last_name = forms.CharField(max_length=60)
+    email = forms.EmailField(max_length=60)
 
 class StepOneForm(forms.Form):
     OPTION_CHOICES = (

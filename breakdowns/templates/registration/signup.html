@@ -1,75 +1,103 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
 
 {% block title %}
-<title>Signup | Orit Breakdown</title>
+<title>Register | Orit Breakdown</title>
 {% endblock title %}
 
 {% block wrapper %}
-<div id="account-wrapper">
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-6 col-sm-offset-3">
-                <div class="panel panel-default panel-form" id="signup-panel">
-                    <div class="panel-heading text-center">
-                        Signup | <span class="fa fa-fire"></span> Orit Breakdowns
-                    </div><!-- /END .panel-heading -->
+<!-- Main content-->
+<section class="container-fluid">
+    <div class="back-link">
+        <a href="#" class="btn btn-accent"><span class="fa fa-home"></span> Home</a>
+    </div>
 
-                    <div class="panel-body">
-                        {{ form.non_field_errors }}
+    <div class="container-center lg animated slideInDown">
 
-                        <form action="" method="POST">
-                            {% csrf_token %}
 
-                            <!-- HIDDEN FIELDS -->
-                            <input type="hidden" name="next" value="{{ next }}"> 
-
-                            <!-- FIRST_NAME -->
-                            <div class="form-group">
-                                <label for="first-name">First Name</label>
-                                <input type="text" name="first_name" id="first-name" class="form-control" placeholder="First Name" value="{{ form.first_name.value|default_if_none:'' }}">
-                                {{ form.first_name.errors }}
-                            </div><!-- /.form-group -->
-
-                            <!-- LAST_NAME -->
-                            <div class="form-group">
-                                <label for="last-name">Last Name</label>
-                                <input type="text" name="last_name" id="last-name" class="form-control" placeholder="Last Name" value="{{ form.last_name.value|default_if_none:'' }}">
-                                {{ form.last_name.errors }}
-                            </div><!-- /.form-group -->
-
-                            <!-- USERNAME -->
-                            <div class="form-group">
-                                <label for="username">Username</label>
-                                <input type="text" name="username" id="username" class="form-control" placeholder="Username" value="{{ form.username.value|default_if_none:'' }}">
-                                {{ form.username.errors }}
-                            </div><!-- /.form-group -->
-
-                            <!-- PASSWORD1 -->
-                            <div class="form-group">
-                                <label for="password1">Password</label>
-                                <input type="password" name="password1" id="password1" class="form-control" placeholder="Password">
-                                {{ form.password1.errors }}
-                            </div><!-- /.form-group -->
-
-                            <!-- PASSWORD2 -->
-                            <div class="form-group">
-                                <label for="password2">Confirm Password</label>
-                                <input type="password" name="password2" id="password2" class="form-control" placeholder="Re-type Password">
-                                {{ form.password2.errors }}
-                            </div><!-- /.form-group -->
-
-                            <div class="form-group">
-                                <input type="submit" value="Submit" class="btn btn-primary btn-block"> 
-                            </div><!-- /.form-group -->
-                        </form>
-                    </div><!-- /.panel-body -->
-
-                    <div class="panel-footer text-center">
-                        Already have an account? <a href="{% url 'login' %}">Login here</a>
-                    </div><!-- /.panel-footer -->
-                </div>
+        <div class="view-header">
+            <div class="header-icon">
+                <i class="pe page-header-icon pe-7s-add-user"></i>
             </div>
-        </div><!-- /END .row -->
-    </div><!-- /END .container -->
-</div><!-- /END #account-wrapper -->
+            <div class="header-title">
+                <h3>Register</h3>
+                <small>
+                    Please enter your data to register.
+                </small>
+            </div>
+        </div>
+
+        <div class="panel panel-filled">
+            <div class="panel-body">
+                <p>
+
+                </p>
+                {{ form.non_field_errors }}
+                <form action="" method="POST" id="loginForm" novalidate>
+                    {% csrf_token %}
+
+                    <!-- HIDDEN FIELDS -->
+                    <input type="hidden" name="next" value="{{ next }}">
+
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="first-name">First Name</label>
+                            <input type="text" name="first_name" id="first-name" class="form-control" value="{{ form.first_name.value|default_if_none:'' }}">
+                            <span class="help-block small">Enter your first name</span>
+                            {{ form.first_name.errors }}
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group col-lg-6">
+                            <label for="last-name">Last Name</label>
+                            <input type="text" name="last_name" id="last-name" class="form-control" value="{{ form.last_name.value|default_if_none:'' }}">
+                            <span class="help-block small">Enter your last name</span>
+                            {{ form.last_name.errors }}
+                        </div><!-- /.form-group -->
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="username">Username</label>
+                            <input type="text" name="username" id="username" class="form-control" value="{{ form.username.value|default_if_none:'' }}">
+                            <span class="help-block small">Your unique username to app</span>
+                            {{ form.username.errors }}
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group col-lg-6">
+                            <label>Email Address</label>
+                            <input type="email" id="email" class="form-control" name="email" value="{{ form.username.value|default_if_none:'' }}">
+                            <span class="help-block small">Your email address to contact</span>
+                            {{ form.email.errors }}
+                        </div>
+                    </div>
+
+                    <div class="row">
+                        <div class="form-group col-lg-6">
+                            <label for="password">Password</label>
+                            <input type="password" name="password1" id="password" class="form-control">
+                            <span class="help-block small">Your secure password</span>
+                            {{ form.password1.errors }}
+                        </div><!-- /.form-group -->
+
+                        <div class="form-group col-lg-6">
+                            <label for="repeatpassword">Re-type Password</label>
+                            <input type="password" name="password2" id="repeatpassword" class="form-control">
+                            <span class="help-block small">Please repeat your pasword</span>
+                            {{ form.password2.errors }}
+                        </div><!-- /.form-group -->
+                    </div>
+
+                    <div>
+                        <button type="submit" class="btn btn-accent">Register</button>
+                        <a class="btn btn-default" href="{% url 'login' %}">Login</a>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+    </div>
+</section>
+<!-- End main content-->
 {% endblock wrapper %}
+
+<!-- OVERRIDE (REMOVE) pace.js SCRIPT -->
+{% block pace-script %}{% endblock pace-script %}
