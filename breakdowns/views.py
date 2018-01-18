@@ -15,7 +15,7 @@ from xlrd import open_workbook
 from xlwt import Workbook, easyxf, Formula
 from xlutils.copy import copy
 from .forms import SignupForm, StepOneForm, StepTwoForm
-from .models import Package, UserMembership, City, Project, UnitCatagory, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, CostBreakdownCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
+from .models import Package, UserMembership, City, Project, UnitCatagory, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, ActivityCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
 
 # Create your views here.
 @login_required
@@ -254,9 +254,9 @@ def cost_breakdown_list(request):
     Returns cost breakdown list from the main library
     """
     try:
-        cost_breakdown_catagory = int(request.GET.get('cost_breakdown_catagory'))
+        activity_catagory = int(request.GET.get('activity_catagory'))
     except:
-        cost_breakdown_catagory = None
+        activity_catagory = None
     cost_breakdown_search = request.GET.get('cost_breakdown_search')
 
     # Admin User
@@ -269,75 +269,31 @@ def cost_breakdown_list(request):
         raise Http404('page not found')
 
 
-    if cost_breakdown_catagory is not None:
-        cost_breakdown_catagory = int(cost_breakdown_catagory)
-        cost_breakdown_list = CostBreakdown.objects.filter(created_by=admin.id).filter(cost_breakdown_catagory=cost_breakdown_catagory)
+    if activity_catagory is not None:
+        activity_catagory = int(activity_catagory)
+        cost_breakdown_list = CostBreakdown.objects.filter(created_by=admin.id).filter(activity_catagory=activity_catagory)
 
     if cost_breakdown_search is not None:
         cost_breakdown_list = cost_breakdown_list.filter(created_by=admin.id).filter(full_title__icontains=cost_breakdown_search)      
 
-    cost_breakdown_catagory_list = get_list_or_404(CostBreakdownCatagory)
+    activity_catagory_list = get_list_or_404(CostBreakdownCatagory)
     page_name = 'library'
     template_name = 'breakdowns/cost_breakdown_list.html'
 
     return render(request, template_name, context={
             'cost_breakdown_list': cost_breakdown_list,
-            'cost_breakdown_catagory_list': cost_breakdown_catagory_list,
+            'activity_catagory_list': activity_catagory_list,
             'page_name': page_name,
             'subpage_name': 'library',
             'cost_breakdown_search': cost_breakdown_search,
-            'cost_breakdown_catagory': cost_breakdown_catagory,
+            'activity_catagory': activity_catagory,
         })
 
-# My Breakdown List View
-@permission_required(('breakdowns.manage_cost_breakdown'))
-def my_breakdown_list(request):
-    """
-    Returns user cost breakdown list 
-    """
-    try:
-        project = int(request.GET.get('project'))
-    except:
-        project = None
-    cost_breakdown_search = request.GET.get('cost_breakdown_search')
-    
-    # Return all cost breakdown objects
-    try:
-        cost_breakdown_list = CostBreakdown.objects.filter(created_by=request.user.id).order_by('-updated_at')
-    except CostBreakdown.DoesNotExist:
-        raise Http404('page not found')
-
-
-    if project is not None:
-        project = int(project)
-        cost_breakdown_list = CostBreakdown.objects.filter(created_by=request.user.id).filter(project=project).order_by('-updated_at')
-
-    if cost_breakdown_search is not None:
-        cost_breakdown_list = cost_breakdown_list.filter(created_by=request.user.id).filter(full_title__icontains=cost_breakdown_search)      
-
-    try:
-        project_list = Project.objects.filter(created_by=request.user.id)
-    except:
-        project_list = []
-        
-    page_name = 'CostBreakdowns'
-    template_name = 'breakdowns/my_breakdown_list.html'
-
-    return render(request, template_name, context={
-            'cost_breakdown_list': cost_breakdown_list,
-            'project_list': project_list,
-            'page_name': page_name,
-            'subpage_name': 'mybreakdowns',
-            'cost_breakdown_search': cost_breakdown_search,
-            'project': project,
-        })
-
-# My Cost Breakdowns Detail
-class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.DetailView):
-    permission_required = ('breakdowns.manage_cost_breakdown',)
+# All My Cost breakdowns list
+class MyBreakdownList(LoginRequiredMixin, generic.ListView):
     model = CostBreakdown
-    template_name = 'breakdowns/breakdown_detail.html'
-    context_object_name = 'cost_breakdown'
+    template_name = 'breakdowns/my_breakdown_list.html'
+    context_object_name = 'cost_breakdown_list'
     login_url = 'breakdowns:my_breakdown_list'
     redirect_field_name = None
 
@@ -345,36 +301,25 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
         cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
         return cost_breakdown.created_by.id == self.request.user.id
 
-    def xget(self, *args, **kwargs):
-        if self.request.GET.get('excel'):
-            # Get context object
-            self.object = self.get_object()
+    def get_queryset(self, *args, **kwargs):
+        return CostBreakdown.objects.filter(created_by__pk=self.request.user.id)
 
-            # Get Material, Labour and Equipment list
-            material_list = list(MaterialBreakdown.objects.filter(costbreakdown_id=self.object.id).order_by('-rate'))
-            labour_list = list(LabourBreakdown.objects.filter(costbreakdown_id=self.object.id).order_by('-hourly_rate'))
-            equipment_list = list(EquipmentBreakdown.objects.filter(costbreakdown_id=self.object.id).order_by('-rental_rate'))
+    def get_context_data(self, *args, **kwargs):
+        context = super(MyBreakdownList, self).get_context_data(*args, **kwargs)
+        context['page_name'] = 'My Cost Breakdowns'
+        return context
 
-            row_count = max(len(material_list), len(labour_list), len(equipment_list))
+# My Cost Breakdowns Detail
+class MyBreakdownDetail(UserPassesTestMixin, generic.DetailView):
+    model = CostBreakdown
+    template_name = 'breakdowns/my_breakdown_detail.html'
+    context_object_name = 'cost_breakdown'
+    login_url = 'breakdowns:my_breakdown_list'
+    redirect_field_name = None
 
-            excel_template_path = settings.MEDIA_ROOT + 'Template_sm_3.xls'
-
-            rb = open_workbook(excel_template_path, formatting_info=True)
-            wb = copy(rb)
-
-            s = wb.get_sheet(0)
-            style_left = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz left;')
-            style_center = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz center;')
-            style_right = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz right;')
-            style_right_bold = easyxf('borders: left thin, right thin, top thin, bottom thin; align: horiz right; font: bold on;')
-            s.write(14,9,1,style_right_bold)
-            
-            response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
-            response['Content-Disposition'] = 'attachment; filename=test_breakdown_{}.xls'.format(self.object.id)
-
-            wb.save(response)
-            return response
-        return super(MyBreakdownDetail, self).get(*args, **kwargs)
+    def test_func(self, *args, **kwargs):
+        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
+        return cost_breakdown.created_by.id == self.request.user.id
 
     def get(self, *args, **kwargs):
         if self.request.GET.get('excel'):
@@ -499,8 +444,6 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
             wb.save(response)
             return response
         return super(MyBreakdownDetail, self).get(*args, **kwargs)
-
-
     def get_context_data(self, *args, **kwargs):
         context = super(MyBreakdownDetail, self).get_context_data(*args, **kwargs)
         
@@ -513,49 +456,60 @@ class MyBreakdownDetail(PermissionRequiredMixin, UserPassesTestMixin, generic.De
         # Equipment List
         equipment_list = EquipmentBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-rental_rate')
 
-        if not context['cost_breakdown'].is_library:
-            material_direct_cost = 0
-                        
-            # Calculate material cost subtotal
-            for material in material_list:
-                material_direct_cost += material.subtotal()
+        material_direct_cost = 0
+                    
+        # Calculate material cost subtotal
+        for material in material_list:
+            material_direct_cost += material.subtotal()
 
-            context['material_direct_cost'] = material_direct_cost
+        # Initialize direct labour costs
+        labour_direct_cost = 0
+       
+        # Calculate labour cost subtotal
+        for labour in labour_list:
+            labour_direct_cost += labour.subtotal()
 
-            # Initialize direct labour costs
-            labour_direct_cost = 0
-           
-            # Calculate labour cost subtotal
-            for labour in labour_list:
-                labour_direct_cost += labour.subtotal()
+        # Initialize direct equipment cost subtotal
+        equipment_direct_cost = 0
 
-            context['labour_direct_cost'] = labour_direct_cost
+        # Calculate equipment cost subtotal       
+        for equipment in equipment_list:
+            equipment_direct_cost += equipment.subtotal()
 
-            # Initialize direct equipment cost subtotal
-            equipment_direct_cost = 0
+        # Calculate total direct cost
+        direct_cost = material_direct_cost + labour_direct_cost + equipment_direct_cost
 
-            # Calculate equipment cost subtotal       
-            for equipment in equipment_list:
-                equipment_direct_cost += equipment.subtotal()
+        # Calculate overhead
+        overhead_percent = round(context['cost_breakdown'].overhead, 2)
+        overhead_cost = round(direct_cost * (context['cost_breakdown'].overhead / 100), 2)
 
-            context['equipment_direct_cost'] = equipment_direct_cost
+        # Calculate profit
+        profit_percent = round(context['cost_breakdown'].profit, 2)
+        profit = round(direct_cost * (context['cost_breakdown'].profit / 100), 2)
 
-            # Calculate total direct cost
-            direct_cost = material_direct_cost + labour_direct_cost + equipment_direct_cost
-            context['direct_cost'] = direct_cost
+        # Calculate total cost ( after profit and overhead)
+        total_cost = direct_cost + overhead_cost + profit
 
-            # Calculate indirect cost
-            indirect_cost = round(direct_cost * (context['cost_breakdown'].profit + context['cost_breakdown'].overhead) / 100, 2)
-
-            # Calculate total cost ( after profit and overhead)
-            total_cost = direct_cost + indirect_cost
-            context['total_cost'] = total_cost
+        # Calculate material, labour and equipment breakdown percentage
+        context['material_cost_percentage'] = round((material_direct_cost / direct_cost) * 100, 2)
+        context['labour_cost_percentage'] = round((labour_direct_cost / direct_cost) * 100, 2)
+        context['equipment_cost_percentage'] = round((equipment_direct_cost / direct_cost) * 100, 2)
 
         context['material_list'] = material_list        
         context['labour_list'] = labour_list
-        context['equipment_list'] = equipment_list     
-        context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'mybreakdowns'
+        context['equipment_list'] = equipment_list
+
+        context['material_direct_cost'] = material_direct_cost
+        context['labour_direct_cost'] = labour_direct_cost
+        context['equipment_direct_cost'] = equipment_direct_cost
+        context['direct_cost'] = direct_cost
+        context['overhead_percent'] = overhead_percent
+        context['overhead_cost'] = overhead_cost
+        context['profit_percent'] = profit_percent
+        context['profit'] = profit
+        context['total_cost'] = total_cost
+             
+        context['page_name'] = 'cost breakdown summary'
         return context
 
 # CostBreakdown Detail View
@@ -677,7 +631,7 @@ class BreakdownUpdate(LoginRequiredMixin, UpdateView):
     Update existing cost breakdown
     """
     model = CostBreakdown
-    fields = ['cost_breakdown_catagory', 'project', 'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
+    fields = ['activity_catagory', 'project', 'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
     template_name = 'breakdowns/breakdown_form_update.html'
 
     def get_success_url(self, *args, **kwargs):
@@ -717,7 +671,7 @@ class BreakdownCreate(LoginRequiredMixin, CreateView):
     """
     model = CostBreakdown
     template_name = 'breakdowns/breakdown_form.html'
-    fields = ['cost_breakdown_catagory', 'project', 'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
+    fields = ['activity_catagory', 'project', 'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
 
     def form_valid(self, form, *args, **kwargs):
         form.instance.created_by = self.request.user

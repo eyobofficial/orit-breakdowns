@@ -7,14 +7,11 @@ urlpatterns = [
     # Index URL 
     url(r'^$', views.index, name='index'),
 
-    # Cost Breakdown List URL
-    url(r'^cost-breakdowns/$', views.cost_breakdown_list, name='cost_breakdown_list'),
-
     # Cost Breakdown Detail URL
     url(r'^cost-breakdown/(?P<pk>[0-9]+)/$', views.CostBreakdownDetail.as_view(), name='cost_breakdown_detail'),
 
     # User Cost Breakdown List URL
-    url(r'^my-breakdowns/$', views.my_breakdown_list, name='my_breakdown_list'),
+    url(r'^my-breakdowns/$', views.MyBreakdownList.as_view(), name='my_breakdown_list'),
 
     # User Cost Breakdown Detail URL
     url(r'^my-breakdown/(?P<pk>[0-9]+)/$', views.MyBreakdownDetail.as_view(), name='my_breakdown_detail'),

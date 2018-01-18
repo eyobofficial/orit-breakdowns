@@ -1,0 +1,403 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}
+<title>Cost Breakdown Library | Orit</title>
+{% endblock title %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="view-header">
+                <div class="pull-right text-right" style="line-height: 14px">
+                    <form action="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}" method="GET" class="form-inline">
+                        <input type="hidden" name="excel" value="1">
+                        <button type="submit" class="btn btn-default btn-sm">Download</button>
+                    </form>
+                </div>
+                <div class="header-icon">
+                    <i class="pe page-header-icon pe-7s-shield"></i>
+                </div>
+                <div class="header-title">
+                    <h3 class="m-b-xs">{{ cost_breakdown.full_title|capfirst }}</h3>
+                    <small>
+                        Special minimal admin theme with Dark UI style for monitoring or administration web applications.
+                    </small>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-2 col-xs-6">
+            <div class="panel panel-filled">
+        
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        {{ cost_breakdown.updated_at|date:'M d, y' }}
+                    </h2>
+                    <div class="small">Last Updated</div>
+                    <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">10:22pm</span>  </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-2 col-xs-6">
+            <div class="panel panel-filled">
+        
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        {{ cost_breakdown.output }}
+                    </h2>
+                    <div class="small">Hourly Output</div>
+                    <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">10:22pm</span>  </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-lg-2 col-xs-6">
+            <div class="panel panel-filled">
+    
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        {{ overhead_percent }}%
+                    </h2>
+                    <div class="small">Overhead</div>
+                    <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">10:22pm</span>  </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-lg-2 col-xs-6">
+            <div class="panel panel-filled">
+    
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        {{ profit_percent }}%
+                    </h2>
+                    <div class="small">Profit</div>
+                    <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">10:22pm</span>  </div>
+                </div>
+            </div>
+        </div>
+    
+        <div class="col-lg-4 col-xs-6">
+            <div class="panel panel-filled">
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        ETB {{ total_cost|intcomma }}
+                    </h2>
+                    <div class="small">Total Cost</div>
+                    <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">9:10am</span> </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-sm-4">
+            <div class="panel panel-filled" data-mh="summary-panel">
+                <div class="panel-heading">
+                    Activity Summary
+                </div>
+                <div class="panel-body">
+                    <dl>
+                        <dt>Activity</dt>
+                        <dd>{{ cost_breakdown.full_title }}</dd><br>
+
+                        <dt>Construction Project</dt>
+                        <dd>{{ cost_breakdown.project.full_title }}</dd><br>
+
+                        <dt>Descriiption</dt>
+                        <dd>{{ cost_breakdown.description }}</dd>
+                    </dl>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="panel panel-filled" data-mh="summary-panel">
+                <div class="panel-heading">
+                    Cost Summary
+                </div>
+                <div class="panel-body">
+                    <table class="table table-condensed">
+                        <tr>
+                            <td>Measurement Unit</td>
+                            <td class="text-right">{% autoescape off %}{{ cost_breakdown.unit.html_title }}{% endautoescape %}</td>
+                        </tr>
+                        <tr>
+                            <td>Output (per hour)</td>
+                            <td class="text-right">{{ cost_breakdown.output }}</td>
+                        </tr>
+                        <tr>
+                            <td>Direct Cost (ETB)</td>
+                            <td class="text-right">{{ direct_cost|intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ overhead_percent}}% Overhead Cost (ETB)</td>
+                            <td class="text-right">{{ overhead_cost |intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <td>{{ profit_percent}}% Profit (ETB)</td>
+                            <td class="text-right">{{ profit |intcomma }}</td>
+                        </tr>
+                        <tr>
+                            <td>Total Cost (ETB)</td>
+                            <td class="text-right">{{ total_cost |intcomma }}</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-sm-4">
+            <div class="panel panel-filled" data-mh="summary-panel">
+                <div class="panel-heading">
+                    Direct Cost Analysis (%)
+                </div>
+                <div class="panel-body">
+                    <div>
+                        <canvas id="directCostChart" height="180"></canvas>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+            <div class="panel panel-filled">
+                <div class="panel-heading">
+                    <div class="panel-tools">
+                        <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                        <a class="panel-close"><i class="fa fa-times"></i></a>
+                    </div>
+                    Material Cost Breakdown
+                </div>
+                <div class="panel-body">
+                    {% if material_list %}
+                    <div class="table-responsive">
+                        <table class="material-breakdown-table table table-striped table-hover">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Material</th>
+                                    <th class="text-center">Unit</th>
+                                    <th class="text-right">Quantity</th>
+                                    <th class="text-right">Rate (ETB)</th>
+                                    <th class="text-right">Sub-Total (ETB)</th>
+                                    <th class="text-right"></th>
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for material in material_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a href="{% url 'breakdowns:material_detail' material.id %}">{{ material.material.full_title|capfirst }}</a></td>
+                                    <td class="text-center">{% autoescape off %}{{ material.unit.html_title }}{% endautoescape %}</td>
+                                    <td class="text-right">{{ material.quantity }}</td>
+
+                                    {% if material.rate is None %}
+                                    <td class="text-right">{{ material.material.rate }}</td>
+                                    {% else %}
+                                    <td class="text-right">{{ material.rate }}</td>
+                                    {% endif %}
+                                    
+                                    <td class="text-right bold">{{ material.subtotal|intcomma }}</td>
+
+                                    <td class="text-right bold">
+                                        <a href="{% url 'breakdowns:material_breakdown_update' cost_breakdown.id material.id %}"><span class="fa fa-edit small"></span> Edit</a>
+                                    </td>
+                                </tr>
+                                {% endfor %}
+
+                                <tr>
+                                    <td colspan="5" class="text-right bold">TOTAL</td>
+                                    <td class="text-right bold">{{ material_direct_cost|intcomma }}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div><!-- /END .table-responsive -->
+                    {% else %}
+                    <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> No material is used for this work item cost breakdown</strong></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="panel panel-filled">
+                <div class="panel-heading">
+                    <div class="panel-tools">
+                        <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                        <a class="panel-close"><i class="fa fa-times"></i></a>
+                    </div>
+                    Labour Cost Breakdown
+                </div>
+                <div class="panel-body">
+                    {% if labour_list %}
+                    <div class="table-responsive">
+                        <table class="labour-breakdown-table table table-hover table-striped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Labour</th>
+                                    <th class="text-center">No.</th>
+                                    <th class="text-center">UF</th>
+                                    <th class="text-right">Hourly Rate (ETB)</th>
+                                    <th class="text-center">Labour Output</th>
+                                    <th class="text-right">Sub-Total (ETB)</th>
+                                    {% if cost_breakdown.created_by.id == user.id %}
+                                    <th class="text-right"></th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for labour in labour_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a href="{% url 'breakdowns:labour_detail' labour.id %}">{{ labour.labour.full_title|capfirst }}</a></td>
+                                    <td class="text-center">{{ labour.number }}</td>
+                                    <td class="text-center">{{ labour.uf }}</td>
+                                    <td class="text-right">{{ labour.hourly_rate }}</td>
+                                    <td class="text-center">{{ cost_breakdown.output }}</td>
+                                    <td class="text-right bold">{{ labour.subtotal|intcomma }}</td>
+
+                                    {% if cost_breakdown.created_by.id == user.id %}
+                                    <td class="text-right bold">
+                                        <a href="{% url 'breakdowns:labour_breakdown_update' cost_breakdown.id labour.id %}"><span class="fa fa-edit small"></span> Edit</a>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+
+                                <tr>
+                                    <td colspan="6" class="text-right bold">TOTAL</td>
+                                    <td class="text-right bold">{{ labour_direct_cost|intcomma }}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div><!-- /END .table-responsive -->
+                    {% else %}
+                    <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> No labour is used for this work item cost breakdown</strong></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+
+        <div class="col-md-12">
+            <div class="panel panel-filled">
+                <div class="panel-heading">
+                    <div class="panel-tools">
+                        <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+                        <a class="panel-close"><i class="fa fa-times"></i></a>
+                    </div>
+                    Equipment Cost Breakdown
+                </div>
+                <div class="panel-body">
+                    {% if equipment_list %}
+                    <div class="table-responsive">
+                        <table class="equipment-table table panel-table table-hover table-stripped">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Equipment</th>
+                                    <th class="text-center">No.</th>
+                                    <th class="text-center">UF</th>
+                                    <th class="text-right">Rental Rate (ETB)</th>
+                                    <th class="text-center">Equipment Output</th>
+                                    <th class="text-right">Sub-Total (ETB)</th>
+                                    {% if cost_breakdown.created_by.id == user.id %}
+                                    <th class="text-right"></th>
+                                    {% endif %}
+                                </tr>
+                            </thead>
+
+                            <tbody>
+                                {% for equipment in equipment_list %}
+                                <tr>
+                                    <td>{{ forloop.counter }}</td>
+                                    <td><a href="{% url 'breakdowns:equipment_detail' equipment.id %}">{{ equipment.equipment.full_title|capfirst }}</a></td>
+                                    <td class="text-center">{{ equipment.number }}</td>
+                                    <td class="text-center">{{ equipment.uf }}</td>
+                                    <td class="text-right">{{ equipment.rental_rate }}</td>
+                                    <td class="text-center">{{ cost_breakdown.output }}</td>
+                                    <td class="text-right bold">{{ equipment.subtotal|intcomma }}</td>
+
+                                    {% if cost_breakdown.created_by.id == user.id %}
+                                    <td class="text-right bold">
+                                        <a href="{% url 'breakdowns:equipment_breakdown_update' cost_breakdown.id equipment.id %}"><span class="fa fa-edit small"></span> Edit</a>
+                                    </td>
+                                    {% endif %}
+                                </tr>
+                                {% endfor %}
+
+                                <tr>
+                                    <td colspan="6" class="text-right bold">TOTAL</td>
+                                    <td class="text-right bold">{{ equipment_direct_cost|intcomma }}</td>
+                                </tr>
+
+                            </tbody>
+                        </table>
+                    </div><!-- /END .table-responsive -->
+                    {% else %}
+                    <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> No equipment is used for this work item cost breakdown</strong></p>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block match_height %}
+<script src="{% static 'luna/vendor/matchheight/jquery.matchHeight-min.js' %}"></script>
+<script>
+    $(function(){
+        var globalOptions = {
+            responsive: true,
+            legend: {
+                position: 'bottom',
+                labels:{
+                    fontColor:"#90969D"
+                }
+            }
+        };
+
+        var directCostData = {
+            labels: [
+                "Material",
+                "Labour",
+                "Equipment"
+            ],
+            datasets: [
+                {
+                    data: [{{ material_cost_percentage }}, {{ labour_cost_percentage }}, {{ equipment_cost_percentage}}],
+                    borderWidth: 0,
+                    backgroundColor: [
+                        "rgba(246,168,33, 0.8)",
+                        "rgba(148,155,162, 0.8)",
+                        "rgba(0,191,154, 0.8)"
+                    ],
+                    hoverBackgroundColor: [
+                        "#F6A821",
+                        "#949BA2",
+                        "#00BF9A"
+                    ]
+                }]
+        };
+
+
+        var c6 = document.getElementById("directCostChart").getContext("2d");
+        new Chart(c6, {type: 'doughnut', data: directCostData, options: globalOptions});
+    });
+</script>
+{% endblock %}

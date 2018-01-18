@@ -26,7 +26,7 @@ class StepOneForm(forms.Form):
 class StepTwoForm(forms.ModelForm):
     class Meta:
         model = CostBreakdown
-        fields = ['cost_breakdown_catagory', 'project', 'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
+        fields = ['activity_catagory', 'project', 'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
 
     def clean_project(self):
         data = self.cleaned_data.get('project')

@@ -453,17 +453,16 @@ class Equipment(models.Model):
         """
         return self.full_title
 
-class CostBreakdownCatagory(models.Model):
+class ActivityCatagory(models.Model):
     """
-    Model Representing a cost breakdown work type catagory
-    Example: 
+    Model Representing a construction activity type
+    Example: Earth works, Concrete Works, Finishing Works etc...
     """
-    full_title = models.CharField(max_length=120, help_text='Work type catagory for breakdown')
+    full_title = models.CharField(max_length=120, help_text='Activity catagory for breakdown')
     description = models.TextField(null=True, blank=True)
 
     class Meta:
         ordering = ['full_title']
-        verbose_name_plural = 'Cost Breakdown Catagories'
 
     def __str__(self):
         """
@@ -471,18 +470,17 @@ class CostBreakdownCatagory(models.Model):
         """
         return self.full_title
 
-
 class CostBreakdown(models.Model):
     """
     Model representing the a cost breakdown
     """
-    cost_breakdown_catagory = models.ForeignKey(CostBreakdownCatagory, null=True, on_delete=models.SET_NULL)
+    activity_catagory = models.ForeignKey(ActivityCatagory, null=True, on_delete=models.SET_NULL)
     project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
     full_title = models.CharField(max_length=120, help_text='Work Item Title')
     description = models.TextField(null=True, blank=True)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, help_text='Measurement unit for the cost breakdown')
-    overhead = models.DecimalField(null=True, blank=True, max_digits=6, decimal_places=2, help_text='Overhead percentage in decimal number. Example: 0.15 for 15%')
-    profit = models.DecimalField(null=True, blank=True, max_digits=6, decimal_places=2, help_text='Profit percentage in decimal number. Example: 0.2 for 20%')
+    overhead = models.DecimalField('Overhead (%)', null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 15 for 15% Overhead')
+    profit = models.DecimalField('Profit (%)',null=True, blank=True, max_digits=6, decimal_places=2, help_text='Example: Enter 25 for 25% Profit')
     output = models.DecimalField(max_digits=3, decimal_places=2, help_text='Labour and equipment output')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     updated_at = models.DateField(auto_now=True)
@@ -624,93 +622,75 @@ class EquipmentBreakdown(models.Model):
         """
         return '{} Equipment Breakdown'.format(self.equipment.full_title)
 
-class LibraryBreakdownCatagory(models.Model):
+class LibraryPackage(models.Model):
     """
-    Model Representing a library breakdown work type catagory
-    Example: 
+    Model represents the library price package
+    Example: Free, Premium, Mixed (Some premium & some free breakdowns)
     """
-    full_title = models.CharField(max_length=120, help_text='Work type catagory for breakdown')
+    full_title = models.CharField(max_length=100)
     description = models.TextField(null=True, blank=True)
 
-    class Meta:
-        ordering = ['full_title']
-        verbose_name_plural = 'Library Cost Breakdown Catagories'
-
     def __str__(self):
-        """
-        Return a string repsentation of the LibraryBreakdownCatagory model
-        """
         return self.full_title
 
 class StandardLibrary(models.Model):
     """
-    Model a standard library of output norms
+    Model represents a standard libary
     """
-    full_title = models.CharField(max_length=120, help_text='Title of the standard library')
-    description = models.TextField(null=True, blank=True)
-    is_private = models.BooleanField(default=False, help_text='Does cost breakdown catagory is private to a single company?')
-    company = models.ForeignKey(Company, null=True, blank=True, default=None, on_delete=models.SET_NULL)
+    library_package = models.ForeignKey(LibraryPackage, null=True, on_delete=models.CASCADE)
+    full_title = models.CharField(max_length=100, help_text='Title of the library')
+    short_title = models.CharField(max_length=30, null=True, blank=True)
+    owners = models.CharField(max_length=100, null=True, blank=True, help_text='Owner/Owners or publishers of the library')
+    published_at = models.DateField('First Published', null=True)
+    last_updated = models.DateField('Last Updated', null=True)
+    description = models.TextField(help_text='Description of the library', null=True, blank=True)
+    remark = models.TextField(help_text='Special remarks on the library', null=True, blank=True)
 
     class Meta:
-        verbose_name = 'Standard Library'
-        verbose_name_plural = 'Standard Libraries'
-        ordering = ['full_title',]
-        permissions = (
-                ('access_private', 'Can access private standard libraries'),
-            )
+        ordering = ['library_package', 'full_title',]
 
     def __str__(self):
-        """
-        Return a string representation of the the Standard Library
-        """
         return self.full_title
 
-    def get_absolute_url(self):
-        """
-        Returns a particular instance of standard library
-        """
-        return reverse('breakdowns:standard_library_detail', kwargs={'pk': str(self.pk)})
+    def get_absolute_url(self, *args, **kwargs):
+        return reverse('breakdowns:library_detail', kwargs={'pk': str(self.pk)})
 
-class StandardBreakdown(models.Model):
+class LibraryBreakdown(models.Model):
     """
-    Model representing the a standard breakdown
+    Model representing a breakdown from a standard library(unpriced)
     """
-    library_breakdown_catagory = models.ForeignKey(LibraryBreakdownCatagory, null=True, on_delete=models.SET_NULL)
+    standard_library = models.ForeignKey(StandardLibrary, on_delete=models.CASCADE)
+    activity_catagory = models.ForeignKey(ActivityCatagory, on_delete=models.CASCADE)
     full_title = models.CharField(max_length=120, help_text='Work Item Title')
     description = models.TextField(null=True, blank=True)
-    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, help_text='Measurement unit for the breakdown')
+    methodology = models.TextField('Work Methodology', null=True, blank=True)
+    unit = models.ForeignKey(Unit, on_delete=models.CASCADE, help_text='Measurement unit for the cost breakdown')
     output = models.DecimalField(max_digits=3, decimal_places=2, help_text='Labour and equipment output')
+    is_premium = models.BooleanField(default=False, help_text='Does this cost breakdown is only available for paid users?')
     created_by = models.ForeignKey(User, on_delete=models.CASCADE)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
-    is_premium = models.BooleanField(default=True, help_text='Does this cost breakdown is only available for paid users?')
 
     class Meta:
-        verbose_name = 'Standard library breakdown'
-        verbose_name_plural = 'Standard library breakdowns'
-        ordering = ['full_title', '-updated_at']
-        permissions = (
-                ('manage_library', 'Can manage standard breakdown library'),
-                ('access_premium', 'Can access premium breakdowns'),
-            )
+        ordering = ['activity_catagory', 'full_title']
 
     def get_absolute_url(self):
         """
-        Returns a particular instance of librarybreakdown
+        Returns a particular instance of costbreakdown
         """
-        return reverse('breakdowns:standrad_breakdown_detail', kwargs={'pk': str(self.pk)})
+        return reverse('breakdowns:library_breakdown_detail', kwargs={'pk': str(self.pk)})
 
     def __str__(self):
         """
-        Returns string repsentation of the StandardBreakdown model
+        Returns string repsentation of the CostBreakdown model
         """
         return self.full_title
 
-class StandardMaterialBreakdown(models.Model):
+class LibraryMaterialBreakdown(models.Model):
     """
-    Model representing a standard material breakdown
+    Model representing a standard library material breakdown
     """
-    standard_breakdown = models.ForeignKey(StandardBreakdown, on_delete=models.CASCADE)
+    library_breakdown = models.ForeignKey(LibraryBreakdown, on_delete=models.CASCADE)
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
     quantity = models.DecimalField(max_digits=12, decimal_places=2, default=1)
@@ -718,27 +698,27 @@ class StandardMaterialBreakdown(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
-       verbose_name = 'standard material breakdown'
-       verbose_name_plural = 'standard material breakdowns'
-       ordering = ['standard_breakdown', 'material', '-updated_at'] 
+       verbose_name = 'standard library material breakdown'
+       verbose_name_plural = 'standard library material breakdowns'
+       ordering = ['library_breakdown', 'material', '-updated_at'] 
 
     def get_absolute_url(self):
         """
         Returns a particular instance of StandardMaterialBreakdown
         """
-        return reverse('breakdowns:standard_material_breakdown_detail', kwargs={'pk': str(self.pk)})
+        return reverse('breakdowns:library_material_breakdown_detail', kwargs={'pk': str(self.pk)})
 
     def __str__(self):
         """
         Returns string repsentation of the StandardMaterialBreakdown model
         """
-        return '{} Standard Material Breakdown'.format(self.material.full_title)
+        return '{} Standard Library Material Breakdown'.format(self.material.full_title)
 
-class StandardLabourBreakdown(models.Model):
+class LibraryLabourBreakdown(models.Model):
     """
     Model representing a standard labour breakdown
     """
-    standard_breakdown = models.ForeignKey(StandardBreakdown, on_delete=models.CASCADE)
+    library_breakdown = models.ForeignKey(LibraryBreakdown, on_delete=models.CASCADE)
     labour = models.ForeignKey(Labour, on_delete=models.CASCADE)
     number = models.IntegerField(default=1)
     uf = models.DecimalField(max_digits=3, decimal_places=2, default=1)
@@ -746,27 +726,27 @@ class StandardLabourBreakdown(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
-       verbose_name = 'standard labour breakdown'
-       verbose_name_plural = 'standard labour breakdowns'
-       ordering = ['standard_breakdown', 'labour', '-updated_at'] 
+       verbose_name = 'standard library labour breakdown'
+       verbose_name_plural = 'standard library labour breakdowns'
+       ordering = ['library_breakdown', 'labour', '-updated_at'] 
 
     def get_absolute_url(self):
         """
         Returns a particular instance of StandardLabourBreakdown
         """
-        return reverse('breakdowns:standard_labour_breakdown_detail', kwargs={'pk': str(self.pk)})
+        return reverse('breakdowns:library_labour_breakdown_detail', kwargs={'pk': str(self.pk)})
 
     def __str__(self):
         """
         Returns string repsentation of the StandardLabourBreakdown model
         """
-        return '{} Standard Labour Breakdown'.format(self.labour.full_title)
+        return '{} Standard Library Labour Breakdown'.format(self.labour.full_title)
 
-class StandardEquipmentBreakdown(models.Model):
+class LibraryEquipmentBreakdown(models.Model):
     """
     Model representing a standard equipment breakdown
     """
-    standard_breakdown = models.ForeignKey(StandardBreakdown, on_delete=models.CASCADE)
+    library_breakdown = models.ForeignKey(LibraryBreakdown, on_delete=models.CASCADE)
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
     number = models.IntegerField(default=1)
     uf = models.DecimalField(max_digits=3, decimal_places=2, default=1)
@@ -774,21 +754,21 @@ class StandardEquipmentBreakdown(models.Model):
     created_at = models.DateField(auto_now_add=True)
 
     class Meta:
-       verbose_name = 'standard equipment breakdown'
-       verbose_name_plural = 'standard equipment breakdowns'
-       ordering = ['standard_breakdown', 'equipment', '-updated_at']
+       verbose_name = 'standard library equipment breakdown'
+       verbose_name_plural = 'standard library equipment breakdowns'
+       ordering = ['library_breakdown', 'equipment', '-updated_at']
 
     def get_absolute_url(self):
         """
-        Returns a particular instance of StandardEquipmentBreakdown
+        Returns a particular instance of LibraryEquipmentBreakdown
         """
-        return reverse('breakdowns:equipmentbreakdown_detail', kwargs={'pk': str(self.pk)})
+        return reverse('breakdowns:library_labour_breakdown_detail', kwargs={'pk': str(self.pk)})
 
     def __str__(self):
         """
         Returns string repsentation of the StandardEquipmentBreakdown model
         """
-        return '{} Standard Equipment Breakdown'.format(self.equipment.full_title)
+        return '{} Standard Labour Equipment Breakdown'.format(self.equipment.full_title)
 
 class NotificationGroup(models.Model):
     """

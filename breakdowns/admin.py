@@ -19,17 +19,17 @@ from .models import (Company,
                      LabourPrice, 
                      EquipmentCatagory, 
                      Equipment, 
-                     CostBreakdownCatagory, 
+                     ActivityCatagory, 
                      CostBreakdown, 
                      MaterialBreakdown, 
                      LabourBreakdown, 
                      EquipmentBreakdown,
-                     LibraryBreakdownCatagory,
+                     LibraryPackage,
                      StandardLibrary,
-                     StandardBreakdown,
-                     StandardMaterialBreakdown,
-                     StandardLabourBreakdown,
-                     StandardEquipmentBreakdown,
+                     LibraryBreakdown,
+                     LibraryMaterialBreakdown,
+                     LibraryLabourBreakdown,
+                     LibraryEquipmentBreakdown,
                      NotificationGroup,
                      NotificationType,
                      Notification,
@@ -142,13 +142,13 @@ class EquipmentAdmin(admin.ModelAdmin):
     list_filter = ('created_by', 'updated_at')
 
 # Register CostBreakdownCatagory
-admin.site.register(CostBreakdownCatagory)
+admin.site.register(ActivityCatagory)
 
 # Register CostBreakdown model
 @admin.register(CostBreakdown)
 class CostBreakdownAdmin(admin.ModelAdmin):
     list_display = ('full_title', 'project', 'created_by', 'is_library',)
-    list_filter = ('project', 'created_by', 'is_library',)
+    list_filter = ('project', 'created_by',)
 
 # Register MaterialBreakdown model
 @admin.register(MaterialBreakdown)
@@ -168,38 +168,38 @@ class EquipmentBreakdownAdmin(admin.ModelAdmin):
     list_display = ('costbreakdown', 'equipment', 'rental_rate')
     list_filter = ('costbreakdown', 'equipment', 'rental_rate')
 
-# Register LibraryBreakdownCatagory
-admin.site.register(LibraryBreakdownCatagory)
+# Register Price Package for Standard Libraries
+admin.site.register(LibraryPackage)
 
 # Register StandardLibrary
 @admin.register(StandardLibrary)
 class StandardLibraryAdmin(admin.ModelAdmin):
-    list_display = ('full_title', 'is_private', 'company',)
-    list_filter  = ('is_private', )
+    list_display = ('full_title', 'library_package')
+    list_filter  = ('library_package', )
 
 # Register StandardBreakdown
-@admin.register(StandardBreakdown)
-class StandardBreakdownAdmin(admin.ModelAdmin):
-    list_display = ('full_title', 'library_breakdown_catagory', 'created_by', 'updated_at', 'is_premium',)
-    list_filter = ('library_breakdown_catagory', 'updated_at', 'is_premium', 'created_by',)
+@admin.register(LibraryBreakdown)
+class LibraryBreakdownAdmin(admin.ModelAdmin):
+    list_display = ('full_title', 'activity_catagory', 'created_by', 'updated_at', 'is_premium',)
+    list_filter = ('activity_catagory', 'updated_at', 'is_premium', 'created_by',)
 
 # Register StandardMaterialBreakdown
-@admin.register(StandardMaterialBreakdown)
-class StandardMaterialBreakdownAdmin(admin.ModelAdmin):
-    list_display = ('standard_breakdown', 'material', 'updated_at',)
-    list_filter = ('standard_breakdown', 'material', 'updated_at')
+@admin.register(LibraryMaterialBreakdown)
+class LibraryMaterialBreakdownAdmin(admin.ModelAdmin):
+    list_display = ('library_breakdown', 'material', 'updated_at',)
+    list_filter = ('library_breakdown', 'material', 'updated_at')
 
 # Register StandardLabourBreakdown
-@admin.register(StandardLabourBreakdown)
-class StandardLabourBreakdownAdmin(admin.ModelAdmin):
-    list_display = ('standard_breakdown', 'labour', 'updated_at',)
-    list_filter = ('standard_breakdown', 'labour', 'updated_at',)
+@admin.register(LibraryLabourBreakdown)
+class LibraryLabourBreakdownAdmin(admin.ModelAdmin):
+    list_display = ('library_breakdown', 'labour', 'updated_at',)
+    list_filter = ('library_breakdown', 'labour', 'updated_at',)
 
 # Register StandardEquipmentBreakdown
-@admin.register(StandardEquipmentBreakdown)
-class StandardEquipmentBreakdownAdmin(admin.ModelAdmin):
-    list_display = ('standard_breakdown', 'equipment', 'updated_at',)
-    list_filter = ('standard_breakdown', 'equipment', 'updated_at',)
+@admin.register(LibraryEquipmentBreakdown)
+class LibraryEquipmentBreakdownAdmin(admin.ModelAdmin):
+    list_display = ('library_breakdown', 'equipment', 'updated_at',)
+    list_filter = ('library_breakdown', 'equipment', 'updated_at',)
 
 # Register NotificationGroup
 admin.site.register(NotificationGroup)

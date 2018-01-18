@@ -32,8 +32,8 @@
     {% endblock main_style %}
 
     <!-- PAGE STYLE -->
-    {% block page_style %}
-    {% endblock page_style %}
+    {% block add_to_head %}
+    {% endblock add_to_head %}
 </head>
 <body>
 
@@ -95,7 +95,7 @@
                 </li>
 
                 <li>
-                    <a href="{% url 'breakdowns:cost_breakdown_list' %}">Library</a>
+                    <a href="#">Library</a>
                 </li>
 
                 <!-- <li>
@@ -523,8 +523,11 @@
 <script src="{% static 'luna/vendor/sparkline/index.js' %}"></script>
 <script src="{% static 'luna/vendor/flot/jquery.flot.min.js' %}"></script>
 <script src="{% static 'luna/vendor/flot/jquery.flot.resize.min.js' %}"></script>
-<script src="{% static 'luna/vendor/flot/jquery.flot.spline.js' %}"></script>
+<script src="{% static 'luna/vendor/chart.js/dist/Chart.min.js' %}"></script>
 <script src="{% static 'luna/vendor/datatables/datatables.min.js' %}"></script>
+
+{% block match_height %}
+{% endblock match_height %}
 
 <!-- App scripts -->
 <script src="{% static 'luna/scripts/luna.js' %}"></script>
@@ -670,11 +673,6 @@
 
     });
 </script>
-    <script>
-       
-
-    </script>
-
 </body>
 
 </html>
