@@ -497,9 +497,6 @@ class CostBreakdown(models.Model):
                 ('manage_library', 'Can manage standard cost breakdown library'),
             )
 
-    def result(self):
-        pass
-
     def get_absolute_url(self):
         """
         Returns a particular instance of costbreakdown

@@ -105,13 +105,16 @@
                 </div>
                 <div class="panel-body">
                     <dl>
-                        <dt>Activity</dt>
+                        <dt>Title</dt>
                         <dd>{{ cost_breakdown.full_title }}</dd><br>
+
+                        <dt>Activity</dt>
+                        <dd>{{ cost_breakdown.activity_catagory.full_title }}</dd><br>
 
                         <dt>Construction Project</dt>
                         <dd>{{ cost_breakdown.project.full_title }}</dd><br>
 
-                        <dt>Descriiption</dt>
+                        <dt>Description</dt>
                         <dd>{{ cost_breakdown.description }}</dd>
                     </dl>
                 </div>
@@ -227,6 +230,9 @@
                     <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> No material is used for this work item cost breakdown</strong></p>
                     {% endif %}
                 </div>
+                <div class="panel-footer">
+                    <a href="#" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Material</a>
+                </div>
             </div>
         </div>
 
@@ -285,6 +291,9 @@
                     {% else %}
                     <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> No labour is used for this work item cost breakdown</strong></p>
                     {% endif %}
+                </div>
+                <div class="panel-footer">
+                    <a href="#" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Labour</a>
                 </div>
             </div>
         </div>
@@ -347,6 +356,9 @@
                     {% else %}
                     <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> No equipment is used for this work item cost breakdown</strong></p>
                     {% endif %}
+                </div>
+                <div class="panel-footer">
+                    <a href="#" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Equipment</a>
                 </div>
             </div>
         </div>

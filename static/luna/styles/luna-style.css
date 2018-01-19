@@ -1254,6 +1254,13 @@ img.image-xl {
   padding: 0;
   position: relative;
 }
+.panel-btns {
+  display: inline-block;
+  float: right;
+  margin-top: 12px;
+  padding: 0;
+  position: relative;
+}
 .panel-tools a {
   margin-left: 2px;
   color: #949ba2;
