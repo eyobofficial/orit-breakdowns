@@ -67,14 +67,14 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li class="dropdown">
-                        <a href="versions.html" >Versions
+                        <a href="versions.html" ><i class="fa fa-bell-o"></i>
                             <span class="label label-warning pull-right">2</span>
                         </a>
                     </li>
                     <li class=" profil-link">
                         <a href="login.html">
                             <span class="profile-address">{% if user.get_full_name %}{{ user.first_name|capfirst }} {% else %}{{ user.username }}{% endif %}</span>
-                            <img src="{% static 'luna/images/profile.jpg' %}" class="img-circle" alt="">
+                            <img src="{% static 'luna/images/profile.png' %}" class="img-circle" alt="">
                         </a>
                     </li>
                 </ul>
@@ -90,7 +90,7 @@
                 <li class="nav-category">
                     COST BREAKDOWNS
                 </li>
-                <li class="active">
+                <li {% if page_name == 'my cost breakdowns' %}class="active"{% endif %}>
                     <a href="{% url 'breakdowns:my_breakdown_list' %}">My Breakdowns</a>
                 </li>
 

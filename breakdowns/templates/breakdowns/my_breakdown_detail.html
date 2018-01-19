@@ -3,7 +3,7 @@
 {% load humanize %}
 
 {% block title %}
-<title>Cost Breakdown Library | Orit</title>
+<title>My Cost Breakdowns | Orit</title>
 {% endblock title %}
 
 {% block content %}
@@ -18,7 +18,7 @@
                     </form>
                 </div>
                 <div class="header-icon">
-                    <i class="pe page-header-icon pe-7s-shield"></i>
+                    <i class="pe page-header-icon pe-7s-calculator"></i>
                 </div>
                 <div class="header-title">
                     <h3 class="m-b-xs">{{ cost_breakdown.full_title|capfirst }}</h3>
@@ -84,7 +84,7 @@
             </div>
         </div>
     
-        <div class="col-lg-4 col-xs-6">
+        <div class="col-lg-4 col-xs-12">
             <div class="panel panel-filled">
                 <div class="panel-body">
                     <h2 class="m-b-none">
@@ -174,7 +174,6 @@
                 <div class="panel-heading">
                     <div class="panel-tools">
                         <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
-                        <a class="panel-close"><i class="fa fa-times"></i></a>
                     </div>
                     Material Cost Breakdown
                 </div>
@@ -211,7 +210,7 @@
                                     <td class="text-right bold">{{ material.subtotal|intcomma }}</td>
 
                                     <td class="text-right bold">
-                                        <a href="{% url 'breakdowns:material_breakdown_update' cost_breakdown.id material.id %}"><span class="fa fa-edit small"></span> Edit</a>
+                                        <a href="{% url 'breakdowns:material_breakdown_update' cost_breakdown.id material.id %}" class="btn btn-default btn-sm"><span class="fa fa-edit small"></span> Edit</a>
                                     </td>
                                 </tr>
                                 {% endfor %}
@@ -236,7 +235,6 @@
                 <div class="panel-heading">
                     <div class="panel-tools">
                         <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
-                        <a class="panel-close"><i class="fa fa-times"></i></a>
                     </div>
                     Labour Cost Breakdown
                 </div>
@@ -270,17 +268,15 @@
                                     <td class="text-center">{{ cost_breakdown.output }}</td>
                                     <td class="text-right bold">{{ labour.subtotal|intcomma }}</td>
 
-                                    {% if cost_breakdown.created_by.id == user.id %}
                                     <td class="text-right bold">
-                                        <a href="{% url 'breakdowns:labour_breakdown_update' cost_breakdown.id labour.id %}"><span class="fa fa-edit small"></span> Edit</a>
+                                        <a href="{% url 'breakdowns:labour_breakdown_update' cost_breakdown.id labour.id %}" class="btn btn-default btn-sm"><span class="fa fa-edit small"></span> Edit</a>
                                     </td>
-                                    {% endif %}
                                 </tr>
                                 {% endfor %}
 
                                 <tr>
                                     <td colspan="6" class="text-right bold">TOTAL</td>
-                                    <td class="text-right bold">{{ labour_direct_cost|intcomma }}</td>
+                                    <td class="text-right">{{ labour_direct_cost|intcomma }}</td>
                                 </tr>
 
                             </tbody>
@@ -298,14 +294,13 @@
                 <div class="panel-heading">
                     <div class="panel-tools">
                         <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
-                        <a class="panel-close"><i class="fa fa-times"></i></a>
                     </div>
                     Equipment Cost Breakdown
                 </div>
                 <div class="panel-body">
                     {% if equipment_list %}
                     <div class="table-responsive">
-                        <table class="equipment-table table panel-table table-hover table-stripped">
+                        <table class="equipment-breakdown-table table table-hover table-striped">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -334,7 +329,7 @@
 
                                     {% if cost_breakdown.created_by.id == user.id %}
                                     <td class="text-right bold">
-                                        <a href="{% url 'breakdowns:equipment_breakdown_update' cost_breakdown.id equipment.id %}"><span class="fa fa-edit small"></span> Edit</a>
+                                        <a href="{% url 'breakdowns:equipment_breakdown_update' cost_breakdown.id equipment.id %}" class="btn btn-default btn-sm"><span class="fa fa-edit small"></span> Edit</a>
                                     </td>
                                     {% endif %}
                                 </tr>
@@ -343,6 +338,7 @@
                                 <tr>
                                     <td colspan="6" class="text-right bold">TOTAL</td>
                                     <td class="text-right bold">{{ equipment_direct_cost|intcomma }}</td>
+                                    <td></td>
                                 </tr>
 
                             </tbody>
@@ -383,9 +379,9 @@
                     data: [{{ material_cost_percentage }}, {{ labour_cost_percentage }}, {{ equipment_cost_percentage}}],
                     borderWidth: 0,
                     backgroundColor: [
-                        "rgba(246,168,33, 0.8)",
-                        "rgba(148,155,162, 0.8)",
-                        "rgba(0,191,154, 0.8)"
+                        "rgba(246,168,33, 0.7)",
+                        "rgba(148,155,162, 0.7)",
+                        "rgba(0,191,154, 0.7)"
                     ],
                     hoverBackgroundColor: [
                         "#F6A821",

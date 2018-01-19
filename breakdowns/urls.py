@@ -1,11 +1,12 @@
-from django.conf.urls import url 
+from django.conf.urls import url
+from django.views.generic import RedirectView 
 from . import views
 
 app_name = 'breakdowns'
 
 urlpatterns = [
     # Index URL 
-    url(r'^$', views.index, name='index'),
+    url(r'^$', RedirectView.as_view(url='/breakdowns/my-breakdowns/'), name='index'),
 
     # Cost Breakdown Detail URL
     url(r'^cost-breakdown/(?P<pk>[0-9]+)/$', views.CostBreakdownDetail.as_view(), name='cost_breakdown_detail'),

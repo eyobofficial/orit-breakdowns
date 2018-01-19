@@ -306,7 +306,7 @@ class MyBreakdownList(LoginRequiredMixin, generic.ListView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(MyBreakdownList, self).get_context_data(*args, **kwargs)
-        context['page_name'] = 'My Cost Breakdowns'
+        context['page_name'] = 'my cost breakdowns'
         return context
 
 # My Cost Breakdowns Detail
