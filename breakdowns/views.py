@@ -445,70 +445,7 @@ class MyBreakdownDetail(UserPassesTestMixin, generic.DetailView):
             return response
         return super(MyBreakdownDetail, self).get(*args, **kwargs)
     def get_context_data(self, *args, **kwargs):
-        context = super(MyBreakdownDetail, self).get_context_data(*args, **kwargs)
-        
-        # Material List
-        material_list = MaterialBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-rate')
-
-        # Labour List
-        labour_list = LabourBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-hourly_rate')
-
-        # Equipment List
-        equipment_list = EquipmentBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-rental_rate')
-
-        material_direct_cost = 0
-                    
-        # Calculate material cost subtotal
-        for material in material_list:
-            material_direct_cost += material.subtotal()
-
-        # Initialize direct labour costs
-        labour_direct_cost = 0
-       
-        # Calculate labour cost subtotal
-        for labour in labour_list:
-            labour_direct_cost += labour.subtotal()
-
-        # Initialize direct equipment cost subtotal
-        equipment_direct_cost = 0
-
-        # Calculate equipment cost subtotal       
-        for equipment in equipment_list:
-            equipment_direct_cost += equipment.subtotal()
-
-        # Calculate total direct cost
-        direct_cost = material_direct_cost + labour_direct_cost + equipment_direct_cost
-
-        # Calculate overhead
-        overhead_percent = round(context['cost_breakdown'].overhead, 2)
-        overhead_cost = round(direct_cost * (context['cost_breakdown'].overhead / 100), 2)
-
-        # Calculate profit
-        profit_percent = round(context['cost_breakdown'].profit, 2)
-        profit = round(direct_cost * (context['cost_breakdown'].profit / 100), 2)
-
-        # Calculate total cost ( after profit and overhead)
-        total_cost = direct_cost + overhead_cost + profit
-
-        # Calculate material, labour and equipment breakdown percentage
-        context['material_cost_percentage'] = round((material_direct_cost / direct_cost) * 100, 2)
-        context['labour_cost_percentage'] = round((labour_direct_cost / direct_cost) * 100, 2)
-        context['equipment_cost_percentage'] = round((equipment_direct_cost / direct_cost) * 100, 2)
-
-        context['material_list'] = material_list        
-        context['labour_list'] = labour_list
-        context['equipment_list'] = equipment_list
-
-        context['material_direct_cost'] = material_direct_cost
-        context['labour_direct_cost'] = labour_direct_cost
-        context['equipment_direct_cost'] = equipment_direct_cost
-        context['direct_cost'] = direct_cost
-        context['overhead_percent'] = overhead_percent
-        context['overhead_cost'] = overhead_cost
-        context['profit_percent'] = profit_percent
-        context['profit'] = profit
-        context['total_cost'] = total_cost
-             
+        context = super(MyBreakdownDetail, self).get_context_data(*args, **kwargs)         
         context['page_name'] = 'cost breakdown summary'
         return context
 

@@ -63,7 +63,7 @@
     
                 <div class="panel-body">
                     <h2 class="m-b-none">
-                        {{ overhead_percent }}%
+                        {{ cost_breakdown.overhead }}%
                     </h2>
                     <div class="small">Overhead</div>
                     <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">10:22pm</span>  </div>
@@ -76,7 +76,7 @@
     
                 <div class="panel-body">
                     <h2 class="m-b-none">
-                        {{ profit_percent }}%
+                        {{ cost_breakdown.profit }}%
                     </h2>
                     <div class="small">Profit</div>
                     <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">10:22pm</span>  </div>
@@ -88,7 +88,7 @@
             <div class="panel panel-filled">
                 <div class="panel-body">
                     <h2 class="m-b-none">
-                        ETB {{ total_cost|intcomma }}
+                        ETB {{ cost_breakdown.total_cost|intcomma }}
                     </h2>
                     <div class="small">Total Cost</div>
                     <div class="slight m-t-sm"><i class="fa fa-clock-o"> </i> Updated: <span class="c-white">9:10am</span> </div>
@@ -138,19 +138,19 @@
                         </tr>
                         <tr>
                             <td>Direct Cost (ETB)</td>
-                            <td class="text-right">{{ direct_cost|intcomma }}</td>
+                            <td class="text-right">{{ cost_breakdown.direct_cost|intcomma }}</td>
                         </tr>
                         <tr>
-                            <td>{{ overhead_percent}}% Overhead Cost (ETB)</td>
-                            <td class="text-right">{{ overhead_cost |intcomma }}</td>
+                            <td>{{ cost_breakdown.overhead }}% Overhead Cost (ETB)</td>
+                            <td class="text-right">{{ cost_breakdown.overhead_cost |intcomma }}</td>
                         </tr>
                         <tr>
-                            <td>{{ profit_percent}}% Profit (ETB)</td>
-                            <td class="text-right">{{ profit |intcomma }}</td>
+                            <td>{{ cost_breakdown.profit }}% Profit (ETB)</td>
+                            <td class="text-right">{{ cost_breakdown.profit_cost |intcomma }}</td>
                         </tr>
                         <tr>
                             <td>Total Cost (ETB)</td>
-                            <td class="text-right">{{ total_cost |intcomma }}</td>
+                            <td class="text-right">{{ cost_breakdown.total_cost |intcomma }}</td>
                         </tr>
                     </table>
                 </div>
@@ -181,7 +181,7 @@
                     Material Cost Breakdown
                 </div>
                 <div class="panel-body">
-                    {% if material_list %}
+                    {% if cost_breakdown.mb_list %}
                     <div class="table-responsive">
                         <table class="material-breakdown-table table table-striped table-hover">
                             <thead>
@@ -197,7 +197,7 @@
                             </thead>
 
                             <tbody>
-                                {% for material in material_list %}
+                                {% for material in cost_breakdown.mb_list %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td><a href="{% url 'breakdowns:material_detail' material.id %}">{{ material.material.full_title|capfirst }}</a></td>
@@ -220,7 +220,7 @@
 
                                 <tr>
                                     <td colspan="5" class="text-right bold">TOTAL</td>
-                                    <td class="text-right bold">{{ material_direct_cost|intcomma }}</td>
+                                    <td class="text-right bold">{{ cost_breakdown.material_cost|intcomma }}</td>
                                 </tr>
 
                             </tbody>
@@ -245,7 +245,7 @@
                     Labour Cost Breakdown
                 </div>
                 <div class="panel-body">
-                    {% if labour_list %}
+                    {% if cost_breakdown.lb_list %}
                     <div class="table-responsive">
                         <table class="labour-breakdown-table table table-hover table-striped">
                             <thead>
@@ -264,7 +264,7 @@
                             </thead>
 
                             <tbody>
-                                {% for labour in labour_list %}
+                                {% for labour in cost_breakdown.lb_list %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td><a href="{% url 'breakdowns:labour_detail' labour.id %}">{{ labour.labour.full_title|capfirst }}</a></td>
@@ -282,7 +282,7 @@
 
                                 <tr>
                                     <td colspan="6" class="text-right bold">TOTAL</td>
-                                    <td class="text-right">{{ labour_direct_cost|intcomma }}</td>
+                                    <td class="text-right">{{ cost_breakdown.labour_cost|intcomma }}</td>
                                 </tr>
 
                             </tbody>
@@ -307,7 +307,7 @@
                     Equipment Cost Breakdown
                 </div>
                 <div class="panel-body">
-                    {% if equipment_list %}
+                    {% if cost_breakdown.eb_list %}
                     <div class="table-responsive">
                         <table class="equipment-breakdown-table table table-hover table-striped">
                             <thead>
@@ -326,7 +326,7 @@
                             </thead>
 
                             <tbody>
-                                {% for equipment in equipment_list %}
+                                {% for equipment in cost_breakdown.eb_list %}
                                 <tr>
                                     <td>{{ forloop.counter }}</td>
                                     <td><a href="{% url 'breakdowns:equipment_detail' equipment.id %}">{{ equipment.equipment.full_title|capfirst }}</a></td>
@@ -336,17 +336,15 @@
                                     <td class="text-center">{{ cost_breakdown.output }}</td>
                                     <td class="text-right bold">{{ equipment.subtotal|intcomma }}</td>
 
-                                    {% if cost_breakdown.created_by.id == user.id %}
                                     <td class="text-right bold">
                                         <a href="{% url 'breakdowns:equipment_breakdown_update' cost_breakdown.id equipment.id %}" class="btn btn-default btn-sm"><span class="fa fa-edit small"></span> Edit</a>
                                     </td>
-                                    {% endif %}
                                 </tr>
                                 {% endfor %}
 
                                 <tr>
                                     <td colspan="6" class="text-right bold">TOTAL</td>
-                                    <td class="text-right bold">{{ equipment_direct_cost|intcomma }}</td>
+                                    <td class="text-right bold">{{ cost_breakdown.equipment_cost|intcomma }}</td>
                                     <td></td>
                                 </tr>
 
@@ -388,7 +386,7 @@
             ],
             datasets: [
                 {
-                    data: [{{ material_cost_percentage }}, {{ labour_cost_percentage }}, {{ equipment_cost_percentage}}],
+                    data: [{{ cost_breakdown.material_cost_ratio }}, {{ cost_breakdown.labour_cost_ratio }}, {{ cost_breakdown.equipment_cost_ratio }}],
                     borderWidth: 0,
                     backgroundColor: [
                         "rgba(246,168,33, 0.7)",

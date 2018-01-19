@@ -497,6 +497,90 @@ class CostBreakdown(models.Model):
                 ('manage_library', 'Can manage standard cost breakdown library'),
             )
 
+    def __init__(self, *args, **kwargs):
+        super(CostBreakdown, self).__init__(*args, **kwargs)
+        self.mb_list = tuple(MaterialBreakdown.objects.filter(costbreakdown_id=self.pk))
+        self.lb_list = tuple(LabourBreakdown.objects.filter(costbreakdown_id=self.pk))
+        self.eb_list = tuple(EquipmentBreakdown.objects.filter(costbreakdown_id=self.pk))
+
+    def material_cost(self, *args, **kwargs):
+        """
+        Returns total material direct cost
+        """
+        result = 0
+        for mb in self.mb_list:
+            result += mb.subtotal()
+
+        return result
+
+    def labour_cost(self, *args, **kwargs):
+        """
+        Returns total labour direct cost
+        """
+        result = 0
+        for lb in self.lb_list:
+            result += lb.subtotal()
+
+        return result
+
+    def equipment_cost(self, *args, **kwargs):
+        """
+        Returns total equipment direct cost
+        """
+        result = 0
+        for eb in self.eb_list:
+            result += eb.subtotal()
+
+        return result
+
+    def direct_cost(self, *args, **kwargs):
+        """
+        Returns the direct cost of the breakdown
+        """
+        return self.material_cost() + self.labour_cost() + self.equipment_cost()
+
+    def material_cost_ratio(self, *args, **kwargs):
+        """
+        Percentage of material cost to the direct cost
+        """
+        return round((self.material_cost() / self.direct_cost()) * 100, 2)
+
+    def labour_cost_ratio(self, *args, **kwargs):
+        """
+        Percentage of labour cost to the direct cost
+        """
+        return round((self.labour_cost() / self.direct_cost()) * 100, 2)
+
+    def equipment_cost_ratio(self, *args, **kwargs):
+        """
+        Percentage of equipment cost to the direct cost
+        """
+        return round((self.equipment_cost() / self.direct_cost()) * 100, 2)
+
+    def overhead_cost(self, *args, **kwargs):
+        """
+        Returns the overhead cost
+        """
+        return round((self.overhead / 100) * self.direct_cost(), 2)
+
+    def profit_cost(self, *args, **kwargs):
+        """
+        Returns the profit
+        """
+        return round((self.profit / 100) * self.direct_cost(), 2)
+
+    def indirect_cost(self, *args, **kwargs):
+        """
+        Returns the indirect cost (profile + overhead) of the breakdown
+        """
+        return self.overhead_cost() + self.profit_cost()
+
+    def total_cost(self, *args, **kwargs):
+        """
+        Returns the total cost of the cost breakdown 
+        """
+        return self.direct_cost() + self.indirect_cost()
+
     def get_absolute_url(self):
         """
         Returns a particular instance of costbreakdown
