@@ -600,8 +600,8 @@ class MaterialBreakdown(models.Model):
     costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
     material = models.ForeignKey(Material, on_delete=models.CASCADE)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE)
-    quantity = models.DecimalField(max_digits=12, decimal_places=2, default=1)
-    rate = models.DecimalField(max_digits=12, decimal_places=2, blank=True, default=0)
+    quantity = models.DecimalField(max_digits=12, decimal_places=2, default=1.0)
+    rate = models.DecimalField(max_digits=12, decimal_places=2, default=0.00)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
 

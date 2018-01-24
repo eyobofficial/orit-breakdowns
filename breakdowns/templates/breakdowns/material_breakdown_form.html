@@ -1,19 +1,52 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
+{% load static %}
 
 {% block title %}
-<title> | Orit</title>
+<title>{% if material_breakdown %} Update Material {% else %} Add Material {% endif %} | Orit</title>
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'luna/vendor/select2/dist/css/select2.min.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="panel panel-default panel-detail panel-lg" id="material-create-panel">
-    <div class="panel-heading">
-       {% if material_breakdown %}
-       Update {{ material_breakdown.material.full_title|title }} Material
-       {% else %}
-       Add Material
-       {% endif %}
-    </div><!-- /END .panel-heading -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="view-header">
+            <div class="pull-right text-right" style="line-height: 14px">
+                <a href="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}" title="Back" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i>&nbsp; Back</a>
+            </div>
+            <div class="header-icon">
+                <i class="pe page-header-icon pe-7s-calculator"></i>
+            </div>
+            <div class="header-title">
+                <h3 class="m-b-xs">{{ cost_breakdown.full_title|capfirst }}</h3>
+                {% if material_breakdown %}
+                <small>
+                  Update material breakdown to reflect your desired the cost breakdown
+                </small>
+                {% else %}
+                <small>
+                  Add a new material breakdown to the cost breakdown
+                </small>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+    </div>
+</div>
 
+<div class="panel panel-filled" id="material-create-panel">
+    <div class="panel-heading">
+        <div class="panel-tools">
+            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+        </div>
+        {% if material_breakdown %}
+        Update Material Breakdown
+        {% else %}
+        Add New Material Breakdown
+        {% endif %}
+    </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-8 col-sm-offset-1 pad-up-md">
@@ -39,7 +72,8 @@
                     <div class="form-group">
                         <label for="material" class="col-sm-4 control-label">Material</label>
                         <div class="col-sm-8">
-                            <select name="material" class="selectpicker show-tick" data-width="100%" data-live-search="true" title="Choose Material...">
+                            <select name="material" id="materialSelect" class="select2 form-control" style="width: 100%">
+                                <option></option>
                                 {% for material in material_list %}
                                 <option {% if material_breakdown.material.id == material.id %} selected="selected" {% endif %} value="{{ material.id }}">{{ material }}</option>
                                 {% endfor %}
@@ -55,7 +89,8 @@
                     <div class="form-group">
                         <label for="unit" class="col-sm-4 control-label">Unit</label>
                         <div class="col-sm-8">
-                            <select name="unit" class="selectpicker show-tick" data-width="100%" data-live-search="true" title="Choose Measurement Unit">
+                            <select name="unit" id="unitSelect" class="select2 form-control" data-width="100%">
+                                <option></option>
                                 {% for unit in unit_list %}
                                 <option {% if material_breakdown.unit.id == unit.id %} selected="selected" {% endif %} value="{{ unit.id }}">{{ unit.full_title|title}}({% autoescape off %}{{ unit.html_title }}){% endautoescape %}</option>
                                 {% endfor %}
@@ -81,7 +116,7 @@
                     <!-- PRICE -->
                     {% if not cost_breakdown.is_library %}
                     <div class="form-group">
-                        <label for="rate" class="col-sm-4 control-label">Price</label>
+                        <label for="rate" class="col-sm-4 control-label">Price (ETB)</label>
                         <div class="col-sm-8">
                             <input type="text" name="rate" id="rate" class="form-control" value="{{ form.rate.value|default_if_none:'' }}">
                             <div class="errorlist-container">
@@ -93,18 +128,15 @@
 
                     <!-- SUBMIT -->
                     <div class="row">
-                        <div class="col-sm-4 col-sm-offset-4">
-                        {% if material_breakdown %}
-                            <div class="form-group pad-left-sm pad-up-sm">
-                                <a href="{% url 'breakdowns:material_breakdown_delete' cost_breakdown.id material_breakdown.id %}" class="btn btn-danger">Delete</a>&nbsp;
-                            </div><!-- /.form-group -->
-                        {% endif %}
-                        </div><!-- /.col-sm-4 -->
-
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <div class="pad-up-sm text-right">
-                                <a href="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}" class="btn btn-default">Cancel</a>&nbsp;
-                                <input type="submit" class="btn btn-primary" value="Submit">&nbsp;
+                                {% if material_breakdown %}
+                                  <form method="POST" action="{% url 'breakdowns:material_breakdown_delete' cost_breakdown.id material_breakdown.id %}" class="breath-up-md">
+                                  {% csrf_token %}
+                                      <input type="submit" class="btn btn-danger" value="Delete">
+                                  </form>
+                                {% endif %}
+                                <input type="submit" class="btn btn-default" value="Submit">
                             </div>
                         </div>
                     </div><!-- /.row -->
@@ -114,3 +146,16 @@
     </div><!-- /.panel-body -->
 </div><!-- /END .material-detail-panel -->
 {% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'luna/vendor/select2/dist/js/select2.js' %}"></script>
+<script>
+    $("#materialSelect").select2({
+        placeholder: "Select a material"
+    });
+
+    $("#unitSelect").select2({
+        placeholder: "Select unit of measurement"
+    });
+</script>
+{% endblock extra_js %}

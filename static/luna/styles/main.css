@@ -1,3 +1,15 @@
 ul.errorlist li {
 	color: #DB524B;
 }
+
+table tr.total-row {
+	background: transparent !important;
+}
+
+table tr.total-row td {
+	border-top: none;
+}
+
+.display-inline {
+	display: inline;
+}
