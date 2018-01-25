@@ -543,19 +543,31 @@ class CostBreakdown(models.Model):
         """
         Percentage of material cost to the direct cost
         """
-        return round((self.material_cost() / self.direct_cost()) * 100, 2)
+        try:
+            ratio = round((self.material_cost() / self.direct_cost()) * 100, 2)
+        except ZeroDivisionError:
+            ratio = 0.0
+        return ratio 
 
     def labour_cost_ratio(self, *args, **kwargs):
         """
         Percentage of labour cost to the direct cost
         """
-        return round((self.labour_cost() / self.direct_cost()) * 100, 2)
+        try:
+            ratio = round((self.labour_cost() / self.direct_cost()) * 100, 2)
+        except ZeroDivisionError:
+            ratio = 0.0
+        return ratio
 
     def equipment_cost_ratio(self, *args, **kwargs):
         """
         Percentage of equipment cost to the direct cost
         """
-        return round((self.equipment_cost() / self.direct_cost()) * 100, 2)
+        try:
+            ratio = round((self.equipment_cost() / self.direct_cost()) * 100, 2)
+        except ZeroDivisionError:
+            ratio = 0.0
+        return ratio
 
     def overhead_cost(self, *args, **kwargs):
         """

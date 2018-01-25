@@ -421,13 +421,14 @@
         $('.delete-form').submit(function(e){
             e.preventDefault();
 
-            alertify.confirm("Are you sure you want to delete this material?",
-              function(){
-                $(this).submit();
-              },
-              function(){
-                return false
-              });
+            alertify.confirm('Title Goes Here', 'Confirm?', 
+                function(){
+                    $(this).submit();
+                }, 
+                function(){
+                    return false;
+
+                });
         });
     });
 </script>
