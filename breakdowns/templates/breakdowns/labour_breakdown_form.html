@@ -1,19 +1,52 @@
-{% extends 'base.html' %}
+{% extends 'base2.html' %}
+{% load static %}
 
 {% block title %}
-<title>{{ cost_breakdown.full_title }} | Orit</title>
+<title>{% if material_breakdown %} Update Labour {% else %} Add Labour {% endif %} | Orit</title>
+{% endblock %}
+
+{% block extra_head %}
+<link rel="stylesheet" href="{% static 'luna/vendor/select2/dist/css/select2.min.css' %}">
 {% endblock %}
 
 {% block content %}
-<div class="panel panel-default panel-detail panel-lg" id="labour-create-panel">
-    <div class="panel-heading">
-       {% if labour_breakdown %}
-       Update {{ labour_breakdown.labour.full_title|title }}
-       {% else %}
-       Add Labour
-       {% endif %}
-    </div><!-- /END .panel-heading -->
+<div class="row">
+    <div class="col-lg-12">
+        <div class="view-header">
+            <div class="pull-right text-right" style="line-height: 14px">
+                <a href="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}" title="Back" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i>&nbsp; Back</a>
+            </div>
+            <div class="header-icon">
+                <i class="pe page-header-icon pe-7s-calculator"></i>
+            </div>
+            <div class="header-title">
+                <h3 class="m-b-xs">{{ cost_breakdown.full_title|capfirst }}</h3>
+                {% if labour_breakdown %}
+                <small>
+                  Update labour breakdown to reflect your desired the cost breakdown
+                </small>
+                {% else %}
+                <small>
+                  Add a new labour breakdown to the cost breakdown
+                </small>
+                {% endif %}
+            </div>
+        </div>
+        <hr>
+    </div>
+</div>
 
+<div class="panel panel-filled" id="labour-create-panel">
+    <div class="panel-heading">
+        <div class="panel-tools">
+            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
+        </div>
+        {% if labour_breakdown %}
+        Update Labour Breakdown
+        {% else %}
+        Add New Labour Breakdown
+        {% endif %}
+    </div>
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-8 col-sm-offset-1 pad-up-md">
@@ -49,7 +82,8 @@
                     <div class="form-group">
                         <label for="labour" class="col-sm-4 control-label">Labour</label>
                         <div class="col-sm-8">
-                            <select name="labour" class="selectpicker show-tick" data-width="100%" title="Choose Labour Type">
+                            <select name="labour" id="labourSelect" class="select2 form-control" data-width="100%">
+                                <option></option>
                                 {% for labour in labour_list %}
                                 <option {% if labour_breakdown.labour.id == labour.id %} selected="selected" {% endif %}value="{{ labour.id }}">{{ labour }}</option>
                                 {% endfor %}
@@ -98,18 +132,9 @@
                     
                     <!-- SUBMIT -->
                     <div class="row">
-                        <div class="col-sm-4 col-sm-offset-4">
-                        {% if labour_breakdown %}
-                            <div class="form-group pad-left-sm pad-up-sm">
-                                <a href="{% url 'breakdowns:labour_breakdown_delete' cost_breakdown.id labour_breakdown.id %}" class="btn btn-danger">Delete</a>&nbsp;
-                            </div><!-- /.form-group -->
-                        {% endif %}
-                        </div><!-- /.col-sm-4 -->
-
-                        <div class="col-sm-4">
+                        <div class="col-sm-12">
                             <div class="pad-up-sm text-right">
-                                <a href="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}" class="btn btn-default">Cancel</a>&nbsp;
-                                <input type="submit" class="btn btn-primary" value="Submit">&nbsp;
+                                <input type="submit" class="btn btn-default" value="Submit">&nbsp;
                             </div>
                         </div>
                     </div><!-- /.row -->
@@ -119,3 +144,14 @@
     </div><!-- /.panel-body -->
 </div><!-- /END .material-detail-panel -->
 {% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'luna/vendor/select2/dist/js/select2.js' %}"></script>
+<script>
+    $(function(){
+        $("#labourSelect").select2({
+            placeholder: "Select labour type"
+        });
+    });
+</script>
+{% endblock extra_js %}

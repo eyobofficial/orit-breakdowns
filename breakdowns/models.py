@@ -647,8 +647,8 @@ class LabourBreakdown(models.Model):
     costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
     labour = models.ForeignKey(Labour, on_delete=models.CASCADE)
     number = models.IntegerField(default=1)
-    hourly_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0, blank=True)
-    uf = models.DecimalField(max_digits=3, decimal_places=2, default=1)
+    hourly_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0.0)
+    uf = models.DecimalField(max_digits=3, decimal_places=2, default=1.0)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
 

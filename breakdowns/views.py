@@ -726,8 +726,6 @@ class LabourBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView)
         return cost_breakdown.created_by.id == self.request.user.id
 
     def get_success_url(self):
-        if self.request.user.has_perm('breakdowns.manage_library'):
-            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form, *args, **kwargs):
@@ -758,8 +756,6 @@ class LabourBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
         return labour_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self):
-        if self.request.user.has_perm('breakdowns.manage_library'):
-            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
@@ -769,13 +765,12 @@ class LabourBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView)
         context['labour_list'] = Labour.objects.all()
         context['unit_list'] = Unit.objects.all()
         context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'mybreakdowns'
         return context
 
 # Delete A Material Breakdown 
 class LabourBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = LabourBreakdown
-    template_name = 'breakdowns/labour_breakdown_confirm_delete.html'
+    template_name = 'breakdowns/my_breakdown_detail.html'
     login_url = 'breakdowns:my_breakdown_list'
     redirect_field_name = None
 
@@ -785,8 +780,6 @@ class LabourBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
         return labour_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self, *args, **kwargs):
-        if self.request.user.has_perm('breakdowns.manage_library'):
-            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
