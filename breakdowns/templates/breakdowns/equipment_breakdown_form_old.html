@@ -1,56 +1,23 @@
-{% extends 'base2.html' %}
-{% load static %}
+{% extends 'base.html' %}
 
 {% block title %}
-<title>{% if material_breakdown %} Update Labour {% else %} Add Labour {% endif %} | Orit</title>
-{% endblock %}
-
-{% block extra_head %}
-<link rel="stylesheet" href="{% static 'luna/vendor/select2/dist/css/select2.min.css' %}">
+<title>{{ cost_breakdown.full_title }} | Orit</title>
 {% endblock %}
 
 {% block content %}
-<div class="row">
-    <div class="col-lg-12">
-        <div class="view-header">
-            <div class="pull-right text-right" style="line-height: 14px">
-                <a href="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}" title="Back" class="btn btn-default"><i class="fa fa-arrow-circle-left"></i>&nbsp; Back</a>
-            </div>
-            <div class="header-icon">
-                <i class="pe page-header-icon pe-7s-calculator"></i>
-            </div>
-            <div class="header-title">
-                <h3 class="m-b-xs">{{ cost_breakdown.full_title|capfirst }}</h3>
-                {% if labour_breakdown %}
-                <small>
-                  Update labour breakdown to reflect your desired change in the cost breakdown
-                </small>
-                {% else %}
-                <small>
-                  Add a new labour breakdown to the cost breakdown
-                </small>
-                {% endif %}
-            </div>
-        </div>
-        <hr>
-    </div>
-</div>
-
-<div class="panel panel-filled" id="labour-create-panel">
+<div class="panel panel-default panel-detail panel-lg" id="equipment-create-panel">
     <div class="panel-heading">
-        <div class="panel-tools">
-            <a class="panel-toggle"><i class="fa fa-chevron-up"></i></a>
-        </div>
-        {% if labour_breakdown %}
-        Update Labour Breakdown
-        {% else %}
-        Add New Labour Breakdown
-        {% endif %}
-    </div>
+       {% if equipment_breakdown %}
+       Update {{ equipment_breakdown.equipment.full_title|title }}
+       {% else %}
+       Add Equipment
+       {% endif %}
+    </div><!-- /END .panel-heading -->
+
     <div class="panel-body">
         <div class="row">
             <div class="col-sm-8 col-sm-offset-1 pad-up-md">
-                <form method="POST" id="labour-form" class="form-horizontal">
+                <form method="POST" id="equipment-form" class="form-horizontal">
                 {% csrf_token %}
 
                     <div class="errorlist-container">
@@ -78,19 +45,18 @@
                         </div>
                     </div><!-- /.form-group -->
 
-                    <!-- LABOUR LIST -->
+                    <!-- EQUIPMENT LIST -->
                     <div class="form-group">
-                        <label for="labour" class="col-sm-4 control-label">Labour</label>
+                        <label for="equipment" class="col-sm-4 control-label">Equipment</label>
                         <div class="col-sm-8">
-                            <select name="labour" id="labourSelect" class="select2 form-control" data-width="100%">
-                                <option></option>
-                                {% for labour in labour_list %}
-                                <option {% if labour_breakdown.labour.id == labour.id %} selected="selected" {% endif %}value="{{ labour.id }}">{{ labour }}</option>
+                            <select name="equipment" class="selectpicker show-tick" data-width="100%" title="Choose Equipment Type">
+                                {% for equipment in equipment_list %}
+                                <option {% if equipment_breakdown.equipment.id == equipment.id %} selected="selected" {% endif %}value="{{ equipment.id }}">{{ equipment }}</option>
                                 {% endfor %}
                             </select>
 
                             <div class="errorlist-container">
-                                {{ form.labour.errors }}
+                                {{ form.equipment.errors }}
                             </div>
                         </div>
                     </div><!-- /.form-group -->
@@ -116,25 +82,34 @@
                             </div>
                         </div>
                     </div><!-- /.form-group -->
-                    
-                    <!-- HOURLY RATE -->
+
+                    <!-- RENTAL RATE -->
                     {% if not cost_breakdown.is_library %}
                     <div class="form-group">
-                        <label for="hourly_rate" class="col-sm-4 control-label">Hourly Rate (ETB)</label>
+                        <label for="rental_rate" class="col-sm-4 control-label">Rental Rate (ETB)</label>
                         <div class="col-sm-8">
-                            <input type="text" name="hourly_rate" id="hourly_rate" class="form-control" value="{{ form.hourly_rate.value|default_if_none:'' }}">
+                            <input type="text" name="rental_rate" id="rental_rate" class="form-control" value="{{ form.rental_rate.value|default_if_none:'' }}">
                             <div class="errorlist-container">
-                                {{ form.hourly_rate.errors }}
+                                {{ form.rental_rate.errors }}
                             </div>
                         </div>
                     </div><!-- /.form-group -->
                     {% endif %}
-                    
+
                     <!-- SUBMIT -->
                     <div class="row">
-                        <div class="col-sm-12">
+                        <div class="col-sm-4 col-sm-offset-4">
+                        {% if equipment_breakdown %}
+                            <div class="form-group pad-left-sm pad-up-sm">
+                                <a href="{% url 'breakdowns:equipment_breakdown_delete' cost_breakdown.id equipment_breakdown.id %}" class="btn btn-danger">Delete</a>&nbsp;
+                            </div><!-- /.form-group -->
+                        {% endif %}
+                        </div><!-- /.col-sm-4 -->
+
+                        <div class="col-sm-4">
                             <div class="pad-up-sm text-right">
-                                <input type="submit" class="btn btn-default" value="Submit">&nbsp;
+                                <a href="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}" class="btn btn-default">Cancel</a>&nbsp;
+                                <input type="submit" class="btn btn-primary" value="Submit">&nbsp;
                             </div>
                         </div>
                     </div><!-- /.row -->
@@ -144,14 +119,3 @@
     </div><!-- /.panel-body -->
 </div><!-- /END .material-detail-panel -->
 {% endblock content %}
-
-{% block extra_js %}
-<script src="{% static 'luna/vendor/select2/dist/js/select2.js' %}"></script>
-<script>
-    $(function(){
-        $("#labourSelect").select2({
-            placeholder: "Select labour type"
-        });
-    });
-</script>
-{% endblock extra_js %}

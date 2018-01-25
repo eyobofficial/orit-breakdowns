@@ -686,8 +686,8 @@ class EquipmentBreakdown(models.Model):
     costbreakdown = models.ForeignKey(CostBreakdown, on_delete=models.CASCADE)
     equipment = models.ForeignKey(Equipment, on_delete=models.CASCADE)
     number = models.IntegerField(default=1)
-    rental_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0, blank=True, help_text='Equipment hourly rental rate')
-    uf = models.DecimalField(max_digits=3, decimal_places=2, default=1)
+    rental_rate = models.DecimalField(max_digits=8, decimal_places=2, default=0.0, help_text='Equipment hourly rental rate')
+    uf = models.DecimalField(max_digits=3, decimal_places=2, default=1.0)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
 

@@ -738,7 +738,6 @@ class LabourBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView)
         context['labour_list'] = Labour.objects.all()
         context['unit_list'] = Unit.objects.all()
         context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'mybreakdowns'
         return context
 
 
@@ -787,7 +786,6 @@ class LabourBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView)
         context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
         context['labour_breakdown'] = LabourBreakdown.objects.get(pk=self.kwargs['pk'])
         context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'mybreakdowns'
         return context
 
 # Create A Equipment Breakdown View
@@ -803,8 +801,6 @@ class EquipmentBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateVi
         return cost_breakdown.created_by.id == self.request.user.id
 
     def get_success_url(self):
-        if self.request.user.has_perm('breakdowns.manage_library'):
-            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['pk']})
 
     def form_valid(self, form, *args, **kwargs):
@@ -817,7 +813,6 @@ class EquipmentBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateVi
         context['equipment_list'] = Equipment.objects.all()
         context['unit_list'] = Unit.objects.all()
         context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'mybreakdowns'
         return context
 
 # Update A Labour Breakdown 
@@ -834,8 +829,6 @@ class EquipmentBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
         return equipment_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self):
-        if self.request.user.has_perm('breakdowns.manage_library'):
-            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
@@ -845,12 +838,11 @@ class EquipmentBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateVi
         context['equipment_list'] = Equipment.objects.all()
         context['unit_list'] = Unit.objects.all()
         context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'mybreakdowns'
         return context
 
 class EquipmentBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteView):
     model = EquipmentBreakdown
-    template_name = 'breakdowns/equipment_breakdown_confirm_delete.html'
+    template_name = 'breakdowns/my_breakdown_detail.html'
     login_url = 'breakdowns:my_breakdown_list'
     redirect_field_name = None
 
@@ -860,8 +852,6 @@ class EquipmentBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteVi
         return equipment_breakdown.costbreakdown.id == cost_breakdown.id
 
     def get_success_url(self, *args, **kwargs):
-        if self.request.user.has_perm('breakdowns.manage_library'):
-            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.kwargs['breakdown_pk']})
 
     def get_context_data(self, *args, **kwargs):
@@ -869,5 +859,4 @@ class EquipmentBreakdownDelete(LoginRequiredMixin, UserPassesTestMixin, DeleteVi
         context['cost_breakdown'] = CostBreakdown.objects.get(pk=self.kwargs['breakdown_pk'])
         context['equipment_breakdown'] = EquipmentBreakdown.objects.get(pk=self.kwargs['pk'])
         context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'mybreakdowns'
         return context
