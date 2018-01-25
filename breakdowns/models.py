@@ -545,7 +545,7 @@ class CostBreakdown(models.Model):
         """
         try:
             ratio = round((self.material_cost() / self.direct_cost()) * 100, 2)
-        except ZeroDivisionError:
+        except:
             ratio = 0.0
         return ratio 
 
@@ -555,7 +555,7 @@ class CostBreakdown(models.Model):
         """
         try:
             ratio = round((self.labour_cost() / self.direct_cost()) * 100, 2)
-        except ZeroDivisionError:
+        except:
             ratio = 0.0
         return ratio
 
@@ -565,7 +565,7 @@ class CostBreakdown(models.Model):
         """
         try:
             ratio = round((self.equipment_cost() / self.direct_cost()) * 100, 2)
-        except ZeroDivisionError:
+        except:
             ratio = 0.0
         return ratio
 
