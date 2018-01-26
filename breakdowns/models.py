@@ -190,17 +190,31 @@ class City(models.Model):
         """
         return self.full_title
 
+class ProjectCatagory(models.Model):
+    full_title = models.CharField(max_length=120)
+    description = models.TextField(blank=True, null=True)
+
+    class Meta:
+        ordering = ['full_title',]
+        verbose_name_plural = 'Project catagories'
+
+    def __str__(self):
+        return self.full_title
+
 class Project(models.Model):
     """
     Model represents a construction project
     """
+    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    project_catagory = models.ForeignKey(ProjectCatagory, on_delete=models.CASCADE)
     full_title = models.CharField(max_length=120, help_text='The full official project title')
     short_title = models.CharField(max_length=60, null=True, blank=True)
     contractor = models.CharField(max_length=120)
     consultant = models.CharField(max_length=120)
     client = models.CharField(max_length=120)
     city = models.CharField(max_length=60)
-    created_by = models.ForeignKey(User, on_delete=models.CASCADE)
+    primary = models.BooleanField('Primary project', default=False)
+    activated = models.BooleanField('Activated Project', default=True)
     updated_at = models.DateField(auto_now=True)
     created_at = models.DateField(auto_now_add=True)
 

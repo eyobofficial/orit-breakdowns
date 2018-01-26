@@ -6,7 +6,8 @@ from .models import (Company,
                      UserMembership,
                      UserPayment,
                      CompanyPayment,
-                     City, 
+                     City,
+                     ProjectCatagory, 
                      Project,
                      UnitCatagory, 
                      Unit, 
@@ -81,6 +82,9 @@ class CompanyPaymentAdmin(admin.ModelAdmin):
 
 # Register City
 admin.site.register(City)
+
+# Register ProjectCatagory
+admin.site.register(ProjectCatagory)
 
 # Register Project model
 @admin.register(Project)
