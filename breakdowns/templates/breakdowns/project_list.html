@@ -105,7 +105,7 @@
                                {% for project in project_list %}
                                <tr>
                                    <td>{{ forloop.counter }}</td>
-                                   <td><a href="{% url 'breakdowns:project_detail' project.id %}">{% if project.short_title %}
+                                   <td><a href="{% url 'breakdowns:project_update' project.id %}">{% if project.short_title %}
                                        {{ project.short_title }}
                                      {% else %}
                                        {{ project.full_title }}
@@ -113,7 +113,9 @@
                                    </a></td>
                                    <td>{{ project.project_catagory.full_title }}</td>
                                    <td>{{ project.updated_at|date:'d/m/Y' }}</td>
-                                   <td class="text-right bold"><a href="{% url 'breakdowns:project_update' project.id %}" class="btn btn-default btn-sm"><span class="fa fa-edit"></span></a></td>
+                                   <td class="text-right bold">
+                                    <a href="{% url 'breakdowns:project_update' project.id %}" class="btn btn-default btn-sm"><span class="fa fa-edit"></span> Edit</a>
+                                   </td>
                                </tr>
                                {% endfor %}
 
@@ -123,6 +125,9 @@
                    {% else %}
                    <p class="text-center breath-both-lg text-fade"><strong><span class="fa fa-exclamation-circle"></span> You currently have no project</strong></p>
                    {% endif %}
+                </div>
+                <div class="panel-footer">
+                    <a href="{% url 'breakdowns:project_create' %}" class="btn btn-default btn-sm"><i class="fa fa-plus"></i> Project</a>
                 </div>
             </div>
         </div>

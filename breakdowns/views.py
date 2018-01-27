@@ -210,23 +210,26 @@ class ProjectDetail(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView)
 # Project Create View
 class ProjectCreate(LoginRequiredMixin, CreateView):
     model = Project
-    fields = ['full_title', 'short_title', 'city', 'client', 'consultant', 'contractor',]
-
+    fields = ['full_title', 'short_title', 'city', 'client', 'consultant', 'contractor', 'project_catagory',]
+    success_url = '/breakdowns/projects/'
+    redirect_field_name = None
+    
     def form_valid(self, form, *args, **kwargs):
         form.instance.created_by = self.request.user 
         return super(ProjectCreate, self).form_valid(form, *args, **kwargs)
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProjectCreate, self).get_context_data(*args, **kwargs)
+        context['catagory_list'] = ProjectCatagory.objects.all();
         context['page_name'] = 'Projects'
-        context['subpage_name'] = 'Add'
         return context
 
 # Project Update View
 class ProjectUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
     model = Project
-    fields = ['full_title', 'short_title', 'city', 'client', 'consultant', 'contractor',]
+    fields = ['full_title', 'short_title', 'city', 'client', 'consultant', 'contractor', 'project_catagory',]
     login_url = 'breakdowns:project_list'
+    success_url = '/breakdowns/projects/'
     redirect_field_name = None
 
     def test_func(self):
@@ -235,12 +238,14 @@ class ProjectUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
 
     def get_context_data(self, *args, **kwargs):
         context = super(ProjectUpdate, self).get_context_data(*args, **kwargs)
+        context['catagory_list'] = ProjectCatagory.objects.all();
         context['page_name'] = 'Projects'
         return context
 
 # Project Delete View
 class ProjectDelete(LoginRequiredMixin, DeleteView):
-    model = Project 
+    model = Project
+    template_name = 'breakdowns/project_form.html'
     success_url = reverse_lazy('breakdowns:project_list')
 
     def get_context_data(self, *args, **kwargs):
