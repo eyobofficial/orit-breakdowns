@@ -8,9 +8,6 @@ urlpatterns = [
     # Index URL 
     url(r'^$', RedirectView.as_view(url='/breakdowns/my-breakdowns/'), name='index'),
 
-    # Cost Breakdown Detail URL
-    url(r'^cost-breakdown/(?P<pk>[0-9]+)/$', views.CostBreakdownDetail.as_view(), name='cost_breakdown_detail'),
-
     # User Cost Breakdown List URL
     url(r'^my-breakdowns/$', views.MyBreakdownList.as_view(), name='my_breakdown_list'),
 
@@ -55,6 +52,9 @@ urlpatterns = [
 
     # Delete a EquipmentBreakdown for a Particular Breakdown URL
     url(r'^my-breakdown/(?P<breakdown_pk>[0-9]+)/equipment/delete/(?P<pk>[0-9]+)/$', views.EquipmentBreakdownDelete.as_view(), name='equipment_breakdown_delete'),
+    
+    # Standard Library URL
+    url(r'^library/(?P<pk>[0-9]+)/$', views.StandardLibraryDetail.as_view(), name='library_detail'),
 
     # Material List URL
     url(r'^materials/$', views.MaterialList.as_view(), name='material_list'),

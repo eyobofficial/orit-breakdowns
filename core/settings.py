@@ -74,6 +74,8 @@ TEMPLATES = [
     },
 ]
 
+TEMPLATES[0]['OPTIONS']['context_processors'].append("breakdowns.context_processors.library_processor")
+
 WSGI_APPLICATION = 'core.wsgi.application'
 
 

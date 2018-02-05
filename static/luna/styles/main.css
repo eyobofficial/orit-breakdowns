@@ -13,3 +13,8 @@ table tr.total-row td {
 .display-inline {
 	display: inline;
 }
+
+.disabled-link {
+	color: gray;
+	cursor: not-allowed;
+}

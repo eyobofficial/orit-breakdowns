@@ -96,6 +96,7 @@
                                    <th>#</th>
                                    <th>Cost Breakdown</th>
                                    <th>Catagory</th>
+                                   <th>Project</th>
                                </tr>
                            </thead>
 
@@ -105,6 +106,13 @@
                                    <td>{{ forloop.counter }}</td>
                                    <td><a href="{% url 'breakdowns:my_breakdown_detail' cost_breakdown.id %}">{{ cost_breakdown.full_title|capfirst }}</a></td>
                                    <td>{{ cost_breakdown.cost_breakdown_catagory.full_title|capfirst }}</td>
+                                   <td>
+                                     {% if cost_breakdown.project.short_title %}
+                                     {{ cost_breakdown.project.short_title }}
+                                     {% else %}
+                                     {{ cost_breakdown.project.full_title }}
+                                     {% endif %}
+                                   </td>
                                </tr>
                                {% endfor %}
 

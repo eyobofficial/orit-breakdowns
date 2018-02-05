@@ -46,7 +46,6 @@
 <!-- Wrapper-->
 {% block wrapper %}
 <div class="wrapper">
-
     <!-- Header-->
     <nav class="navbar navbar-default navbar-fixed-top">
         <div class="container-fluid">
@@ -100,20 +99,18 @@
                     <a href="{% url 'breakdowns:my_breakdown_list' %}">My Breakdowns</a>
                 </li>
 
-                <li>
-                    <a href="#">Library</a>
-                </li>
-
-                <!-- <li>
-                    <a href="index.html#monitoring" data-toggle="collapse" aria-expanded="false">
-                        Monitoring<span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
+                <li {% if page_name == 'library' %}class="active"{% endif %}>
+                    <a href="#library" data-toggle="collapse" aria-expanded="false">
+                        Library<span class="sub-nav-icon"> <i class="stroke-arrow"></i> </span>
                     </a>
-                    <ul id="monitoring" class="nav nav-second collapse">
-                        <li><a href="metrics.html"> Metrics</a></li>
-                        <li><a href="usage.html"> Usage</a></li>
-                        <li><a href="activity.html"> Activity</a></li>
+                    <ul id="library" class="nav nav-second collapse {% if page_name == 'library' %}in{% endif %}">
+                        {% for library in library_list %}
+                        <li {% if subpage_name == library.full_title %}class="active"{% endif %}>
+                            <a href="{% url 'breakdowns:library_detail' library.id %}">{{ library.short_title }}</a>
+                        </li>
+                        {% endfor %}
                     </ul>
-                </li> -->
+                </li>
 
                 <li class="nav-category">
                     MARKET ANALYSIS

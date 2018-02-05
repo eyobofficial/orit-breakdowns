@@ -15,7 +15,7 @@ from xlrd import open_workbook
 from xlwt import Workbook, easyxf, Formula
 from xlutils.copy import copy
 from .forms import SignupForm, StepOneForm, StepTwoForm
-from .models import Package, UserMembership, City, ProjectCatagory, Project, UnitCatagory, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, ActivityCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown
+from .models import Package, UserMembership, City, ProjectCatagory, Project, UnitCatagory, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, ActivityCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown, StandardLibrary, LibraryBreakdown
 
 # Create your views here.
 @login_required
@@ -455,34 +455,17 @@ class MyBreakdownDetail(UserPassesTestMixin, generic.DetailView):
         context['page_name'] = 'my cost breakdowns'
         return context
 
-# CostBreakdown Detail View
-class CostBreakdownDetail(LoginRequiredMixin, UserPassesTestMixin, generic.DetailView):
-    model = CostBreakdown
-    context_object_name = 'cost_breakdown'
+# Standard Library Detail 
+class StandardLibraryDetail(LoginRequiredMixin, generic.DetailView):
+    model = StandardLibrary
+    context_object_name = 'library'
     template_name = 'breakdowns/library_detail.html'
-    login_url = 'breakdowns:cost_breakdown_list'
-    redirect_field_name = None
-
-    def test_func(self, *args, **kwargs):
-        cost_breakdown = CostBreakdown.objects.get(pk=self.kwargs['pk'])
-        return cost_breakdown.created_by.has_perm('breakdowns.admin_cost_breakdown')
 
     def get_context_data(self, *args, **kwargs):
-        context = super(CostBreakdownDetail, self).get_context_data(*args, **kwargs)
-        
-        # Material List
-        material_list = MaterialBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('rate')
-
-        # Labours List
-        labour_list = LabourBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-hourly_rate')
-
-        # Equipement
-        equipment_list = EquipmentBreakdown.objects.filter(costbreakdown_id=self.kwargs['pk']).order_by('-rental_rate')
-
-        context['material_list'] = material_list
-        context['labour_list'] = labour_list
-        context['equipment_list'] = equipment_list
+        context = super(StandardLibraryDetail, self).get_context_data(*args, **kwargs)
+        context['breakdown_list'] = LibraryBreakdown.objects.filter(standard_library=self.kwargs['pk'])
         context['page_name'] = 'library'
+        context['subpage_name'] = self.object.full_title 
         return context
 
 # Create a new cost breakdown - Step 1

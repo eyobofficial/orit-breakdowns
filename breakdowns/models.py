@@ -1,8 +1,47 @@
 from django.db import models
 from django.contrib.auth.models import User
 from django.urls import reverse
-
 from datetime import date, timedelta
+from django.contrib.auth.models import User
+from django.db.models.signals import post_save
+from django.dispatch import receiver
+
+class Profile(models.Model):
+    user = models.OneToOneField(User, on_delete=models.CASCADE)
+    deactivate = models.BooleanField('Deactivate Account', default=False)
+        
+@receiver(post_save, sender=User)
+def create_user_profile(sender, instance, created, **kwargs):
+    if created:
+        Profile.objects.create(user=instance)
+
+@receiver(post_save, sender=User)
+def save_user_profile(sender, instance, **kwargs):
+    instance.profile.save()
+
+class FreelanceUserPlan(models.Model):
+    full_title = models.CharField('Plan Full Title', max_length=120)
+    short_title = models.CharField('Plan Short Title', max_length=60, null=True, blank=True)
+    is_premium = models.BooleanField(default=False)
+    is_default = models.BooleanField(default=False)
+    duration = models.IntegerField('Plan Duration', null=True, blank=True, help_text='Duration in calendar days')
+    price_per_year = models.DecimalField('Annual Subscription Fee', max_digits=12, decimal_places=2, default=0.0)
+    no_of_projects = models.IntegerField(help_text='Number of projects a user can create')
+    description = models.TextField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['is_default', 'is_premium', 'price_per_year', 'full_title', ]
+
+    def __str__(self):
+        return self.full_title
+
+    def get_absolute_url(self, *args, **kwargs):
+        return reverse('breakdowns:user_plan_detail', kwargs={'pk': str(self.pk)})
+
+class FreelanceUserSubscription(models.Model):
+    user = models.ForeignKey(User)
+    user_plan = models.ForeignKey(UserPlan)
+
 
 class Company(models.Model):
     """
@@ -489,7 +528,7 @@ class CostBreakdown(models.Model):
     Model representing the a cost breakdown
     """
     activity_catagory = models.ForeignKey(ActivityCatagory, null=True, on_delete=models.SET_NULL)
-    project = models.ForeignKey(Project, on_delete=models.CASCADE, null=True, blank=True)
+    project = models.ForeignKey(Project, on_delete=models.SET_NULL, null=True, blank=True)
     full_title = models.CharField(max_length=120, help_text='Work Item Title')
     description = models.TextField(null=True, blank=True)
     unit = models.ForeignKey(Unit, on_delete=models.CASCADE, help_text='Measurement unit for the cost breakdown')
@@ -751,10 +790,10 @@ class StandardLibrary(models.Model):
     full_title = models.CharField(max_length=100, help_text='Title of the library')
     short_title = models.CharField(max_length=30, null=True, blank=True)
     owners = models.CharField(max_length=100, null=True, blank=True, help_text='Owner/Owners or publishers of the library')
-    published_at = models.DateField('First Published', null=True)
-    last_updated = models.DateField('Last Updated', null=True)
+    published_at = models.DateField('First Published', null=True, blank=True)
+    last_updated = models.DateField('Last Updated', null=True, blank=True)
     description = models.TextField(help_text='Description of the library', null=True, blank=True)
-    remark = models.TextField(help_text='Special remarks on the library', null=True, blank=True)
+    rating = models.IntegerField(default=0, help_text='Rating of the breakdown from 0 to 5')
 
     class Meta:
         ordering = ['library_package', 'full_title',]
