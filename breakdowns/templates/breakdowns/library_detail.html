@@ -126,7 +126,7 @@
         <div class="col-md-12">
             <div class="panel panel-filled">
                 <div class="panel-heading">
-                    Complete list of all standard cost breakdowns
+                    Complete list of all breakdowns for the {{ library.full_title }} library
                 </div>
                 <div class="panel-body">
                    {% if breakdown_list %}
@@ -135,7 +135,7 @@
                            <thead>
                                <tr>
                                    <th>#</th>
-                                   <th>Breakdown</th>
+                                   <th>Breakdowns</th>
                                    <th>Catagory</th>
                                    <th>Package</th>
                                    <th class="text-right">Actions</th>
@@ -146,10 +146,19 @@
                                {% for breakdown in breakdown_list %}
                                <tr>
                                    <td>{{ forloop.counter }}</td>
-                                   <td class="disabled-link">{{ breakdown.full_title|capfirst }}</td>
-                                   <td>{{ breakdown.activity_catagory.full_title|capfirst }}</td>
+                                   {% if breakdown.is_premium %}
+                                   <td class="disabled-link">{{ breakdown.full_title }}</td>
+                                   {% else %}
+                                   <td><a href="#">{{ breakdown.full_title }}</a></td>
+                                   {% endif %}
+                                   <td>{{ breakdown.activity_catagory.full_title }}</td>
                                    <td>{{ breakdown.standard_library.library_package.full_title }}</td>
-                                   <td class="text-right"><a href="#" class="btn btn-sm btn-default">View</a></td>
+
+                                   {% if breakdown.is_premium %}
+                                   <td class="text-right"><a href="#" class="btn btn-sm btn-accent"><i class="fa fa-lock"></i> upgrade</a></td>
+                                   {% else %}
+                                   <td class="text-right"><a href="#" class="btn btn-sm btn-default">view</a></td>
+                                   {% endif %}
                                </tr>
                                {% endfor %}
 

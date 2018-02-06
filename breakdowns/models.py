@@ -19,7 +19,7 @@ def create_user_profile(sender, instance, created, **kwargs):
 def save_user_profile(sender, instance, **kwargs):
     instance.profile.save()
 
-class FreelanceUserPlan(models.Model):
+class UserPlan(models.Model):
     full_title = models.CharField('Plan Full Title', max_length=120)
     short_title = models.CharField('Plan Short Title', max_length=60, null=True, blank=True)
     is_premium = models.BooleanField(default=False)
