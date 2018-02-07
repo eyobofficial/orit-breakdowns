@@ -4,4 +4,6 @@ $(function(){
 		scrollY: 200,
 		paging: false
 	});
+
+	$('a[target="_blank"]').append(' &nbsp;<small><i class="fa fa-external-link"></i></small>');
 });

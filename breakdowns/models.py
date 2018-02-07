@@ -823,6 +823,12 @@ class LibraryBreakdown(models.Model):
     class Meta:
         ordering = ['activity_catagory', 'full_title']
 
+    def __init__(self, *args, **kwargs):
+        super(LibraryBreakdown, self).__init__(*args, **kwargs)
+        self.mb_list = tuple(LibraryMaterialBreakdown.objects.filter(library_breakdown_id=self.pk))
+        self.lb_list = tuple(LibraryLabourBreakdown.objects.filter(library_breakdown_id=self.pk))
+        self.eb_list = tuple(LibraryEquipmentBreakdown.objects.filter(library_breakdown_id=self.pk))
+
     def get_absolute_url(self):
         """
         Returns a particular instance of costbreakdown

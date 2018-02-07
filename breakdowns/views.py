@@ -295,6 +295,31 @@ def cost_breakdown_list(request):
             'activity_catagory': activity_catagory,
         })
 
+# Standard Library Detail 
+class StandardLibraryDetail(LoginRequiredMixin, generic.DetailView):
+    model = StandardLibrary
+    context_object_name = 'library'
+    template_name = 'breakdowns/library_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(StandardLibraryDetail, self).get_context_data(*args, **kwargs)
+        context['breakdown_list'] = LibraryBreakdown.objects.filter(standard_library=self.kwargs['pk'])
+        context['page_name'] = 'library'
+        context['subpage_name'] = self.object.full_title 
+        return context
+
+# Standard Library Breakdown Detail
+class LibraryBreakdownDetail(LoginRequiredMixin, generic.DetailView):
+    model = LibraryBreakdown
+    context_object_name = 'library_breakdown'
+    template_name = 'breakdowns/library_breakdown_detail.html'
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(LibraryBreakdownDetail, self).get_context_data(*args, **kwargs)
+        context['page_name'] = 'library'
+        context['subpage_name'] = self.object.standard_library.full_title
+        return context
+
 # All My Cost breakdowns list
 class MyBreakdownList(LoginRequiredMixin, generic.ListView):
     model = CostBreakdown
@@ -453,19 +478,6 @@ class MyBreakdownDetail(UserPassesTestMixin, generic.DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(MyBreakdownDetail, self).get_context_data(*args, **kwargs)         
         context['page_name'] = 'my cost breakdowns'
-        return context
-
-# Standard Library Detail 
-class StandardLibraryDetail(LoginRequiredMixin, generic.DetailView):
-    model = StandardLibrary
-    context_object_name = 'library'
-    template_name = 'breakdowns/library_detail.html'
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(StandardLibraryDetail, self).get_context_data(*args, **kwargs)
-        context['breakdown_list'] = LibraryBreakdown.objects.filter(standard_library=self.kwargs['pk'])
-        context['page_name'] = 'library'
-        context['subpage_name'] = self.object.full_title 
         return context
 
 # Create a new cost breakdown - Step 1
@@ -720,7 +732,6 @@ class LabourBreakdownCreate(LoginRequiredMixin, UserPassesTestMixin, CreateView)
         context['unit_list'] = Unit.objects.all()
         context['page_name'] = 'CostBreakdowns'
         return context
-
 
 # Update A Labour Breakdown 
 class LabourBreakdownUpdate(LoginRequiredMixin, UserPassesTestMixin, UpdateView):
