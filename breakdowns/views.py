@@ -129,47 +129,6 @@ class EquipmentList(LoginRequiredMixin, generic.ListView):
         context['page_name'] = 'equipment'
         return context 
 
-# Equipment List View
-@login_required
-def equipment_list(request):
-    """
-    Returns equipment list 
-    """
-    try:
-        equipment_catagory = int(request.GET.get('equipment_catagory'))
-    except:
-        equipment_catagory = None
-    equipment_search = request.GET.get('equipment_search')
-
-    # Admin User
-    admin = User.objects.get(pk=1)
-    
-    # Return all equipment objects
-    try:
-        equipment_list = Equipment.objects.filter(created_by=admin.id)
-    except Equipment.DoesNotExist:
-        raise Http404('page not found')
-
-
-    if equipment_catagory is not None:
-        equipment_catagory = int(equipment_catagory)
-        equipment_list = Equipment.objects.filter(equipment_catagory=equipment_catagory)
-
-    if equipment_search is not None:
-        equipment_list = equipment_list.filter(full_title__icontains=equipment_search)      
-
-    equipment_catagory_list = get_list_or_404(EquipmentCatagory)
-    page_name = 'Equipments'
-    template_name = 'breakdowns/equipment_list.html'
-
-    return render(request, template_name, context={
-            'equipment_list': equipment_list,
-            'equipment_catagory_list': equipment_catagory_list,
-            'page_name': page_name,
-            'equipment_search': equipment_search,
-            'equipment_catagory': equipment_catagory,
-        })
-
 # Equipment Detail View
 class EquipmentDetail(LoginRequiredMixin, generic.DetailView):
     model = Equipment
@@ -252,48 +211,6 @@ class ProjectDelete(LoginRequiredMixin, DeleteView):
         context = super(ProjectDelete, self).get_context_data(*args, **kwargs)
         context['page_name'] = 'Projects'
         return context
-
-# Cost Breakdown List View
-@login_required
-def cost_breakdown_list(request):
-    """
-    Returns cost breakdown list from the main library
-    """
-    try:
-        activity_catagory = int(request.GET.get('activity_catagory'))
-    except:
-        activity_catagory = None
-    cost_breakdown_search = request.GET.get('cost_breakdown_search')
-
-    # Admin User
-    admin = User.objects.get(pk=1)
-    
-    # Return all cost breakdown objects
-    try:
-        cost_breakdown_list = CostBreakdown.objects.filter(created_by=admin.id)
-    except CostBreakdown.DoesNotExist:
-        raise Http404('page not found')
-
-
-    if activity_catagory is not None:
-        activity_catagory = int(activity_catagory)
-        cost_breakdown_list = CostBreakdown.objects.filter(created_by=admin.id).filter(activity_catagory=activity_catagory)
-
-    if cost_breakdown_search is not None:
-        cost_breakdown_list = cost_breakdown_list.filter(created_by=admin.id).filter(full_title__icontains=cost_breakdown_search)      
-
-    activity_catagory_list = get_list_or_404(CostBreakdownCatagory)
-    page_name = 'library'
-    template_name = 'breakdowns/cost_breakdown_list.html'
-
-    return render(request, template_name, context={
-            'cost_breakdown_list': cost_breakdown_list,
-            'activity_catagory_list': activity_catagory_list,
-            'page_name': page_name,
-            'subpage_name': 'library',
-            'cost_breakdown_search': cost_breakdown_search,
-            'activity_catagory': activity_catagory,
-        })
 
 # Standard Library Detail 
 class StandardLibraryDetail(LoginRequiredMixin, generic.DetailView):
@@ -480,7 +397,11 @@ class MyBreakdownDetail(UserPassesTestMixin, generic.DetailView):
         context['page_name'] = 'my cost breakdowns'
         return context
 
-# Create a new cost breakdown - Step 1
+# Create a cost breakdown from library
+def breakdown_adapt(request):
+    return render(request, 'breakdowns/adapt_breakdown.html', context={})
+
+# OLD CODE - Create a new cost breakdown - Step 1
 @login_required
 def step_one(request):
     form_class = StepOneForm

@@ -6,4 +6,8 @@ $(function(){
 	});
 
 	$('a[target="_blank"]').append(' &nbsp;<small><i class="fa fa-external-link"></i></small>');
+
+	$(document).ready(function(){
+	  $('#adapt-breakdown-wizard').smartWizard();
+	});
 });
