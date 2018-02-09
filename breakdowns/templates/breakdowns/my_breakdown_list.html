@@ -134,10 +134,10 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header text-center">
-                <h4 class="modal-title">New Cost Breakdown</h4>
+                <h4 class="modal-title">New Cost Breakdown Wizard</h4>
                 <small>Tell us how you want to create your new cost breakdown.</small>
             </div>
-            <form name="breakdown_from" action="{% url 'breakdowns:breakdown_adapt' %}">
+            <form name="breakdown_from" action="{% url 'breakdowns:breakdown_create' %}">
             <div class="modal-body">
                   <div>
                     <label>
@@ -154,7 +154,7 @@
                   </div>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-default" data-dismiss="modal">Cancel</button>
                 <button type="submit" class="btn btn-accent">Start</button>
             </div>
             </form>

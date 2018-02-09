@@ -21,7 +21,7 @@ urlpatterns = [
     url(r'^my-breakdown/(?P<pk>[0-9]+)/$', views.MyBreakdownDetail.as_view(), name='my_breakdown_detail'),
 
     # User Cost Breakdown Create step 1 URL
-    url(r'^my-breakdown/create/adapt/$', views.breakdown_adapt, name='breakdown_adapt'),
+    url(r'^my-breakdown/create/$', views.breakdown_create, name='breakdown_create'),
 
     # User Cost Breakdown Create step 2 URL
     url(r'^cost-breakdown/create/step-2$', views.step_two, name='breakdown_create_step_2'),

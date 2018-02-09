@@ -1,5 +1,6 @@
 {% extends 'base2.html' %}
 {% load static %}
+{% load crispy_forms_tags %}
 
 {% block title %}
 <title>Create Cost Breakdown Library | Orit</title>
@@ -21,7 +22,7 @@
                     <i class="pe page-header-icon pe-7s-calculator"></i>
                 </div>
                 <div class="header-title">
-                    <h3 class="m-b-xs">Create A Breakdown</h3>
+                    <h3 class="m-b-xs">Details of the Breakdown</h3>
                     <small>
                         Special minimal admin theme with Dark UI style for monitoring or administration web applications.
                     </small>
@@ -32,34 +33,47 @@
     </div>
 
     <div class="row">
-        <div class="col-md-12">
+        <div class="col-lg-3 col-xs-6">
             <div class="panel panel-filled">
+        
                 <div class="panel-body">
-                  <div id="adapt-breakdown-wizard">
-                      <ul>
-                          <li><a href="#step-1">Step Title<br /><small>Step description</small></a></li>
-                          <li><a href="#step-2">Step Title<br /><small>Step description</small></a></li>
-                          <li><a href="#step-3">Step Title<br /><small>Step description</small></a></li>
-                          <li><a href="#step-4">Step Title<br /><small>Step description</small></a></li>
-                      </ul>
-                   
-                      <div>
-                          <div id="step-1" class="">
-                              Step Content
-                          </div>
-                          <div id="step-2" class="">
-                              Step Content
-                          </div>
-                          <div id="step-3" class="">
-                              Step Content
-                          </div>
-                          <div id="step-4" class="">
-                              Step Content
-                          </div>
-                      </div>
-                  </div>
+                    <h2 class="m-b-none">
+                        Step 1
+                    </h2>
+                    <div class="small"></div>
+                    <div class="slight m-t-sm">Fill details</div>
                 </div>
             </div>
+        </div>
+
+        <div class="col-lg-3 col-xs-6">
+            <div class="panel panel-filled">
+        
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        Step 2
+                    </h2>
+                    <div class="small"></div>
+                    <div class="slight m-t-sm">Verfiy details</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-filled">
+            <div class="panel-body">
+              <form action="POST">
+                {% csrf_token %}
+                {{ form|crispy }}
+
+                <div class="form-group">
+                  
+                </div>
+              </form>
+            </div>
+          </div>
         </div>
     </div>
 </div>
@@ -67,4 +81,11 @@
 
 {% block extra_js %}
 <script src="{% static 'luna/vendor/smart-jquery/js/jquery.smartWizard.min.js' %}"></script>
+<script>
+  $(function(){
+    $('#adaptBreakdownWizard').smartWizard({
+      theme: 'arrows',
+    });
+  });
+</script>
 {% endblock extra_js %}

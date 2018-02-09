@@ -34,3 +34,8 @@ class StepTwoForm(forms.ModelForm):
             raise forms.ValidationError('This field is required.')
 
         return data
+
+class CreateBreakdownForm(forms.ModelForm):
+    class Meta:
+        model = CostBreakdown
+        fields = ['project', 'activity_catagory' ,'full_title', 'description', 'unit', 'output', 'overhead', 'profit',]
