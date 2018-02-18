@@ -22,7 +22,7 @@
                     <i class="pe page-header-icon pe-7s-calculator"></i>
                 </div>
                 <div class="header-title">
-                    <h3 class="m-b-xs">Details of the Breakdown</h3>
+                    <h3 class="m-b-xs">New Cost Breakdown Wizard</h3>
                     <small>
                         Special minimal admin theme with Dark UI style for monitoring or administration web applications.
                     </small>
@@ -34,7 +34,7 @@
 
     <div class="row">
         <div class="col-lg-3 col-xs-6">
-            <div class="panel panel-filled">
+            <div class="panel panel-filled panel-step">
         
                 <div class="panel-body">
                     <h2 class="m-b-none">
@@ -58,21 +58,61 @@
                 </div>
             </div>
         </div>
+
+        <div class="col-lg-3 col-xs-6">
+            <div class="panel panel-filled panel-active">
+        
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        Step 3
+                    </h2>
+                    <div class="small"></div>
+                    <div class="slight m-t-sm">Verfiy details</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-xs-6">
+            <div class="panel panel-filled">
+        
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        Step 4
+                    </h2>
+                    <div class="small"></div>
+                    <div class="slight m-t-sm">Verfiy details</div>
+                </div>
+            </div>
+        </div>
     </div>
 
     <div class="row">
         <div class="col-md-12">
           <div class="panel panel-filled">
-            <div class="panel-body">
-              <form action="POST">
-                {% csrf_token %}
-                {{ form|crispy }}
-
-                <div class="form-group">
-                  
-                </div>
-              </form>
+            <div class="panel-heading">
+                <h3>Choose Your Preference<h3>
             </div>
+            <div class="panel-body">
+              <form>
+                <div>
+                  <label>
+                    <input type="radio" name="m" value="library" checked="checked">&nbsp; Adapt a breakdown from the libraries
+                  </label>
+                  <p>Use one of the breakdowns from the available standard libraries to adopt, modify and create your new cost breakdown.</p>
+                </div>
+                <br>
+                <div>
+                  <label>
+                    <input type="radio" name="m" value="blank">&nbsp; Create new from a scratch
+                  </label>
+                  <p>Start from a clean slate and create your own brand new cost breakdown</p>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <button type="button" class="btn btn-default">Cancel</button>&nbsp; 
+                <button type="submit" class="btn btn-accent">Next</button>
+            </div>
+            </form>
           </div>
         </div>
     </div>

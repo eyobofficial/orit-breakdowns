@@ -18,3 +18,11 @@ table tr.total-row td {
 	color: gray;
 	cursor: not-allowed;
 }
+
+.panel-active {
+	border: 1px solid #F6A821 !important;
+}
+
+.panel-active, .panel-active h2.m-b-none {
+    color: #F6A821 !important;
+}

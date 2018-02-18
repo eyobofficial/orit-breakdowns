@@ -555,7 +555,7 @@ class CostBreakdown(models.Model):
         self.mb_list = tuple(MaterialBreakdown.objects.filter(costbreakdown_id=self.pk))
         self.lb_list = tuple(LabourBreakdown.objects.filter(costbreakdown_id=self.pk))
         self.eb_list = tuple(EquipmentBreakdown.objects.filter(costbreakdown_id=self.pk))
-
+            
     def material_cost(self, *args, **kwargs):
         """
         Returns total material direct cost
@@ -828,6 +828,12 @@ class LibraryBreakdown(models.Model):
         self.mb_list = tuple(LibraryMaterialBreakdown.objects.filter(library_breakdown_id=self.pk))
         self.lb_list = tuple(LibraryLabourBreakdown.objects.filter(library_breakdown_id=self.pk))
         self.eb_list = tuple(LibraryEquipmentBreakdown.objects.filter(library_breakdown_id=self.pk))
+
+    def adapt(self, *args, **kwargs):
+        breakdown = CostBreakdown()
+        breakdown.activity_catagory = self.activity_catagory
+        breakdown.full_title = self.full_title
+        return breakdown
 
     def get_absolute_url(self):
         """

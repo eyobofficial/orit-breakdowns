@@ -1,0 +1,105 @@
+{% extends 'base2.html' %}
+{% load static %}
+{% load crispy_forms_tags %}
+
+{% block title %}
+<title>Create Cost Breakdown Library | Orit</title>
+{% endblock title %}
+
+{% block extra_css %}
+<link rel="stylesheet" href="{% static 'luna/vendor/smart-jquery/css/smart_wizard.min.css' %}">
+<link rel="stylesheet" href="{% static 'luna/vendor/smart-jquery/css/smart_wizard_theme_arrows.min.css' %}">
+{% endblock extra_css %}
+
+{% block content %}
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-lg-12">
+            <div class="view-header">
+                <div class="pull-right text-right" style="line-height: 14px">
+                </div>
+                <div class="header-icon">
+                    <i class="pe page-header-icon pe-7s-calculator"></i>
+                </div>
+                <div class="header-title">
+                    <h3 class="m-b-xs">New Cost Breakdown Wizard</h3>
+                    <small>
+                        Special minimal admin theme with Dark UI style for monitoring or administration web applications.
+                    </small>
+                </div>
+            </div>
+            <hr>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-lg-3 col-xs-6">
+            <div class="panel panel-filled panel-step">
+        
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        Step 1
+                    </h2>
+                    <div class="small"></div>
+                    <div class="slight m-t-sm">Fill details</div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-3 col-xs-6">
+            <div class="panel panel-filled panel-active">
+        
+                <div class="panel-body">
+                    <h2 class="m-b-none">
+                        Step 2
+                    </h2>
+                    <div class="small"></div>
+                    <div class="slight m-t-sm">Verfiy details</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col-md-12">
+          <div class="panel panel-filled">
+            <div class="panel-heading">
+                <h3>Choose A Library<h3>
+            </div>
+            <div class="panel-body">
+              <form>
+                <div>
+                  <label>
+                    <input type="radio" name="m" value="library" checked="checked">&nbsp; Adapt a breakdown from the libraries
+                  </label>
+                  <p>Use one of the breakdowns from the available standard libraries to adopt, modify and create your new cost breakdown.</p>
+                </div>
+                <br>
+                <div>
+                  <label>
+                    <input type="radio" name="m" value="blank">&nbsp; Create new from a scratch
+                  </label>
+                  <p>Start from a clean slate and create your own brand new cost breakdown</p>
+                </div>
+            </div>
+            <div class="panel-footer">
+                <button type="button" class="btn btn-default">Cancel</button>&nbsp; 
+                <button type="submit" class="btn btn-accent">Next</button>
+            </div>
+            </form>
+          </div>
+        </div>
+    </div>
+</div>
+{% endblock content %}
+
+{% block extra_js %}
+<script src="{% static 'luna/vendor/smart-jquery/js/jquery.smartWizard.min.js' %}"></script>
+<script>
+  $(function(){
+    $('#adaptBreakdownWizard').smartWizard({
+      theme: 'arrows',
+    });
+  });
+</script>
+{% endblock extra_js %}

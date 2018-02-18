@@ -1,0 +1,29 @@
+<div class="panel panel-filled">
+  <div class="panel-heading">
+      <h3>Choose Your Prefered Library<h3>
+  </div>
+  <div class="panel-body">
+    <form>
+     <input type="hidden" name="step" value="1">
+     <input type="hidden" name="next" value="2"
+     <input type="hidden" name="m" value="library">
+     <div class="row">
+     	<div class="col-sm-6">
+     		<div class="form-group">
+     			<select name="library" id="library" class="form-control">
+     				{% for library in library_list %}
+     				<option value="{{ library.id }}">
+     					{{ library.full_title }}
+     				</option>
+     				{% endfor %}
+     			</select>
+     		</div>
+     	</div>
+     </div><!-- /.row -->
+  </div>
+  <div class="panel-footer">
+      <button type="button" class="btn btn-default">Cancel</button>&nbsp; 
+      <button type="submit" class="btn btn-accent">Next</button>
+  </div>
+  </form>
+</div>

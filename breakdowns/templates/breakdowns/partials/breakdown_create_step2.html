@@ -1,0 +1,30 @@
+<div class="panel panel-filled">
+  <div class="panel-heading">
+      <h3>Choose A Breakdown To Adapt<h3>
+  </div>
+  <div class="panel-body">
+    <form>
+     <input type="hidden" name="step" value="2">
+     <input type="hidden" name="next" value="3"
+     <input type="hidden" name="m" value="library">
+     <div class="row">
+     	<div class="col-sm-6">
+     		<div class="form-group">
+     			<select name="library" id="library" class="form-control">
+     				{% for breakdown in library_breakdown_list %}
+     				<option value="{{ breakdown.id }}">
+     					{{ breakdown.full_title }}
+     				</option>
+     				{% endfor %}
+     			</select>
+     		</div>
+     	</div>
+     </div><!-- /.row -->
+  </div>
+  <div class="panel-footer">
+      <button type="button" class="btn btn-default">Cancel</button>&nbsp; 
+      <button class="btn btn-accent">Previous</button>&nbsp; 
+      <button type="submit" class="btn btn-accent">Next</button>
+  </div>
+  </form>
+</div>

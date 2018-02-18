@@ -14,7 +14,7 @@ import openpyxl
 from xlrd import open_workbook
 from xlwt import Workbook, easyxf, Formula
 from xlutils.copy import copy
-from .forms import SignupForm, StepOneForm, StepTwoForm, CreateBreakdownForm
+from .forms import SignupForm, StepOneForm, StepTwoForm, CreateBreakdownForm, ChooseLibraryForm
 from .models import Package, UserMembership, City, ProjectCatagory, Project, UnitCatagory, Unit, MaterialCatagory, Material, MaterialPrice, LabourCatagory, Labour, LabourPrice, EquipmentCatagory, Equipment, ActivityCatagory, CostBreakdown, MaterialBreakdown, LabourBreakdown, EquipmentBreakdown, StandardLibrary, LibraryBreakdown
 
 # Create your views here.
@@ -399,16 +399,27 @@ class MyBreakdownDetail(UserPassesTestMixin, generic.DetailView):
 
 # Create a cost breakdown from library
 def breakdown_create(request):
-    form_class = CreateBreakdownForm
-
     if request.method == 'POST':
         pass
     else:
-        form = form_class()
-    
-    return render(request, 'breakdowns/breakdown_new_step1.html', {
-               'form': form,
-            })
+        if request.GET.get('m') == 'library':
+            step = int(request.GET.get('step', 1))
+            template_name = 'breakdowns/breakdown_create.html'
+            context = {}
+
+            if step == 1:
+                context['library_list'] = StandardLibrary.objects.all()
+                context['form_html'] = 'breakdowns/partials/breakdown_create_step1.html'
+            elif step == 2:
+                library = int(request.GET.get('library'))
+                context['library_breakdown_list'] = LibraryBreakdown.objects.filter(standard_library=library)
+                context['form_html'] = 'breakdowns/partials/breakdown_create_step2.html'
+            else:
+                pass
+        else: # Blank
+            pass
+    return render(request, template_name, context)
+
 
 # OLD CODE - Create a new cost breakdown - Step 1
 @login_required
@@ -537,14 +548,9 @@ class BreakdownCreate(LoginRequiredMixin, CreateView):
 
     def form_valid(self, form, *args, **kwargs):
         form.instance.created_by = self.request.user
-
-        if self.request.user.is_staff:
-            form.instance.is_library = True
         return super(BreakdownCreate, self).form_valid(form, *args, **kwargs)
 
     def get_success_url(self, *args, **kwargs):
-        if self.object.is_library:
-            return reverse('breakdowns:cost_breakdown_detail', kwargs={'pk': self.object.id})
         return reverse('breakdowns:my_breakdown_detail', kwargs={'pk': self.object.id})
 
     def get_context_data(self, *args, **kwargs):
@@ -552,12 +558,7 @@ class BreakdownCreate(LoginRequiredMixin, CreateView):
         context['project_list'] = Project.objects.filter(created_by=self.request.user.id)
         context['catagory_list'] = CostBreakdownCatagory.objects.all()
         context['unit_list'] = Unit.objects.all()
-
-        if self.request.user.has_perm('breakdowns.manage_library'):
-            context['page_name'] = 'library'
-        else:
-            context['page_name'] = 'CostBreakdowns'
-        context['subpage_name'] = 'add'
+        context['subpage_name'] = 'My Breakdowns'
         return context
 
 # Create A Material Breakdown View
